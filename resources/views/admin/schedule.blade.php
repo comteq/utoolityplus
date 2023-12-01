@@ -641,7 +641,7 @@
 
 <script>
     var storedDateTimeValue = localStorage.getItem('dateTimeValue'); // Retrieve the stored datetime value from localStorage
-    // Set the datetime value back to the input field if it exists
+
     if (storedDateTimeValue) {
         $('#dateTimePicker3').val(storedDateTimeValue);
     }
@@ -673,18 +673,17 @@
             submitForm(itemId);
         });
     
-        $(' #dateTimePicker3').change(function () {
+        $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
             var event_datetime = $('#dateTimePicker3').val();
-            // var event_datetime_off = $('#dateTimePicker4').val();
-            // var description = $('#description').val();
+            var event_datetime_off = $('#dateTimePicker4').val();
+            var description = $('#description').val();
             
             $.ajax({
                 type: 'GET',
                 url: '/get-related-data1',
                 data: { event_datetime: event_datetime, 
-                        event_datetime_off: event_datetime_off
-                        // description: description 
-                    },
+                        event_datetime_off: event_datetime_off, 
+                        description: description },
                 success: function (data) {
                     updateContent(data);
                 },

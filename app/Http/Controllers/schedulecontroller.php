@@ -174,7 +174,7 @@ class ScheduleController extends Controller
     public function getRelatedData1(Request $request)
     {
         $eventDatetime = $request->input('event_datetime');
-        // $eventDatetimeOff = $request->input('event_datetime_off');
+        $eventDatetimeOff = $request->input('event_datetime_off');
         $description = $request->input('description');
     
         $query = schedules::query();
@@ -184,13 +184,16 @@ class ScheduleController extends Controller
                 ->where('event_datetime', '=', $eventDatetime);
         }
     
-
+        if ($eventDatetimeOff) {
+            $query->whereDate('event_datetime_off', '=', \Carbon\Carbon::parse($eventDatetimeOff)->toDateString())
+                ->where('event_datetime_off', '=', $eventDatetimeOff);
+        }
     
         if ($description) {
             $query->where('description', '=', $description);
         }
     
-        $relatedData1 = $query->get(['id','event_datetime', 'description', 'state']);
+        $relatedData1 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
     
         $activeSchedules = $relatedData1->where('state', 'Active');
 
