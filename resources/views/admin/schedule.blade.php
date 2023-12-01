@@ -438,23 +438,22 @@
 <script>
     $(document).ready(function () {
 
-        // $(document).on('change', '.toggleCheckbox1', function () {
-        //     var clickedCheckbox = $(this);
-        //     var clickedItemId = clickedCheckbox.data('id');
-        //     var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+        $(document).on('change', '.toggleCheckbox1', function () {
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
 
-        //     $('.toggleCheckbox1').not(clickedCheckbox).each(function () {
-        //         var otherCheckbox = $(this);
-        //         var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+            $('.toggleCheckbox1').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+                var formattedClickedDatetime = moment(clickedEventDatetime).format();
+                var formattedOtherDatetime = moment(otherEventDatetime).format();
 
-        //         var formattedClickedDatetime = moment(clickedEventDatetime).format();
-        //         var formattedOtherDatetime = moment(otherEventDatetime).format();
-
-        //         if (otherEventDatetime === clickedEventDatetime) {
-        //             otherCheckbox.prop('checked', false);
-        //         }
-        //     });
-        // });// Uncheck other checkboxes with the same event_datetime
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
 
         var currentPage = 1;
         var schedulesPerPage = 3;
