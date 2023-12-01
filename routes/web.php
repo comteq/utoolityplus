@@ -7,6 +7,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\schedulecontroller; 
 use App\Http\Controllers\schedulefilter_controler; 
+use App\Http\Controllers\ArduinoController;
+
+
+
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');
@@ -49,3 +53,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Example: Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
     Route::resource('/users', UserController::class)->except(['show']);
 });
+
+
+
+
+Route::post('/send-data-to-arduino', [ArduinoController::class, 'sendData'])->name('send.data.to.arduino');
