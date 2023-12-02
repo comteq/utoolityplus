@@ -173,21 +173,18 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="description">Action:</label>
-                <select name="description" id="description" class="custom-select w-100" required>
-                    <option disabled selected>Select Action</option>
-                    <option value="ON">ON</option>
-                    <option value="OFF">OFF</option>
-                </select>
-                <!-- <span id="existingactionerror" class="text-danger"></span> -->
-            </div>
-
-            <div class="form-group">
-                <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
-            </div>
 
             <div class="date-time-group">
+
+                <div class="form-group">
+                    <label for="description">Action:</label>
+                    <select name="description" id="description" class="custom-select w-100" required>
+                        <option disabled selected>Select Action</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
+                </div>
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
@@ -215,6 +212,16 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
+
+                <div class="form-group">
+                    <label for="description">Action:</label>
+                    <select name="description" id="description" class="custom-select w-100" required>
+                        <option disabled selected>Select Action</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
+                </div>
 
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
@@ -259,6 +266,7 @@
 
             </div> <!-- other-form-elements -->
 
+            
             @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -294,8 +302,11 @@
                         </div>
                     @endif
 
-
         </form><!-- form end --> 
+
+            <div class="form-group">
+                <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
+            </div>
 
     </div><!-- cardbody end -->   
     
@@ -437,7 +448,6 @@
 
 <script>
     $(document).ready(function () {
-
         $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -670,8 +680,7 @@
             });
         });
     });
-</script>
-<!-- existing schedule for datetimepicker3 -->
+</script><!-- existing schedule for datetimepicker3 -->
 
 <script>
     function updateContent(data) {
@@ -787,8 +796,7 @@
             console.error('Invalid response format. Missing "relatedData" property.');
         }
     }
-</script>
-<!-- update content dynamicly -->
+</script><!-- update content dynamicly -->
 
 <script src="{{ asset('js/dynamicUpdate.js') }}"></script>
 
@@ -1137,7 +1145,6 @@
     }
 </script> -->
 
-
 <script>
     function checkForOverlap() {
         var fromDateTime = $('#dateTimePicker3').val();
@@ -1258,5 +1265,11 @@
     });
 </script><!-- automatic detect for to: date & time --> 
 
-
+<script>
+    $(document).ready(function () {
+        // Clear input fields on page refresh
+        $('input[type="text"]').val('');
+        $('select').prop('selectedIndex', 0);
+    });
+</script><!-- remove the input if refresd; -->
 

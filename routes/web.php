@@ -58,5 +58,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     Route::delete('/delete-schedule/{itemId}', [schedulecontroller::class, 'deleteSchedule']);
     Route::post('/update-related-schedules-admin', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
-    
+
+    Route::get('/schedule-List-admin?year=&month=&day=', function () { return view('admin.sched_list'); });
+    Route::get('/schedule-List-admin', [schedulefilter_controler::class, 'filteradmin'])->name('schedule-admin.filter');
+    Route::delete('/schedule/{id}', [schedulefilter_controler::class, 'destroy'])->name('schedule.destroy');
 });

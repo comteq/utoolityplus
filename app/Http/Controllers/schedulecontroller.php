@@ -493,7 +493,6 @@ class ScheduleController extends Controller
         return response()->json(['overlap' => $overlappingSchedule]);
     }//automatic detection for to: date and time and from: date and time
 
-
     public function updateRelatedSchedulesadmin(Request $request)
     {
         // Retrieve and process the input data
