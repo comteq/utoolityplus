@@ -312,7 +312,6 @@
         <p class="card-text" id="relatedSchedulesList"></p>
         <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
- 
     </div><!-- cardbody end -->
 
     <div class="card-header" style="text-align: left">
@@ -455,7 +454,7 @@
         });// Uncheck other checkboxes with the same event_datetime
 
         var currentPage = 1;
-        var schedulesPerPage = 4;
+        var schedulesPerPage = 2;
 
         $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
             currentPage = 1; // Reset page to 1 when filters change
