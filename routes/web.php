@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     Route::post('/update-state1/{itemId}', [schedulecontroller::class, 'updateState1']);
     Route::post('/update-state/{itemId}', [schedulecontroller::class, 'updateState']);
+    Route::get('/get-state/{itemId}', [schedulecontroller::class, 'getState']);
     
     Route::delete('/delete-schedule/{itemId}', [schedulecontroller::class, 'deleteSchedule']);
     Route::post('/update-related-schedules-admin', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);

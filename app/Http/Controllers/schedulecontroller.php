@@ -493,6 +493,7 @@ class ScheduleController extends Controller
         return response()->json(['overlap' => $overlappingSchedule]);
     }//automatic detection for to: date and time and from: date and time
 
+
     public function updateRelatedSchedulesadmin(Request $request)
     {
         // Retrieve and process the input data
@@ -502,53 +503,54 @@ class ScheduleController extends Controller
         $fromtime = $request->input('fromtime');
         $totime = $request->input('totime');
         $query = schedules::query();
-
+    
         if ($description) {
             $query->where('description', $description);
         }
-
+    
         if ($yearmonth) {
             $parsedDate = Carbon::createFromFormat('m-Y', $yearmonth);
             $query->whereYear('event_datetime', $parsedDate->year)
                 ->whereMonth('event_datetime', $parsedDate->month);
         }
-
+    
         if ($day) {
             $query->whereRaw('DAYNAME(event_datetime) = ?', [$day]);
         }
         
         if ($fromtime) {
-            $formattedfromtime = \Carbon\Carbon::parse($fromtime)->format('H:i');
+            // Extract HH:mm format from the input
+            $formattedfromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
             $query->whereRaw("TIME(event_datetime) = ?", [$formattedfromtime]);
         }
-
+    
         if ($totime) {
-            $formattedTotime = \Carbon\Carbon::parse($totime)->format('H:i');
+            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
             $query->whereRaw("TIME(event_datetime_off) = ?", [$formattedTotime]);
         }
-
+    
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 2);
-
+    
         $offset = ($page - 1) * $perPage;
         $schedules = $query->skip($offset)->take($perPage)->get();
         
-        $formattedSchedules = $schedules->map(function ($schedule) {
-            return [
-                'id' => $schedule->id,
-                'description' => $schedule->description,
-                'event_datetime_time' => $schedule->event_datetime->format('h:i A'),
-                'event_datetime_off_time' => $schedule->event_datetime_off->format('h:i A'),
-                'event_datetime_date' => $schedule->event_datetime->format('Y-m-d'),
-                'event_datetime_off_date' => $schedule->event_datetime_off->format('Y-m-d'),
-                'event_datetime_iso' => $schedule->event_datetime->toIso8601String(), 
-                'event_datetime_off_iso' => $schedule->event_datetime_off->toIso8601String(), 
-                'state' => $schedule->state,
-            ];
-        });
-        return response()->json(['relatedData' => $formattedSchedules]);
-    }
+        $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
 
+        $relatedData3->each(function ($item) {
+            $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
+            $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
+        });
+        
+        $relatedData3->each(function ($item) {
+            $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
+            $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
+        });
+
+
+        return response()->json(['relatedData3' => $relatedData3]);
+    }
+    
     public function updateState($itemId)
     {
         if (!$itemId) {
@@ -560,14 +562,16 @@ class ScheduleController extends Controller
         if (!$item) {
             return response()->json(['success' => false, 'message' => 'Item not found']);
         }
-        schedules::where('event_datetime', '=', $item->event_datetime)
-        ->where('id', '!=', $item->id)
-        ->update(['state' => 'In-Active']);
-        
+    
         $item->state = $item->state === 'Active' ? 'In-Active' : 'Active'; // Toggle the state
         $item->save();
     
-        return response()->json(['success' => true, 'message' => 'State updated successfully']);
+        schedules::where('event_datetime', '=', $item->event_datetime)
+            ->where('id', '!=', $item->id)
+            ->update(['state' => 'In-Active']);
+    
+        $updatedSchedules = schedules::where('event_datetime', '=', $item->event_datetime)->get();
+        return response()->json(['success' => true, 'schedules' => $updatedSchedules]);
     }
     
     public function deleteSchedule($itemId)

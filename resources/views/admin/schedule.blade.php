@@ -434,6 +434,7 @@
 </script><!-- dateTimePicker4 specific off date and time -->
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -443,11 +444,9 @@
             var clickedItemId = clickedCheckbox.data('id');
             var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
 
-            $('.toggleCheckbox1').not(clickedCheckbox).each(function () {
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
                 var otherCheckbox = $(this);
                 var otherEventDatetime = otherCheckbox.data('event-datetime'); 
-                var formattedClickedDatetime = moment(clickedEventDatetime).format();
-                var formattedOtherDatetime = moment(otherEventDatetime).format();
 
                 if (otherEventDatetime === clickedEventDatetime) {
                     otherCheckbox.prop('checked', false);
@@ -483,7 +482,7 @@
             var totime = $('#dateTimePicker2').val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
-            $.ajax({
+            $.ajax({    
                 url: '/update-related-schedules-admin',
                 method: 'POST',
                 data: {
@@ -500,10 +499,10 @@
                     'X-CSRF-TOKEN': csrfToken,
                 },
                 success: function (data) {
-                if (data.hasOwnProperty('relatedData')) {
+                if (data.hasOwnProperty('relatedData3')) {
                     var content = '';
-                    if (data.relatedData.length > 0) {
-                        data.relatedData.forEach(function (item) {
+                    if (data.relatedData3.length > 0) {
+                        data.relatedData3.forEach(function (item) {
                             console.log('Item:', item);
                             var modalId = 'myModal-' + item.id;
                             content += '<div class="container-fluid" id="schedule-' + item.id + '">';
@@ -528,7 +527,7 @@
                             content += '<div class="col-3">';
                             content += '<div class="schedule-details">';
                             content += '<label class="switch">';
-                            content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="' + item.event_datetime + '" class="toggleCheckbox1 slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
+                            content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="'+ item.event_datetime+'" class="toggleCheckbox slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
                             content += '<span class="slider round"></span>';
                             content += '</label>';
 
@@ -572,34 +571,14 @@
                             content += '@csrf';
                             content += '@method("PUT")';
 
-                            var serverDatetime = new Date(item.event_datetime_iso);
-
-                            if (!isNaN(serverDatetime.getTime())) {
-                                // Format the date for input type datetime-local
-                                var formattedDatetime = serverDatetime.toISOString().slice(0, 16);
-                                content += '<div class="form-group">';
-                                content += '<label for="event_datetime">From:</label>';
-                                content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formattedDatetime + '">';
-                                content += '</div>';
-                            } else {
-                                console.error('Invalid date format:', item.event_datetime_iso);
-                            }
+                            content += '<div class="form-group">';
+                            content += '<label for="event_datetime">From:</label>';
+                            content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
+                            content += '</div>';
 
                             content += '<div class="form-group">';
                             content += '<label for="event_datetime_off">To:</label>';
-
-                            // Assuming item.event_datetime_off_iso is your ISO 8601 formatted datetime string from the server
-                            var serverDatetimeOff = new Date(item.event_datetime_off_iso);
-
-                            // Check if the date is valid before formatting
-                            if (!isNaN(serverDatetimeOff.getTime())) {
-                                // Format the date for input type datetime-local
-                                var formattedDatetimeOff = serverDatetimeOff.toISOString().slice(0, 16);
-
-                                content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formattedDatetimeOff + '">';
-                            } else {
-                                console.error('Invalid date format:', item.event_datetime_off_iso);
-                            }
+                            content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
                             content += '</div>';
 
                             content += '<div class="form-group">';
@@ -692,7 +671,8 @@
             });
         });
     });
-</script><!-- existing schedule for datetimepicker3 -->
+</script>
+<!-- existing schedule for datetimepicker3 -->
 
 <script>
     function updateContent(data) {
@@ -808,7 +788,8 @@
             console.error('Invalid response format. Missing "relatedData" property.');
         }
     }
-</script><!-- update content dynamicly -->
+</script>
+<!-- update content dynamicly -->
 
 <script src="{{ asset('js/dynamicUpdate.js') }}"></script>
 
@@ -960,7 +941,8 @@
             });//ajax end
         });
     });
-</script><!-- related schedule for datetimepicker3 -->
+</script>
+<!-- related schedule for datetimepicker3 -->
 
 <script>
     function toggleButtonClick2(itemId) {
@@ -983,6 +965,8 @@
             }
         });
     }
+
+
 </script><!-- update state -->
 
 <script>
@@ -1069,6 +1053,25 @@
         return formattedDatetime;
     }
 </script><!-- modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
