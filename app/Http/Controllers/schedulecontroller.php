@@ -519,7 +519,6 @@ class ScheduleController extends Controller
         }
         
         if ($fromtime) {
-            // Extract HH:mm format from the input
             $formattedfromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
             $query->whereRaw("TIME(event_datetime) = ?", [$formattedfromtime]);
         }
@@ -533,7 +532,7 @@ class ScheduleController extends Controller
         $perPage = $request->input('perPage', 2);
     
         $offset = ($page - 1) * $perPage;
-        $schedules = $query->skip($offset)->take($perPage)->get();
+        $relatedData3 = $query->skip($offset)->take($perPage)->get();
         
         $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
 

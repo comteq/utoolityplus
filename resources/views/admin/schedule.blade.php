@@ -455,7 +455,7 @@
         });// Uncheck other checkboxes with the same event_datetime
 
         var currentPage = 1;
-        var schedulesPerPage = 3;
+        var schedulesPerPage = 4;
 
         $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
             currentPage = 1; // Reset page to 1 when filters change
@@ -534,7 +534,7 @@
                             content += '</div>';
                             content += '</div>';
                             content += '<div class="col-3">';
-                            content += '<button id="myBtn" class="btn btn-dark" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                            content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
                             content += '</div>';
                             content += '</div>'; // row end
 
@@ -546,7 +546,7 @@
                             content += '<p></p>';
                             content += '</div>';
                             content += '<div class="col-3">';
-                            content += '<button class="btn btn-dark delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+                            content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
                             content += '</div>';
                             content += '</div>'; // row end
 
@@ -1043,35 +1043,23 @@
     }
 
     function formatDatetimeForInput(datetime) {
-        var formattedDatetime = new Date(datetime).toISOString().slice(0, 16);
+        var parsedDatetime = new Date(datetime);
+        var year = parsedDatetime.getFullYear();
+        var month = ('0' + (parsedDatetime.getMonth() + 1)).slice(-2);
+        var day = ('0' + parsedDatetime.getDate()).slice(-2);
+        var hours = ('0' + parsedDatetime.getHours()).slice(-2);
+        var minutes = ('0' + parsedDatetime.getMinutes()).slice(-2);
+
+        // Construct the formatted datetime string for input
+        var formattedDatetime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+
+        console.log('Formatted Datetime:', formattedDatetime);
         return formattedDatetime;
     }
 
-    function formatDatetimeForInput2(datetime) {
-        var parts = datetime.split('-');
-        var formattedDatetime = parts[1] + '-' + parts[0];
-        return formattedDatetime;
-    }
+
+
 </script><!-- modal -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
