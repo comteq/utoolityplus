@@ -192,7 +192,13 @@ class ScheduleController extends Controller
         if ($description) {
             $query->where('description', '=', $description);
         }
+
+        $page = $request->input('page', 1);
+        $perPage = $request->input('perPage', 2);
     
+        $offset = ($page - 1) * $perPage;
+        $relatedData1 = $query->skip($offset)->take($perPage)->get();
+
         $relatedData1 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
     
         $activeSchedules = $relatedData1->where('state', 'Active');

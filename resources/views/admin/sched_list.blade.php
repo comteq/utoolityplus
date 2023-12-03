@@ -35,7 +35,6 @@
 </style>
 
 @extends('home')
-
 @section('content')
 <div class="card-header">
 

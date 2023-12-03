@@ -1,8 +1,6 @@
-<link rel="stylesheetbody" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
+<link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
 
 <style>
     .card-container {
@@ -12,15 +10,16 @@
 
     .inline-picker {
         display: flex;
-     }
+    }
 
     .inline-picker input {
         flex: 1;
         margin-right: 0px;
     }
+
     .calendar-icon {
         color: #fff;
-        }
+    }
 
     .btn-primary {
         width: 100%; /* Make the button take the full width of the parent container */
@@ -77,7 +76,6 @@
         transform: translateX(26px);
     }
 
-    /* Rounded sliders */
     .slider.round {
         border-radius: 34px;
     }
@@ -132,7 +130,6 @@
         width: 40%;
     }
 
-        /* The Close Button */
     .close {
         color: #aaaaaa;
         float: right !important;
@@ -151,6 +148,37 @@
         padding: 0;
     }
 
+    .hr-text {
+        line-height: 1em;
+        position: relative;
+        outline: 0;
+        border: 0;
+        color: black;
+        text-align: center;
+        height: 1.5em;
+        opacity: .5;
+        &:before {
+            content: '';
+            background: linear-gradient(to right, transparent, #818078, transparent);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            }
+        &:after {
+            content: attr(data-content);
+            position: relative;
+            display: inline-block;
+            color: black;
+
+            padding: 0 .5em;
+            line-height: 1.5em;
+            color: #818078;
+            background-color: #fcfcfa;
+        }
+    }
+    
 </style>
 
 <div class="card-deck">
@@ -173,10 +201,7 @@
                 </select>
             </div>
 
-
-            <div class="date-time-group">
-
-                <div class="form-group">
+            <div class="form-group">
                     <label for="description">Action:</label>
                     <select name="description" id="description" class="custom-select w-100" required>
                         <option disabled selected>Select Action</option>
@@ -184,7 +209,9 @@
                         <option value="OFF">OFF</option>
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>
+                </div>            
+
+            <div class="date-time-group">
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
@@ -212,16 +239,6 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
-
-                <div class="form-group">
-                    <label for="description">Action:</label>
-                    <select name="description" id="description" class="custom-select w-100" required>
-                        <option disabled selected>Select Action</option>
-                        <option value="ON">ON</option>
-                        <option value="OFF">OFF</option>
-                    </select>
-                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>
 
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
@@ -266,7 +283,6 @@
 
             </div> <!-- other-form-elements -->
 
-            
             @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -304,7 +320,9 @@
 
         </form><!-- form end --> 
 
-            <div class="form-group">
+        <hr class="hr-text" data-content="OR">
+        
+            <div class="form-group" style="text-align: center">
                 <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
             </div>
 
@@ -342,9 +360,24 @@
 <!------------------------------------------------------------------------------------------------------------------------------->
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="{{ asset('js/dynamicUpdate.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
 <script>
     function updateCurrentTime() {
@@ -371,16 +404,6 @@
         // Initial call to set the initial time
         updateCurrentTime();
 </script> <!-- Current time script -->
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
     $(document).ready(function(){
@@ -442,9 +465,6 @@
         }
     });
 </script><!-- dateTimePicker4 specific off date and time -->
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -650,10 +670,6 @@
             });
         });// Uncheck other checkboxes with the same event_datetime
 
-        $(document).on('click', '.delete-btn', function () {
-            var itemId = $(this).data('id');
-            deleteSchedule(itemId);
-        });// delete schedule
 
         $(document).on('click', '.submitBtn', function () {
             var itemId = $(this).closest('.editForm').data('id');
@@ -664,13 +680,36 @@
             var event_datetime = $('#dateTimePicker3').val();
             var event_datetime_off = $('#dateTimePicker4').val();
             var description = $('#description').val();
-            
+
+            loadPage(1, event_datetime, event_datetime_off, description);
+        });
+
+        // Add pagination handling
+        $('#prevBtn').click(function () {
+            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
+            if (currentPage > 1) {
+                loadPage(currentPage - 1);
+            }
+        });
+
+        $('#nextBtn').click(function () {
+            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
+            var lastPage = parseInt($('#relatedSchedulesList').data('last-page')) || 1;
+            if (currentPage < lastPage) {
+                loadPage(currentPage + 1);
+            }
+        });
+
+        function loadPage(page, event_datetime, event_datetime_off, description) {
             $.ajax({
                 type: 'GET',
                 url: '/get-related-data1',
-                data: { event_datetime: event_datetime, 
-                        event_datetime_off: event_datetime_off, 
-                        description: description },
+                data: {
+                    event_datetime: event_datetime,
+                    event_datetime_off: event_datetime_off,
+                    description: description,
+                    page: page,
+                },
                 success: function (data) {
                     updateContent(data);
                 },
@@ -678,7 +717,8 @@
                     console.error('Error:', error);
                 }
             });
-        });
+        }
+
     });
 </script><!-- existing schedule for datetimepicker3 -->
 
@@ -787,6 +827,8 @@
                     content += '</div>';
                     content += '<hr>'; // Add a separator
                 });
+                    $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
+                    $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
             } else {
                 content = 'No Related Schedule';
             }
@@ -797,8 +839,6 @@
         }
     }
 </script><!-- update content dynamicly -->
-
-<script src="{{ asset('js/dynamicUpdate.js') }}"></script>
 
 <script>
     $(document).ready(function () {
@@ -948,8 +988,7 @@
             });//ajax end
         });
     });
-</script>
-<!-- related schedule for datetimepicker3 -->
+</script><!-- related schedule for datetimepicker3 -->
 
 <script>
     function toggleButtonClick2(itemId) {
@@ -978,38 +1017,45 @@
 
 <script>
     function deleteSchedule(itemId) {
-        // Store the datetime value before the reload
-        var dateTimeValue = $('#dateTimePicker').val();
+        // Ask for confirmation before proceeding
+        var isConfirmed = confirm('Are you sure you want to delete this schedule?');
 
-        $.ajax({
-            type: 'DELETE',
-            url: '/delete-schedule/' + itemId,
-            data: {
-                _token: '{{ csrf_token() }}',
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                console.log('Database deleted successfully');
-                $('#schedule-' + itemId).remove();
+        // If the user confirms, proceed with the deletion
+        if (isConfirmed) {
+            // Store the datetime value before the reload
+            var dateTimeValue = $('#dateTimePicker').val();
 
-                // Store the datetime value in localStorage
-                localStorage.setItem('dateTimeValue', dateTimeValue);
-                checkExistingSchedules(dateTimeValue);
-            },
-            error: function (error) {
-                console.error('Error deleting schedule:', error);
+            $.ajax({
+                type: 'DELETE',
+                url: '/delete-schedule/' + itemId,
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    console.log('Database deleted successfully');
+                    $('#schedule-' + itemId).remove();
 
-                // Check the error status and responseText
-                if (error.status === 401) {
-                    console.error('Unauthorized access. Make sure you are authenticated.');
-                } else {
-                    console.error('Unknown error. Check the server logs for more information.');
+                    // Store the datetime value in localStorage
+                    localStorage.setItem('dateTimeValue', dateTimeValue);
+                    checkExistingSchedules(dateTimeValue);
+                },
+                error: function (error) {
+                    console.error('Error deleting schedule:', error);
+
+                    // Check the error status and responseText
+                    if (error.status === 401) {
+                        console.error('Unauthorized access. Make sure you are authenticated.');
+                    } else {
+                        console.error('Unknown error. Check the server logs for more information.');
+                    }
                 }
-            }
-        });
+            });
+        }
     }
+
 </script><!-- Delete -->
 
 <script>
@@ -1067,10 +1113,6 @@
 
 
 </script><!-- modal -->
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -1272,4 +1314,6 @@
         $('select').prop('selectedIndex', 0);
     });
 </script><!-- remove the input if refresd; -->
+
+
 
