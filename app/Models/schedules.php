@@ -9,7 +9,7 @@ class schedules extends Model
 {
     use HasFactory;
     protected $table = 'schedule';
-    protected $fillable = ['event_datetime' ,'event_datetime_off', 'description', 'state'];
+    protected $fillable = ['event_datetime' ,'event_datetime_off', 'description', 'state','status'];
     protected $casts = [
         'event_datetime' => 'datetime',
         'event_datetime_off' => 'datetime',

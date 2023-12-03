@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
     #year {
@@ -160,6 +161,7 @@
             <th>Time</th>
             <th>Activity</th>
             <th>State</th>
+            <th>Status</th>
             <th>Action</th>
             </tr>
         </thead>
@@ -167,11 +169,11 @@
         <tbody>
             @if($scheduless->isEmpty())
                 <tr>
-                    <td colspan="6" style=" text-align: center;">No records found</td>
+                    <td colspan="8" style=" text-align: center;">No records found</td>
                 </tr>
             @else
                 @foreach($scheduless as $sched)
-                <tr>
+                <tr data-schedule-id="{{ $sched->id }}">
                     <td><input type="checkbox" class="schedule-checkbox" data-schedule-id="{{ $sched->id }}"></td>
                     <td>{{ $sched->id }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('l') }}</td>
@@ -179,6 +181,7 @@
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('h:i A') }} - {{ \Carbon\Carbon::parse($sched->event_datetime_off)->format('h:i A') }}</td>
                     <td>{{ $sched->description }}</td>
                     <td>{{ $sched->state }}</td>
+                    <td class="status-column">{{ $sched->status }}</td>
                     <td>
                         <button class="btn btn-danger delete-btn" data-schedule-id="{{ $sched->id }}">🗑️</button>
                     </td>
@@ -196,6 +199,7 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -389,7 +393,46 @@
             }
         });
     });
-</script>
-<!-- checkall and delete -->
+</script><!-- checkall and delete -->
 
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateSchedulesStatus() {
+            $.ajax({
+                url: "{{ route('update-schedules-status') }}",
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (updatedSchedules) {
+                    // Iterate through each updated schedule and update the status
+                    updatedSchedules.forEach(function (schedule) {
+                        var scheduleId = schedule.id;
+                        var newStatus = schedule.status;
+
+                        // Find the corresponding row in the table
+                        var row = $('tr[data-schedule-id="' + scheduleId + '"]');
+
+                        if (row.find('.status-column').text() !== newStatus) {
+                            // Update the status column in the row
+                            row.find('.status-column').text(newStatus);
+                            console.log('Updated status for schedule ID ' + scheduleId + ' to ' + newStatus);
+                        }
+                    });
+
+                    console.log('Schedules status updated successfully');
+                },
+                error: function (error) {
+                    console.error('Error updating schedules status:', error);
+                }
+            });
+        }
+
+        updateSchedulesStatus();
+
+        setInterval(updateSchedulesStatus, 5000);
+    });
+
+</script><!-- dynamicly udoate if a schedule is updated -->
 

@@ -6,6 +6,8 @@ use App\Models\schedules;
 use App\Models\activity;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 
 class schedulefilter_controler extends Controller
 {
@@ -88,9 +90,9 @@ class schedulefilter_controler extends Controller
             ->orderBy('event_datetime')
             ->pluck(DB::raw('DAY(event_datetime) as day'))
             ->toArray();
-    
+
         $scheduless = $query->get();
-    
+
         $currentYear = Carbon::now()->format('Y');
 
         $currentMonth = !$month ? Carbon::now()->format('m') : $month;
@@ -113,6 +115,7 @@ class schedulefilter_controler extends Controller
     } 
  
     public function indexadmin(){
+        $this->updateSchedulesManually();
         return view('admin.sched_list');
     }
 
@@ -226,6 +229,23 @@ class schedulefilter_controler extends Controller
         // You can return a response if needed
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
+
+
+    public function updateSchedulesManually()
+    {
+        // Get all schedules where the status is not 'Finished' and the event end time has passed
+        $schedulesToUpdate = schedules::where('status', '!=', 'Finished')
+            ->where('event_datetime_off', '<', now())  
+            ->get();
+    
+        // Update the status for each schedule
+        foreach ($schedulesToUpdate as $schedule) {
+            $schedule->update(['status' => 'Finished']);
+        }
+        return response()->json($schedulesToUpdate);
+    }
+    
+    
 
 }
 

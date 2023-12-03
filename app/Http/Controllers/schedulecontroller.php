@@ -164,7 +164,7 @@ class ScheduleController extends Controller
             return 'Active';
         } elseif ($now->isBetween($startDateTime, $endDateTime)) {
             // Schedule is ongoing
-            return 'In-Active';
+            return 'Active';
         } else {
             // Schedule is in the past
             return 'Active';

@@ -74,42 +74,41 @@
     <div class="row justify-content-center" style="margin-top: 15px;" >
         <form action="{{ route('schedule.filter') }}" method="get" id="filterForm" style="display:none">
 
-            <label for="year" class="btn btn-light " style="margin-bottom: 0; padding: 5px;">Year:</label>
-            <select name="year" id="year" class="custom-select">
-                <option value=""{{ request('year') == '' ? ' selected' : '' }}>All</option>
+        <select name="year" id="year" class="btn btn-secondary dropdown-toggle" >
+                <option value=""{{ request('year') == '' ? ' selected' : '' }} disabled>Year</option>
+                <option value="">All</option>
                     @foreach ($uniqueYears as $year)
                         <option value="{{ $year }}"{{ request('year') == $year ? ' selected' : '' }}>{{ $year }}</option>
                     @endforeach
             </select>
 
-            <label for="month" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">Month:</label>
-            <select name="month" id="month" class="custom-select">
-                <option value=""{{ request('month') == '' ? ' selected' : '' }}>All</option>
+            <select name="month" id="month" class="btn btn-secondary dropdown-toggle" placeholder="Month">
+                <option value=""{{ request('month') == '' ? ' selected' : '' }} disabled>Month</option>
+                <option value="">All</option>
                     @for ($i = 1; $i <= 12; $i++)
                         <option value="{{ $i }}"{{ request('month') == $i ? ' selected' : '' }}>{{ $i }}</option>
                     @endfor
             </select>
 
-            <label for="week" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">Week:</label>
-            <select name="week" id="week" class="custom-select">
-                <option value=""{{ request('week') == '' ? ' selected' : '' }}>All</option>
+            <select name="week" id="week" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('week') == '' ? ' selected' : '' }} disabled>Week</option>
+                <option value="">All</option>
                     @for ($i = 1; $i <= 5; $i++)
                         <option value="{{ $i }}"{{ request('week') == $i ? ' selected' : '' }}>Week {{ $i }}</option>
                     @endfor
             </select>
 
-            <label for="day" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">Day:</label>
-            <select name="day" id="day" class="custom-select">
-                <option value=""{{ request('day') == '' ? ' selected' : '' }}>All</option>
+            <select name="day" id="day" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('day') == '' ? ' selected' : '' }} disabled>Day</option>
+                <option value="">All</option>
                     @for ($i = 1; $i <= 31; $i++)
                         <option value="{{ $i }}"{{ request('day') == $i ? ' selected' : '' }}>{{ $i }}</option>
                     @endfor
             </select>
 
-            <!-- Update the dayOfWeek select element in your form -->
-            <label for="dayOfWeek" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">Day of Week:</label>
-            <select name="dayOfWeek" id="dayOfWeek" class="custom-select">
-                <option value=""{{ request('dayOfWeek') == '' ? ' selected' : '' }}>All</option>
+            <select name="dayOfWeek" id="dayOfWeek" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('dayOfWeek') == '' ? ' selected' : '' }} disabled>Day of Week</option>
+                <option value="">All</option>
                 <option value="1"{{ request('dayOfWeek') == '1' ? ' selected' : '' }}>Monday</option>
                 <option value="2"{{ request('dayOfWeek') == '2' ? ' selected' : '' }}>Tuesday</option>
                 <option value="3"{{ request('dayOfWeek') == '3' ? ' selected' : '' }}>Wednesday</option>
@@ -119,11 +118,9 @@
                 <option value="7"{{ request('dayOfWeek') == '7' ? ' selected' : '' }}>Sunday</option>
             </select>
 
-
-
-            <label for="hour" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">Hour:</label>
-            <select name="hour" id="hour" class="custom-select">
-                <option value=""{{ request('hour') == '' ? ' selected' : '' }}>All</option> 
+            <select name="hour" id="hour" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('hour') == '' ? ' selected' : '' }} disabled>Hour</option> 
+                <option value="">All</option>
                     @for ($i = 1; $i <= 12; $i++)
                         <optgroup label="{{ $i }}">
                             <option value="{{ $i }}:00 AM"{{ request('hour') == $i . ':00 AM' ? ' selected' : '' }}>{{ $i }} AM</option>
@@ -132,20 +129,19 @@
                     @endfor
             </select>
 
-            <label for="description" class="btn btn-light " style="margin-bottom: 0; padding: 5px;">Action:</label>
-            <select name="description" id="description" class="custom-select">
-                <option value=""{{ request('description') == '' ? ' selected' : '' }}>All</option>
+            <select name="description" id="description" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('description') == '' ? ' selected' : '' }} disabled>Action</option>
+                <option value="">All</option>
                 <option value="ON"{{ request('description') == 'ON' ? ' selected' : '' }}>ON</option>
                 <option value="OFF"{{ request('description') == 'OFF' ? ' selected' : '' }}>OFF</option>
             </select>
 
-            <label for="state" class="btn btn-light" style="margin-bottom: 0; padding: 5px;">State:</label>
-            <select name="state" id="state" class="custom-select">
-                <option value=""{{ request('state') == '' ? ' selected' : '' }}>All</option>
+            <select name="state" id="state" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('state') == '' ? ' selected' : '' }} disabled>State</option>
+                <option value="">All</option>
                 <option value="Active"{{ request('state') == 'Active' ? ' selected' : '' }}>Active</option>
                 <option value="In-Active"{{ request('state') == 'In-Active' ? ' selected' : '' }}>In-Active</option>
             </select>
-
         </form>
     </div> <!-- row2 -->
 
