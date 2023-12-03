@@ -291,6 +291,62 @@ class ScheduleController extends Controller
         return response()->json(['relatedData' => $schedules]);
     }//user/admin
 
+    public function updateRelatedSchedulesadmin(Request $request)
+    {
+        // Retrieve and process the input data
+        $description = $request->input('description');
+        $yearmonth = $request->input('yearmonth');
+        $day = $request->input('day');
+        $fromtime = $request->input('fromtime');
+        $totime = $request->input('totime');
+        $query = schedules::query();
+    
+        if ($description) {
+            $query->where('description', $description);
+        }
+    
+        if ($yearmonth) {
+            $parsedDate = Carbon::createFromFormat('m-Y', $yearmonth);
+            $query->whereYear('event_datetime', $parsedDate->year)
+                ->whereMonth('event_datetime', $parsedDate->month);
+        }
+    
+        if ($day) {
+            $query->whereRaw('DAYNAME(event_datetime) = ?', [$day]);
+        }
+        
+        if ($fromtime) {
+            $formattedfromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
+            $query->whereRaw("TIME(event_datetime) = ?", [$formattedfromtime]);
+        }
+    
+        if ($totime) {
+            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
+            $query->whereRaw("TIME(event_datetime_off) = ?", [$formattedTotime]);
+        }
+    
+        $page = $request->input('page', 1);
+        $perPage = $request->input('perPage', 2);
+    
+        $offset = ($page - 1) * $perPage;
+        $relatedData3 = $query->skip($offset)->take($perPage)->get();
+        
+        $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
+
+        $relatedData3->each(function ($item) {
+            $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
+            $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
+        });
+        
+        $relatedData3->each(function ($item) {
+            $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
+            $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
+        });
+
+
+        return response()->json(['relatedData3' => $relatedData3]);
+    }//user/admin
+
 //-------------------------------------------------------ADMIN----------------------------------------------------------------//
 
     public function indexadmin()
@@ -499,62 +555,7 @@ class ScheduleController extends Controller
         return response()->json(['overlap' => $overlappingSchedule]);
     }//automatic detection for to: date and time and from: date and time
 
-    public function updateRelatedSchedulesadmin(Request $request)
-    {
-        // Retrieve and process the input data
-        $description = $request->input('description');
-        $yearmonth = $request->input('yearmonth');
-        $day = $request->input('day');
-        $fromtime = $request->input('fromtime');
-        $totime = $request->input('totime');
-        $query = schedules::query();
-    
-        if ($description) {
-            $query->where('description', $description);
-        }
-    
-        if ($yearmonth) {
-            $parsedDate = Carbon::createFromFormat('m-Y', $yearmonth);
-            $query->whereYear('event_datetime', $parsedDate->year)
-                ->whereMonth('event_datetime', $parsedDate->month);
-        }
-    
-        if ($day) {
-            $query->whereRaw('DAYNAME(event_datetime) = ?', [$day]);
-        }
-        
-        if ($fromtime) {
-            $formattedfromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
-            $query->whereRaw("TIME(event_datetime) = ?", [$formattedfromtime]);
-        }
-    
-        if ($totime) {
-            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
-            $query->whereRaw("TIME(event_datetime_off) = ?", [$formattedTotime]);
-        }
-    
-        $page = $request->input('page', 1);
-        $perPage = $request->input('perPage', 2);
-    
-        $offset = ($page - 1) * $perPage;
-        $relatedData3 = $query->skip($offset)->take($perPage)->get();
-        
-        $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
 
-        $relatedData3->each(function ($item) {
-            $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
-            $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
-        });
-        
-        $relatedData3->each(function ($item) {
-            $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
-            $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
-        });
-
-
-        return response()->json(['relatedData3' => $relatedData3]);
-    }
-    
     public function updateState($itemId)
     {
         if (!$itemId) {

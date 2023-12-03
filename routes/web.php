@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('/schedule', [schedulecontroller::class, 'index'])->name('schedule.index');
     Route::post('/schedule', [schedulecontroller::class, 'store'])->name('store.schedule');
-    Route::post('/update-related-schedules', [schedulecontroller::class, 'updateRelatedSchedules']);
+    Route::post('/update-related-schedules', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
     Route::get('/get-related-data1', [schedulecontroller::class, 'getRelatedData1'])->name('get.related.data1');
     Route::get('/get-related-data', [schedulecontroller::class, 'getRelatedData'])->name('get.related.data');
 

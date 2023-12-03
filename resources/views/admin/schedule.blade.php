@@ -320,6 +320,10 @@
 
         </form><!-- form end --> 
 
+        <div class="form-group" style="text-align: center">
+            <button type="button" class="btn btn-secondary" id="clearButton">Reset</button>
+        </div>
+
         <hr class="hr-text" data-content="OR">
         
             <div class="form-group" style="text-align: center">
@@ -1315,5 +1319,18 @@
     });
 </script><!-- remove the input if refresd; -->
 
+<script>
+    $(document).ready(function () {
 
+        $('#clearButton').click(function () {
+            // Clear all input fields
+            $('input[type="text"]').val('');
+            $('select').prop('selectedIndex', 0);
+
+            // Clear any error messages
+            $('.text-danger').text('');
+
+        });
+    });
+</script>
 
