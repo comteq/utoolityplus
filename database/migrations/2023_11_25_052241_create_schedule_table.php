@@ -17,7 +17,9 @@ return new class extends Migration
             $table->dateTime('event_datetime_off');
             $table->enum('description', ['ON', 'OFF']);
             $table->enum('state', ['Active', 'In-Active'])->default('Active');
-            $table->enum('status', ['In-Progress', 'Finished'])->default('In-Progress');
+            $table->enum('status', ['In-Progress','Processing' ,'Finished'])->default('In-Progress');
+            $table->enum('ACStat', ['Active', 'In-Active'])->default('In-Active');
+            $table->enum('LightStat', ['Active', 'In-Active'])->default('In-Active');
             $table->timestamps();
             
         });

@@ -184,14 +184,13 @@
 <div class="card-deck">
 
   <div class="card">
-
     <div class="card-header" style="text-align: left">
         <h1>Schedule Action</h1>
         <p id="currentTime"></p>
     </div><!-- cardheader end -->
 
     <div class="card-body">
-        <form method="post" action="{{ route('storeadmin.schedule') }}">
+        <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
             @csrf
         
             <div class="form-group">
@@ -204,19 +203,19 @@
             <div class="form-group">
                     <label for="description">Action:</label>
                     <select name="description" id="description" class="custom-select w-100" required>
-                        <option disabled selected>Select Action</option>
+                        <option disabled selected value="">Select Action</option>
                         <option value="ON">ON</option>
                         <option value="OFF">OFF</option>
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>            
+                </div>        
 
             <div class="date-time-group">
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off"/>
+                        <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off" required/>
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">📅</i></span>
                         </div>
@@ -227,7 +226,7 @@
                 <div class="form-group">
                     <label for="dateTimePicker4">To: Date & Time:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off"/>
+                        <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="calendar-icon">📅</i></span>
                             </div>
@@ -239,16 +238,17 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
-
+    
+                
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
-                    <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year"/>
+                    <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
                 </div>
 
                 <div class="form-group">
                     <label for="day">Day:</label>
                         <select name="day" id="day" class="custom-select w-100" required>
-                            <option disabled selected>Select Day</option>
+                            <option disabled selected value="">Select Day</option>
                             <option>Monday</option>
                             <option>Tuesday</option>
                             <option>Wednesday</option>
@@ -262,7 +262,7 @@
                 <div class="form-group">
                     <label for="fromtime">From:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From"/>
+                        <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
@@ -272,7 +272,7 @@
                 <div class="form-group">
                     <label for="totime">To:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To"/>
+                        <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
@@ -321,7 +321,7 @@
         </form><!-- form end --> 
 
         <div class="form-group" style="text-align: center">
-            <button type="button" class="btn btn-secondary" id="clearButton">Reset</button>
+            <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
         </div>
 
         <hr class="hr-text" data-content="OR">
@@ -511,16 +511,19 @@
             var description = $('#description').val();
             var yearmonth = $('#yearmonth').val();
             var day = $('#day').val();
-            var fromtime = $('#dateTimePicker').val();
-            var totime = $('#dateTimePicker2').val();
+            // var fromtime = $('#dateTimePicker').val();
+            // var totime = $('#dateTimePicker2').val();
+            var fromtime = $('#dateTimePicker').val().split(' ')[1];  // Extract the time part
+            var totime = $('#dateTimePicker2').val().split(' ')[1];  // Extract the time part
+
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
             $.ajax({    
                 url: '/update-related-schedules-admin',
                 method: 'POST',
                 data: {
-                    _token: csrfToken,
                     description: description,
+                    _token: csrfToken,
                     yearmonth: yearmonth,
                     day: day,
                     fromtime: fromtime,
@@ -681,11 +684,11 @@
         });
     
         $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
+            var description = $('#description').val();
             var event_datetime = $('#dateTimePicker3').val();
             var event_datetime_off = $('#dateTimePicker4').val();
-            var description = $('#description').val();
 
-            loadPage(1, event_datetime, event_datetime_off, description);
+            loadPage(1, description,event_datetime, event_datetime_off, );
         });
 
         // Add pagination handling
@@ -1332,5 +1335,7 @@
 
         });
     });
-</script>
+</script><!-- reset -->
+
+
 
