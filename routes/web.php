@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\schedulecontroller; 
 use App\Http\Controllers\schedulefilter_controler; 
+use App\Http\Controllers\dashboardcontroller; 
+
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [AuthController::class, 'register'])->name('register');
@@ -36,6 +38,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/schedule-List?year=&month=&day=', function () { return view('sched_list'); });
     Route::get('/schedule-List', [schedulefilter_controler::class, 'filter'])->name('schedule.filter');
+
+    Route::get('/dashboard', [dashboardcontroller::class, 'index'])->name('dashboard');
+
+    Route::post('/update-ac/{id}', [DashboardController::class, 'updateAC'])->name('update-ac');
+    Route::post('/update-lights/{id}', [DashboardController::class, 'updatelights'])->name('update-lights');
+
+
+
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
