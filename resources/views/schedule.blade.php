@@ -1,8 +1,5 @@
-<link rel="stylesheetbody" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
 
 <style>
     .card-container {
@@ -12,15 +9,16 @@
 
     .inline-picker {
         display: flex;
-     }
+    }
 
     .inline-picker input {
         flex: 1;
         margin-right: 0px;
     }
+
     .calendar-icon {
         color: #fff;
-        }
+    }
 
     .btn-primary {
         width: 100%; /* Make the button take the full width of the parent container */
@@ -77,7 +75,6 @@
         transform: translateX(26px);
     }
 
-    /* Rounded sliders */
     .slider.round {
         border-radius: 34px;
     }
@@ -132,7 +129,6 @@
         width: 40%;
     }
 
-        /* The Close Button */
     .close {
         color: #aaaaaa;
         float: right !important;
@@ -151,19 +147,49 @@
         padding: 0;
     }
 
+    .hr-text {
+        line-height: 1em;
+        position: relative;
+        outline: 0;
+        border: 0;
+        color: black;
+        text-align: center;
+        height: 1.5em;
+        opacity: .5;
+        &:before {
+            content: '';
+            background: linear-gradient(to right, transparent, #818078, transparent);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            }
+        &:after {
+            content: attr(data-content);
+            position: relative;
+            display: inline-block;
+            color: black;
+
+            padding: 0 .5em;
+            line-height: 1.5em;
+            color: #818078;
+            background-color: #fcfcfa;
+        }
+    }
+    
 </style>
 
 <div class="card-deck">
-    
-  <div class="card">
 
+  <div class="card">
     <div class="card-header" style="text-align: left">
         <h1>Schedule Action</h1>
         <p id="currentTime"></p>
     </div><!-- cardheader end -->
 
     <div class="card-body">
-        <form method="post" action="{{ route('store.schedule') }}">
+        <form method="post" action="{{ route('store.schedule') }}" id="form">
             @csrf
         
             <div class="form-group">
@@ -174,54 +200,54 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Action:</label>
-                <select name="description" id="description" class="custom-select w-100" required>
-                    <option disabled selected>Select Action</option>
-                    <option value="ON">ON</option>
-                    <option value="OFF">OFF</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
-            </div>
+                    <label for="description">Action:</label>
+                    <select name="description" id="description" class="custom-select w-100" required>
+                        <option disabled value="">Select Action</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
+                </div>        
 
             <div class="date-time-group">
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off"/>
+                        <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off" required/>
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">📅</i></span>
                         </div>
                     </div>
+                    <span id="existingSchedulesError" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="dateTimePicker4">To: Date & Time:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off"/>
+                        <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="calendar-icon">📅</i></span>
                             </div>
                     </div>
+                    <span id="existingSchedulesErrorTo" class="text-danger"></span>
                 </div>
 
                 <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub">Set Schedule</button>
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
-
+    
+                
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
-                    <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year"/>
+                    <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
                 </div>
 
                 <div class="form-group">
                     <label for="day">Day:</label>
                         <select name="day" id="day" class="custom-select w-100" required>
-                            <option disabled selected>Select Day</option>
+                            <option disabled selected value="">Select Day</option>
                             <option>Monday</option>
                             <option>Tuesday</option>
                             <option>Wednesday</option>
@@ -235,7 +261,7 @@
                 <div class="form-group">
                     <label for="fromtime">From:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From"/>
+                        <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
@@ -245,7 +271,7 @@
                 <div class="form-group">
                     <label for="totime">To:</label>
                     <div class="inline-picker input-group">
-                        <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To"/>
+                        <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
@@ -291,16 +317,23 @@
                         </div>
                     @endif
 
-<!-- Rest of your Blade content -->
-
-
         </form><!-- form end --> 
+
+        <div class="form-group" style="text-align: center">
+            <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
+        </div>
+
+        <hr class="hr-text" data-content="OR">
+        
+            <div class="form-group" style="text-align: center">
+                <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
+            </div>
 
     </div><!-- cardbody end -->   
     
   </div><!-- card end -->
 
-<!-- ---------------------------------------------------------------------- -->
+<!------------------------------------------------------------------------------------------------------------------------------->
 
   <div class="card">
     <div class="card-header" style="text-align: left">
@@ -311,7 +344,6 @@
         <p class="card-text" id="relatedSchedulesList"></p>
         <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
- 
     </div><!-- cardbody end -->
 
     <div class="card-header" style="text-align: left">
@@ -320,17 +352,35 @@
 
     <div class="card-body">
         <p class="card-text" id="other"></p>
+        <button id="prevBtn2" class="btn btn-secondary" style='width: auto;'>Prev</button>
+        <button id="nextBtn2" class="btn btn-secondary" style='width: auto;'>Next</button>
     </div><!-- cardbody2 end -->
       
   </div><!-- card deck end2 -->
 
-<!-- ---------------------------------------------------------------------- -->
 </div><!-- card deck end -->
 
+<!------------------------------------------------------------------------------------------------------------------------------->
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="{{ asset('js/dynamicUpdate.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
 <script>
     function updateCurrentTime() {
@@ -351,22 +401,9 @@
         currentTimeElement.innerText = "Current time: " + formattedTime;
         }
 
-        // Update the time every second
         setInterval(updateCurrentTime, 1000);
-
-        // Initial call to set the initial time
         updateCurrentTime();
 </script> <!-- Current time script -->
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
     $(document).ready(function(){
@@ -383,8 +420,8 @@
     flatpickr("#dateTimePicker", {
         enableTime: true, // Enable time selection
         noCalendar: true, // Disable the calendar
-        dateFormat: "h:i K", // Set the desired time format with AM/PM
-        altFormat: "h:i K", // Set the format for the alternative input field
+        dateFormat: "H:i", // Set the desired time format with AM/PM
+        altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
         time_24hr: false, // Use 12-hour time format with AM/PM
     });
@@ -394,8 +431,8 @@
     flatpickr("#dateTimePicker2", {
         enableTime: true, // Enable time selection
         noCalendar: true, // Disable the calendar
-        dateFormat: "h:i K", // Set the desired time format with AM/PM
-        altFormat: "h:i K", // Set the format for the alternative input field
+        dateFormat: "H:i", // Set the desired time format with AM/PM
+        altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
         time_24hr: false, // Use 12-hour time format with AM/PM
     });
@@ -404,7 +441,7 @@
 <script>
     flatpickr("#dateTimePicker3", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
         noCalendar: false, // Ensure that the calendar is shown, which helps exclude milliseconds
@@ -419,7 +456,7 @@
 <script>
     flatpickr("#dateTimePicker4", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
         onChange: function(selectedDates, dateStr, instance) {
@@ -429,44 +466,60 @@
     });
 </script><!-- dateTimePicker4 specific off date and time -->
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
 <script>
     $(document).ready(function () {
+        $(document).on('change', '.toggleCheckbox1', function () {
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
+
         var currentPage = 1;
         var schedulesPerPage = 2;
 
         $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
             currentPage = 1; // Reset page to 1 when filters change
-            updateRelatedSchedules();
+            updateRelatedSchedulesadmin();
         });
 
         $('#nextBtn').on('click', function () {
             currentPage++;
-            updateRelatedSchedules();
+            updateRelatedSchedulesadmin();
         });
 
         $('#prevBtn').on('click', function () {
             if (currentPage > 1) {
                 currentPage--;
-                updateRelatedSchedules();
+                updateRelatedSchedulesadmin();
             }
         });
 
-        function updateRelatedSchedules() {
+        function updateRelatedSchedulesadmin() {
             var description = $('#description').val();
             var yearmonth = $('#yearmonth').val();
             var day = $('#day').val();
-            var fromtime = $('#dateTimePicker').val();
-            var totime = $('#dateTimePicker2').val();
+            // var fromtime = $('#dateTimePicker').val();
+            // var totime = $('#dateTimePicker2').val();
+            var fromtime = $('#dateTimePicker').val().split(' ')[1];  // Extract the time part
+            var totime = $('#dateTimePicker2').val().split(' ')[1];  // Extract the time part
+
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
-            $.ajax({
+            $.ajax({    
                 url: '/update-related-schedules',
                 method: 'POST',
                 data: {
-                    _token: csrfToken,
                     description: description,
+                    _token: csrfToken,
                     yearmonth: yearmonth,
                     day: day,
                     fromtime: fromtime,
@@ -478,24 +531,127 @@
                     'X-CSRF-TOKEN': csrfToken,
                 },
                 success: function (data) {
-                    if (data.trim() === '') {
-                        $('#relatedSchedulesList').html('<p>No existing schedules found.</p>');
+                if (data.hasOwnProperty('relatedData3')) {
+                    var content = '';
+                    if (data.relatedData3.length > 0) {
+                        data.relatedData3.forEach(function (item) {
+                            console.log('Item:', item);
+                            var modalId = 'myModal-' + item.id;
+                            content += '<div class="container-fluid" id="schedule-' + item.id + '">';
+                            content += '<div class="container">';
+
+                            content += '<div class="row">';
+                            content += '<div class="col-6">';
+                            content += '<p>Schedule Details:</p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<p> State: </p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<p>Action:</p>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-6">';
+                            content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<div class="schedule-details">';
+                            content += '<label class="switch">';
+                            content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
+                            content += '<span class="slider round"></span>';
+                            content += '</label>';
+
+                            content += '</div>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-6">';
+                            content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-6">';
+                            content += '<p>Action: ' + item.description + '</p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '<div class="col-3">';
+                            content += '</div>';
+                            content += '</div>';// row end
+
+                            content += '</div>';//container end
+                            content += '</div>';//container fluid end
+
+                            content += '<div id="' + modalId + '" class="modal">';
+                            content += '<div class="modal-content">';
+                            content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                            content += '<form id="editForm-' + item.id + '">';
+                            content += '@csrf';
+                            content += '@method("PUT")';
+
+                            content += '<div class="form-group">';
+                            content += '<label for="event_datetime">From:</label>';
+                            content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
+                            content += '</div>';
+
+                            content += '<div class="form-group">';
+                            content += '<label for="event_datetime_off">To:</label>';
+                            content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                            content += '</div>';
+
+                            content += '<div class="form-group">';
+                            content += '<label for="description">Action:</label>';
+                            content += '<select id="description" name="description" class="form-control">';
+                            content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
+                            content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
+                            content += '</select>';
+                            content += '</div>';
+
+                            content += '<div class="form-group" >';
+                            content += '<br>';
+                            content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                            content += '</div>';
+                            content += '</form>';
+
+                            content += '</div>';
+                            content += '</div>';
+                            content += '<hr>'; // Add a separator
+
+                    });
                     } else {
-                        $('#relatedSchedulesList').html(data);
+                        content = 'No Related Schedule';
+                    }
+                    $('#relatedSchedulesList').html(content);
+                    } else {
+                        console.error('Invalid response format. Missing "relatedData" property.');
                     }
                 },
+
                 error: function (error) {
                     console.error('Error updating related schedules:', error);
                 }
             });
         }
     });
-
 </script><!-- filter for to default datepicker -->
 
 <script>
     var storedDateTimeValue = localStorage.getItem('dateTimeValue'); // Retrieve the stored datetime value from localStorage
-    // Set the datetime value back to the input field if it exists
+
     if (storedDateTimeValue) {
         $('#dateTimePicker3').val(storedDateTimeValue);
     }
@@ -503,106 +659,214 @@
     $(document).ready(function () {
 
         $(document).on('change', '.toggleCheckbox', function () {
-            $('.toggleCheckbox').not(this).prop('checked', false);// Uncheck other checkboxes
-            var itemId = $(this).data('id');// Get the item id from the checkbox data-id attribute
-        });
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
 
-        $(document).on('click', '.delete-btn', function () {
-            var itemId = $(this).data('id');
-            deleteSchedule(itemId);
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
+
+
+        $(document).on('click', '.submitBtn', function () {
+            var itemId = $(this).closest('.editForm').data('id');
+            submitForm(itemId);
         });
     
-        $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
-            var event_datetime = $('#dateTimePicker3').val();
-            var event_datetime_off = $('#dateTimePicker4').val();
+        // $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
+        $('#description, #dateTimePicker3').change(function () {
             var description = $('#description').val();
-            
+            var event_datetime = $('#dateTimePicker3').val();
+            // var event_datetime_off = $('#dateTimePicker4').val();
+
+            // loadPage(1, description,event_datetime, event_datetime_off, );
+            loadPage(1, description,event_datetime,);
+        });
+
+        // Add pagination handling
+        $('#prevBtn').click(function () {
+            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
+            if (currentPage > 1) {
+                loadPage(currentPage - 1);
+            }
+        });
+
+        $('#nextBtn').click(function () {
+            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
+            var lastPage = parseInt($('#relatedSchedulesList').data('last-page')) || 1;
+            if (currentPage < lastPage) {
+                loadPage(currentPage + 1);
+            }
+        });
+
+        // function loadPage(page, event_datetime, event_datetime_off, description) {
+        function loadPage(page, event_datetime, description) {
             $.ajax({
                 type: 'GET',
-                url: '/get-related-data1',
-                data: { event_datetime: event_datetime, 
-                        event_datetime_off: event_datetime_off, 
-                        description: description },
+                url: '/get-existing-data-user',
+                data: {
+                    event_datetime: event_datetime,
+                    // event_datetime_off: event_datetime_off,
+                    description: description,
+                    page: page,
+                },
                 success: function (data) {
-                    // Check if the 'relatedData' property exists
-                    if (data.hasOwnProperty('relatedData1')) {
-                        // Update the content dynamically
-                        var content = '';
-
-                        // Check if there is data in the array
-                        if (data.relatedData1.length > 0) {
-                            // Customize this part based on your actual data structure
-                            data.relatedData1.forEach(function (item) {
-                                var modalId = 'myModal-' + item.id;
-    
-                                content += '<div class="container">';
-
-                                content += '<div class="row">';
-                                content += '<div class="col">';
-                                content += '<p>Schedule Details:</p>';
-                                content += '</div>';
-                                content += '<div class="col d-flex justify-content-center">';
-                                content += '<p> State: </p>';
-                                content += '</div>';
-                                content += '</div>';//row end
-
-                                content += '<div class="row">';
-                                content += '<div class="col">';
-                                content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
-                                content += '</div>';
-                                content += '<div class="col d-flex justify-content-center">';
-                                content += '<label class="switch">';
-                                content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
-                                content += '<span class="slider round"></span>';
-                                content += '</label>';  
-                                content += '</div>';
-                                content += '</div>';//row end
-
-                                content += '<div class="row">';
-                                content += '<div class="col">';
-                                content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
-                                content += '</div>';
-                                content += '<div class="col">';
-                                content += '<p></p>';
-                                content += '</div>';
-                                content += '</div>';//row end
-                                
-                                content += '<div class="row">';
-                                content += '<div class="col">';
-                                content += '<p>' +'Action: '+ item.description + '</p>';
-                                content += '</div>';
-                                content += '<div class="col">';
-                                content += '<p></p>';
-                                content += '</div>';
-                                content += '</div>';//row end
-
-                                content += '</div>';//container end
-                                content += '</div>';//container fluid end
-                                
-                                content += '</div>';
-                                content += '<hr>'; // Add a separator
-                            });
-                        } else {
-                            content = 'No Related Schedule';
-                        }
-
-                        $('#relatedSchedulesList').html(content);
-                    } else {
-                        console.error('Invalid response format. Missing "relatedData" property.');
-                    }
+                    updateContent(data);
                 },
                 error: function (error) {
                     console.error('Error:', error);
                 }
             });
-        });
+        }
+
     });
 </script><!-- existing schedule for datetimepicker3 -->
 
-<script src="{{ asset('js/dynamicUpdate.js') }}"></script>
+<script>
+    function updateContent(data) {
+        if (data.hasOwnProperty('relatedData1')) {
+            var content = '';
+
+            if (data.relatedData1.length > 0) {
+                
+                data.relatedData1.forEach(function (item) {
+                    
+                    var modalId = 'myModal-' + item.id;
+        
+                    content += '<div class="container-fluid" id="schedule-' + item.id + '">';
+                    content += '<div class="container">';
+
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>Schedule Details:</p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<p> State: </p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<p>Action:</p>';
+                    content += '</div>';
+                    content += '</div>';//row end
+
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<div class="schedule-details">';
+                    content += '<label class="switch">';
+                    content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
+
+                    content += '<span class="slider round"></span>';
+                    content += '</label>';  
+                    content += '</div>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                    content += '</div>';
+                    content += '</div>';//row end
+
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<p></p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+                    content += '</div>';
+                    content += '</div>';//row end
+                    
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>' +'Action: '+ item.description + '</p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<p></p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '</div>';
+                    content += '</div>';//row end
+
+                    content += '</div>';//container end
+                    content += '</div>';//container fluid end
+                    
+                    content += '<div id="' + modalId + '" class="modal">';
+                    content += '<div class="modal-content">';
+                    content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                    content += '<form id="editForm-' + item.id + '">';
+                    content += '@csrf';
+                    content += '@method("PUT")';
+
+                    content += '<div class="form-group">';
+                    content += '<label for="event_datetime">From:</label>';
+                    content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
+                    content += '</div>';
+
+                    content += '<div class="form-group">';
+                    content += '<label for="event_datetime_off">To:</label>';
+                    content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                    content += '</div>';
+
+                    content += '<div class="form-group">';
+                    content += '<label for="description">Action:</label>';
+                    content += '<select id="description" name="description" class="form-control">';
+                    content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
+                    content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
+                    content += '</select>';
+                    content += '</div>';
+
+                    content += '<div class="form-group" >';
+                    content += '<br>';
+                    content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                    content += '</div>';
+                    content += '</form>';
+
+                    content += '</div>';
+                    content += '</div>';
+                    content += '<hr>'; // Add a separator
+                });
+                    $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
+                    $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
+            } else {
+                content = 'No Related Schedule';
+            }
+
+            $('#relatedSchedulesList').html(content);
+        } else {
+            console.error('Invalid response format. Missing "relatedData" property.');
+        }
+    }
+</script><!-- update content dynamicly -->
 
 <script>
     $(document).ready(function () {
+
+        $(document).on('change', '.toggleCheckbox', function () {
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+
+                var formattedClickedDatetime = moment(clickedEventDatetime).format();
+                var formattedOtherDatetime = moment(otherEventDatetime).format();
+
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
+
         $('#dateTimePicker3').change(function () {
             var event_datetime = $(this).val();
 
@@ -611,61 +875,107 @@
                 url: '/get-related-data',
                 data: { event_datetime: event_datetime },
                 success: function (data) {
-                    // Check if the 'relatedData' property exists
+                    
                     if (data.hasOwnProperty('relatedData')) {
-                        // Update the content dynamically
+                        
                         var content = '';
 
-                        // Check if there is data in the array
                         if (data.relatedData.length > 0) {
                             // Customize this part based on your actual data structure
                             data.relatedData.forEach(function (item) {
                                 var modalId = 'myModal-' + item.id;
     
+                                content += '<div class="container-fluid" id="schedule-' + item.id + '">';
                                 content += '<div class="container">';
 
                                 content += '<div class="row">';
-                                content += '<div class="col">';
+                                content += '<div class="col-6">';
                                 content += '<p>Schedule Details:</p>';
                                 content += '</div>';
-                                content += '<div class="col d-flex justify-content-center">';
+                                content += '<div class="col-3">';
                                 content += '<p> State: </p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<p>Action:</p>';
                                 content += '</div>';
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col">';
+                                content += '<div class="col-6">';
                                 content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
                                 content += '</div>';
-                                content += '<div class="col d-flex justify-content-center">';
+                                content += '<div class="col-3">';
+                                content += '<div class="schedule-details">';
                                 content += '<label class="switch">';
                                 content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
                                 content += '<span class="slider round"></span>';
                                 content += '</label>';  
                                 content += '</div>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<button id="myBtn" class="btn btn-dark" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                                content += '</div>';
+
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col">';
+                                content += '<div class="col-6">';
                                 content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
+                                content += '<div class="col-3">';
                                 content += '<p></p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<button class="btn btn-dark delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
                                 content += '</div>';
                                 content += '</div>';//row end
                                 
                                 content += '<div class="row">';
-                                content += '<div class="col">';
+                                content += '<div class="col-6">';
                                 content += '<p>' +'Action: '+ item.description + '</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
+                                content += '<div class="col-3">';
                                 content += '<p></p>';
                                 content += '</div>';
-                                content += '</div>';//row end
+                                content += '<div class="col-3">';
+                                content += '</div>';
+                                content += '</div>';
 
-                                content += '</div>';//container end
-                                content += '</div>';//container fluid end
+                                content += '</div>';
+                                content += '</div>';
                                 
+                                content += '<div id="' + modalId + '" class="modal">';
+                                content += '<div class="modal-content">';
+                                content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                                content += '<form id="editForm-' + item.id + '">';
+                                content += '@csrf';
+                                content += '@method("PUT")';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="event_datetime">From:</label>';
+                                content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
+                                content += '</div>';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="event_datetime_off">To:</label>';
+                                content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                                content += '</div>';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="description">Action:</label>';
+                                content += '<select id="description" name="description" class="form-control">';
+                                content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
+                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
+                                content += '</select>';
+                                content += '</div>';
+
+                                content += '<div class="form-group" >';
+                                content += '<br>';
+                                content += '<button type="button" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                                content += '</div>';
+                                content += '</form>';
+            
+                                content += '</div>';
                                 content += '</div>';
                                 content += '<hr>'; // Add a separator
                             });
@@ -681,22 +991,27 @@
                 error: function (error) {
                     console.error('Error:', error);
                 }
-            });
+            });//ajax end
         });
     });
 </script><!-- related schedule for datetimepicker3 -->
 
-
 <script>
-    function formatDatetimeForInput(datetime) {
-        var formattedDatetime = new Date(datetime).toISOString().slice(0, 16);
+        function formatDatetimeForInput(datetime) {
+        var parsedDatetime = new Date(datetime);
+        var year = parsedDatetime.getFullYear();
+        var month = ('0' + (parsedDatetime.getMonth() + 1)).slice(-2);
+        var day = ('0' + parsedDatetime.getDate()).slice(-2);
+        var hours = ('0' + parsedDatetime.getHours()).slice(-2);
+        var minutes = ('0' + parsedDatetime.getMinutes()).slice(-2);
+
+        // Construct the formatted datetime string for input
+        var formattedDatetime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+
+        console.log('Formatted Datetime:', formattedDatetime);
         return formattedDatetime;
     }
-</script><!-- formatDatetimeForInput -->
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+</script><!-- formatted time -->
 
 <script>
     $(document).ready(function() {
@@ -737,3 +1052,123 @@
     });
 
 </script> <!-- hide button -->
+
+<script>
+    function checkForOverlap() {
+        var fromDateTime = $('#dateTimePicker3').val();
+        var toDateTime = $('#dateTimePicker4').val();
+
+        // Perform an AJAX request to check for overlaps
+        $.ajax({
+            type: 'GET',
+            url: '/check-overlap-user',
+            data: {
+                fromDateTime: fromDateTime,
+                toDateTime: toDateTime,
+            },
+            success: function (response) {
+                if (response.overlap) {
+                    $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
+                    $('#sub').prop('disabled', true);
+                } else {
+                    $('#existingSchedulesErrorTo').text('');
+                    $('#sub').prop('disabled', false);
+                }
+            },
+            error: function (error) {
+                console.error('Error checking for overlap:', error);
+            }
+        });
+    }
+</script><!-- dynamic change of error message for updating state -->
+
+<!-- <script>
+    $(document).ready(function () {
+        $('#dateTimePicker3').on('input', function () {
+            var eventDateTime = $(this).val();
+
+            // Make an AJAX request to check existing schedules
+            $.ajax({
+                url: '/check-existing-schedules-user',
+                type: 'GET',
+                data: {event_datetime: eventDateTime},
+                success: function (response) {
+                    if (response.error) {
+                        $('#existingSchedulesError').text(response.error);
+                        $('#sub').prop('disabled', true);
+                    } else {
+                        $('#existingSchedulesError').text('');
+                        $('#sub').prop('disabled', false);
+                    }
+                },
+                error: function () {
+                    console.error('Error in AJAX request');
+                }
+            });
+        });
+    });
+</script> automatic detect for from: date & time   -->
+
+<!-- <script>
+    $(document).ready(function () {
+        // Function to check for overlapping schedules
+        function checkForOverlap() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+
+            // Perform an AJAX request to check for overlaps
+            $.ajax({
+                type: 'GET',
+                url: '/check-overlap-user',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                    
+                },
+                success: function (response) {
+                    if (response.overlap) {
+                        // There is an overlap, display the error message
+                        $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
+                        $('#sub').prop('disabled', true);
+                    } else {
+                        // No overlap, clear the error message
+                        $('#existingSchedulesErrorTo').text('');
+                        $('#sub').prop('disabled', false);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error checking for overlap:', error);
+                }
+            });
+        }
+
+        // Attach the checkForOverlap function to the change event of the date and time inputs
+        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+            checkForOverlap();
+        });
+    });
+</script>
+automatic detect for to: date & time  -->
+
+<script>
+    $(document).ready(function () {
+        // Clear input fields on page refresh
+        $('input[type="text"]').val('');
+        $('select').prop('selectedIndex', 0);
+    });
+</script><!-- remove the input if refresh; -->
+
+<script>
+    $(document).ready(function () {
+
+        $('#clearButton').click(function () {
+            // Clear all input fields
+            $('input[type="text"]').val('');
+            $('select').prop('selectedIndex', 0);
+
+            // Clear any error messages
+            $('.text-danger').text('');
+
+        });
+    });
+</script><!-- reset -->

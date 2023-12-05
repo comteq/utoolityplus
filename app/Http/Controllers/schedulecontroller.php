@@ -27,7 +27,7 @@ class ScheduleController extends Controller
         ];
 
         if ($request->has('custom_schedule')) {
-        $validationRules = [
+            $validationRules = [
                 'event_datetime' => 'required|date',
                 'event_datetime_off' => [
                     'required',
@@ -69,13 +69,25 @@ class ScheduleController extends Controller
                     });
             })->first();
 
+            $existingSchedulesCount = schedules::where('event_datetime', $request->input('event_datetime'))->count();
+            if ($existingSchedulesCount >= 2) {
+                // Display an error message and set the state to 'Inactive'
+                $schedule->state = 'In-Active';
+                $schedule->status = 'Pending';
+                return redirect()->route('schedule.index')->with('error', 'Cannot insert more than 2 schedule with the same Start Time!');
+            }
+        
             if ($overlappingSchedule) {
-                // Overlapping schedule, display an error message and redirect back
-                return redirect()->route('schedule.index')->with('error', 'Schedule overlaps with an active schedule!');
+                // Overlapping schedule, set the state to 'Inactive'
+                $schedule->state = 'In-Active';
+                $schedule->status = 'Pending';
+                $schedule->save(); // Save the schedule to the database
+                return redirect()->route('schedule.index')->with('success', 'Schedule created successfully but it is overlaping with an active schedule');
             }
             $schedule->save(); // Save the schedule to the database
+        }
 
-        } else {
+        else {
             $validationRules = [
                 'description' => 'required',
                 'yearmonth' => 'required',
@@ -105,7 +117,6 @@ class ScheduleController extends Controller
                         ->setTime($formattedTime2->hour, $formattedTime2->minute, 0) // Set seconds to 0 for precision
                         ->copy();
 
-            
                     // Check for overlap with existing schedules
                     $overlap = schedules::where(function ($query) use ($newEventStart, $newEventEnd) {
                         $query->where(function ($q) use ($newEventStart, $newEventEnd) {
@@ -190,11 +201,26 @@ class ScheduleController extends Controller
             $query->whereDate('event_datetime_off', '=', \Carbon\Carbon::parse($eventDatetimeOff)->toDateString())
                 ->where('event_datetime_off', '=', $eventDatetimeOff);
         }
+
+        // if ($eventDatetime) {
+        //     $formattedEventDatetime = \Carbon\Carbon::parse($eventDatetime)->format('Y-m-d H:i');
+        //     $query->where(function ($query) use ($formattedEventDatetime) {
+        //         $query->where('event_datetime', '=', $formattedEventDatetime);
+        //     });
+        // }
     
-        if ($description) {
+        // if ($eventDatetimeOff) {
+        //     $formattedEventDatetimeOff = \Carbon\Carbon::parse($eventDatetimeOff)->format('Y-m-d H:i');
+        //     $query->where(function ($query) use ($formattedEventDatetimeOff) {
+        //         $query->where('event_datetime_off', '=', $formattedEventDatetimeOff);
+        //     });
+        // }
+    
+         // Only apply the description condition if it is provided
+        if ($description !== null && $description !== '') {
             $query->where('description', '=', $description);
         }
-
+        
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 2);
     
@@ -285,7 +311,7 @@ class ScheduleController extends Controller
             $query->whereRaw("TIME(event_datetime_off) <= ?", [$formattedTotime]);
         }
         
-
+        
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 2);
     
@@ -307,6 +333,64 @@ class ScheduleController extends Controller
         
         return response()->json(['relatedData3' => $relatedData3]);
     }//user/admin
+
+    public function checkOverlap(Request $request)
+    {
+        $fromDateTime = $request->input('fromDateTime');
+        $toDateTime = $request->input('toDateTime');
+    
+        // Check for overlapping schedules
+        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime) {
+            $query->where('state', 'Active')
+                ->where(function ($query) use ($fromDateTime, $toDateTime) {
+                    $query->whereBetween('event_datetime', [$fromDateTime, $toDateTime])
+                        ->orWhereBetween('event_datetime_off', [$fromDateTime, $toDateTime])
+                        ->orWhere(function ($query) use ($fromDateTime, $toDateTime) {
+                            $query->where('event_datetime', '<', $fromDateTime)
+                                ->where('event_datetime_off', '>', $toDateTime);
+                        });
+                });
+        })->exists();
+    
+        return response()->json(['overlap' => $overlappingSchedule]);
+    }//automatic detection for to: date and time and from: date and time
+
+    public function checkForActionOverlap(Request $request)
+    {
+        $fromDateTime = $request->input('fromDateTime');
+        $toDateTime = $request->input('toDateTime');
+        $description = $request->input('description');
+
+        // Check for overlapping schedules based on description
+        // Adjust the logic accordingly based on your requirements
+        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime, $description) {
+            $query->where(function ($q) use ($fromDateTime, $toDateTime, $description) {
+                $q->where('event_datetime', '<=', $toDateTime)
+                    ->where('event_datetime_off', '>=', $fromDateTime)
+                    ->where('state', '=', 'Active')
+                    ->where('description', '=', $description);
+            })->orWhere(function ($q) use ($fromDateTime, $toDateTime, $description) {
+                $q->where('event_datetime', '>=', $fromDateTime)
+                    ->where('event_datetime', '<=', $toDateTime)
+                    ->where('state', '=', 'Active')
+                    ->where('description', '=', $description);
+            });
+        })->exists();
+
+        return response()->json(['overlap' => $overlappingSchedule]);
+    }//automatic detection for action overlap
+
+    public function checkExistingSchedules(Request $request)
+    {
+        $eventDateTime = $request->input('event_datetime');
+        $existingSchedulesCount = schedules::where('event_datetime', $eventDateTime)->count();
+    
+        if ($existingSchedulesCount >= 2) {
+            return response()->json(['error' => 'Cannot insert more than 2 schedules with the same Start Time']);
+        }
+    
+        return response()->json(['success' => true]);
+    }//automatic detection for from: date and time
 
 //-------------------------------------------------------ADMIN----------------------------------------------------------------//
 
@@ -354,15 +438,6 @@ class ScheduleController extends Controller
 
             // Set the schedule state based on the date and time
             $schedule->state = $this->getScheduleState($request->input('event_datetime'), $request->input('event_datetime_off'));
-
-            // $existingScheduledescription = schedules::where('event_datetime', $request->input('event_datetime'))
-            // ->where('description', 'ON')
-            // ->count();
-    
-            // if ($existingScheduledescription > 0) {
-            //     // Display an error message and redirect back
-            //     return redirect()->route('scheduleadmin.index')->with('error', 'Cannot create a new schedule: Overlapping Action With in Existing Schedule');
-            // }
 
             $existingSchedulesCount = schedules::where('event_datetime', $request->input('event_datetime'))->count();
             if ($existingSchedulesCount >= 2) {
@@ -458,64 +533,8 @@ class ScheduleController extends Controller
         return redirect()->route('scheduleadmin.index')->with('success', 'Schedule created successfully!');
     }
 
-    public function checkForActionOverlap(Request $request)
-    {
-        $fromDateTime = $request->input('fromDateTime');
-        $toDateTime = $request->input('toDateTime');
-        $description = $request->input('description');
 
-        // Check for overlapping schedules based on description
-        // Adjust the logic accordingly based on your requirements
-        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime, $description) {
-            $query->where(function ($q) use ($fromDateTime, $toDateTime, $description) {
-                $q->where('event_datetime', '<=', $toDateTime)
-                    ->where('event_datetime_off', '>=', $fromDateTime)
-                    ->where('state', '=', 'Active')
-                    ->where('description', '=', $description);
-            })->orWhere(function ($q) use ($fromDateTime, $toDateTime, $description) {
-                $q->where('event_datetime', '>=', $fromDateTime)
-                    ->where('event_datetime', '<=', $toDateTime)
-                    ->where('state', '=', 'Active')
-                    ->where('description', '=', $description);
-            });
-        })->exists();
-
-        return response()->json(['overlap' => $overlappingSchedule]);
-    }//automatic detection for action overlap
-
-    public function checkExistingSchedules(Request $request)
-    {
-        $eventDateTime = $request->input('event_datetime');
-        $existingSchedulesCount = schedules::where('event_datetime', $eventDateTime)->count();
     
-        if ($existingSchedulesCount >= 2) {
-            return response()->json(['error' => 'Cannot insert more than 2 schedules with the same Start Time']);
-        }
-    
-        return response()->json(['success' => true]);
-    }//automatic detection for from: date and time
-
-    public function checkOverlap(Request $request)
-    {
-        $fromDateTime = $request->input('fromDateTime');
-        $toDateTime = $request->input('toDateTime');
-    
-        // Check for overlapping schedules
-        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime) {
-            $query->where('state', 'Active')
-                ->where(function ($query) use ($fromDateTime, $toDateTime) {
-                    $query->whereBetween('event_datetime', [$fromDateTime, $toDateTime])
-                        ->orWhereBetween('event_datetime_off', [$fromDateTime, $toDateTime])
-                        ->orWhere(function ($query) use ($fromDateTime, $toDateTime) {
-                            $query->where('event_datetime', '<', $fromDateTime)
-                                ->where('event_datetime_off', '>', $toDateTime);
-                        });
-                });
-        })->exists();
-    
-        return response()->json(['overlap' => $overlappingSchedule]);
-    }//automatic detection for to: date and time and from: date and time
-
     public function updateState($itemId)
     {
         if (!$itemId) {
@@ -589,4 +608,5 @@ class ScheduleController extends Controller
             sleep(60);
         }
     }
+
 }//controller end

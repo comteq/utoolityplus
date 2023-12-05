@@ -203,7 +203,7 @@
             <div class="form-group">
                     <label for="description">Action:</label>
                     <select name="description" id="description" class="custom-select w-100" required>
-                        <option disabled selected value="">Select Action</option>
+                        <option disabled value="">Select Action</option>
                         <option value="ON">ON</option>
                         <option value="OFF">OFF</option>
                     </select>
@@ -424,8 +424,8 @@
     flatpickr("#dateTimePicker", {
         enableTime: true, // Enable time selection
         noCalendar: true, // Disable the calendar
-        dateFormat: "h:i K", // Set the desired time format with AM/PM
-        altFormat: "h:i K", // Set the format for the alternative input field
+        dateFormat: "H:i", // Set the desired time format with AM/PM
+        altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
         time_24hr: false, // Use 12-hour time format with AM/PM
     });
@@ -435,8 +435,8 @@
     flatpickr("#dateTimePicker2", {
         enableTime: true, // Enable time selection
         noCalendar: true, // Disable the calendar
-        dateFormat: "h:i K", // Set the desired time format with AM/PM
-        altFormat: "h:i K", // Set the format for the alternative input field
+        dateFormat: "H:i", // Set the desired time format with AM/PM
+        altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
         time_24hr: false, // Use 12-hour time format with AM/PM
     });
@@ -445,9 +445,9 @@
 <script>
     flatpickr("#dateTimePicker3", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
         altInput: true, // Use an alternative input field
-        altFormat: "F j, Y H:i", // Set the format for the alternative input field
+        altFormat: "F j, Y H:i ", // Set the format for the alternative input field
         noCalendar: false, // Ensure that the calendar is shown, which helps exclude milliseconds
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
@@ -683,12 +683,14 @@
             submitForm(itemId);
         });
     
-        $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
+        // $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
+        $('#description, #dateTimePicker3').change(function () {
             var description = $('#description').val();
             var event_datetime = $('#dateTimePicker3').val();
-            var event_datetime_off = $('#dateTimePicker4').val();
+            // var event_datetime_off = $('#dateTimePicker4').val();
 
-            loadPage(1, description,event_datetime, event_datetime_off, );
+            // loadPage(1, description,event_datetime, event_datetime_off, );
+            loadPage(1, description,event_datetime,);
         });
 
         // Add pagination handling
@@ -707,13 +709,14 @@
             }
         });
 
-        function loadPage(page, event_datetime, event_datetime_off, description) {
+        // function loadPage(page, event_datetime, event_datetime_off, description) {
+        function loadPage(page, event_datetime, description) {
             $.ajax({
                 type: 'GET',
                 url: '/get-related-data1',
                 data: {
                     event_datetime: event_datetime,
-                    event_datetime_off: event_datetime_off,
+                    // event_datetime_off: event_datetime_off,
                     description: description,
                     page: page,
                 },
@@ -1020,7 +1023,7 @@
     }
 
 
-</script><!-- update state -->
+</script><!-- update state --> x
 
 <script>
     function deleteSchedule(itemId) {
@@ -1063,21 +1066,21 @@
         }
     }
 
-</script><!-- Delete -->
+</script><!-- Delete --> x
 
 <script>
     function openModal(itemId) {
         var modalId = 'myModal-' + itemId;
         var modal = document.getElementById(modalId);
         modal.style.display = "block";
-    }
+    } x
 
     function closeModal(itemId) {
         var modalId = 'myModal-' + itemId;
         var modal = document.getElementById(modalId);
         modal.style.display = "none";
         
-    }
+    } x 
 
     function submitForm(itemId) {
         var formId = 'editForm-' + itemId;
@@ -1100,7 +1103,7 @@
                 console.error('Error:', error);
             }
         });
-    }
+    } x 
 
     function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);
@@ -1116,8 +1119,6 @@
         console.log('Formatted Datetime:', formattedDatetime);
         return formattedDatetime;
     }
-
-
 
 </script><!-- modal -->
 
@@ -1337,5 +1338,5 @@
     });
 </script><!-- reset -->
 
-
+    
 

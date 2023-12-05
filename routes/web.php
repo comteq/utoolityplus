@@ -26,14 +26,16 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('/schedule', [schedulecontroller::class, 'index'])->name('schedule.index');
     Route::post('/schedule', [schedulecontroller::class, 'store'])->name('store.schedule');
+
     Route::post('/update-related-schedules', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
-    Route::get('/get-related-data1', [schedulecontroller::class, 'getRelatedData1'])->name('get.related.data1');
-    Route::get('/get-related-data', [schedulecontroller::class, 'getRelatedData'])->name('get.related.data');
+    Route::get('/get-existing-data-user', [schedulecontroller::class, 'getRelatedData1']);
+    Route::get('/get-related-data', [schedulecontroller::class, 'getRelatedData']);
+
+    Route::get('/check-overlap-user', [schedulecontroller::class, 'checkOverlap']);
+    Route::get('/check-existing-schedules-user', [schedulecontroller::class, 'checkExistingSchedules']);
 
     Route::get('/schedule-List?year=&month=&day=', function () { return view('sched_list'); });
     Route::get('/schedule-List', [schedulefilter_controler::class, 'filter'])->name('schedule.filter');
-    
-    
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
