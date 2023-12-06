@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-use App\Models\Activity;
+use App\Models\activity;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +15,7 @@ class ActivityLogController extends Controller
 {
     public function index()
     {
-        $activityLogs = Activity::all(); // Fetch all activity logs
+        $activityLogs = activity::all(); // Fetch all activity logs
         return view('activity-logs.index', compact('activityLogs'));
     }
 

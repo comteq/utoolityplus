@@ -1,3 +1,4 @@
+@include('nav')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -24,7 +25,7 @@
 
                 @php
                     // Get the current state of AC from the database
-                    $acState = App\Models\Unit::find(1)->AC;
+                    $acState = App\Models\unit::find(1)->AC;
                 @endphp
 
                 <button type="button" class="btn {{ $acState === '1' ? 'btn-success' : 'btn-danger' }} btn-lg rounded-circle" onclick="confirmPowerAction()" >
