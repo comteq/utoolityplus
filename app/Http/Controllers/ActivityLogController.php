@@ -15,7 +15,7 @@ class ActivityLogController extends Controller
 {
     public function index()
     {
-        $activityLogs = Activity::all(); // Fetch all activity logs
+        $activityLogs = activity::all(); // Fetch all activity logs
         return view('activity-logs.index', compact('activityLogs'));
     }
 
