@@ -191,30 +191,17 @@ class ScheduleController extends Controller
         $description = $request->input('description');
     
         $query = schedules::query();
-        
+
         if ($eventDatetime) {
-            $query->whereDate('event_datetime', '=', \Carbon\Carbon::parse($eventDatetime)->toDateString())
-                ->where('event_datetime', '=', $eventDatetime);
-        }
-    
-        if ($eventDatetimeOff) {
-            $query->whereDate('event_datetime_off', '=', \Carbon\Carbon::parse($eventDatetimeOff)->toDateString())
-                ->where('event_datetime_off', '=', $eventDatetimeOff);
+            // Use Carbon's format consistently
+            $eventDatetime = Carbon::createFromFormat('Y-m-d H:i', $eventDatetime)->format('Y-m-d H:i:s');
+            $query->where('event_datetime', '=', $eventDatetime);
         }
 
-        // if ($eventDatetime) {
-        //     $formattedEventDatetime = \Carbon\Carbon::parse($eventDatetime)->format('Y-m-d H:i');
-        //     $query->where(function ($query) use ($formattedEventDatetime) {
-        //         $query->where('event_datetime', '=', $formattedEventDatetime);
-        //     });
-        // }
-    
-        // if ($eventDatetimeOff) {
-        //     $formattedEventDatetimeOff = \Carbon\Carbon::parse($eventDatetimeOff)->format('Y-m-d H:i');
-        //     $query->where(function ($query) use ($formattedEventDatetimeOff) {
-        //         $query->where('event_datetime_off', '=', $formattedEventDatetimeOff);
-        //     });
-        // }
+        if ($eventDatetimeOff) {
+            // Use where() instead of whereBetween() for an exact match
+            $query->where('event_datetime_off', '=', Carbon::createFromFormat('Y-m-d H:i', $eventDatetimeOff)->format('Y-m-d H:i'));
+        }
     
          // Only apply the description condition if it is provided
         if ($description !== null && $description !== '') {
@@ -302,15 +289,13 @@ class ScheduleController extends Controller
         
         if ($fromtime) {
             $formattedFromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
-            $query->whereRaw("TIME(event_datetime) >= ?", [$formattedFromtime]);
+            $query->whereRaw("TIME(event_datetime) = ?", [$formattedFromtime]);
         }
-        
-        
+            
         if ($totime) {
-            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
-            $query->whereRaw("TIME(event_datetime_off) <= ?", [$formattedTotime]);
+            $formattedTotime = Carbon::createFromFormat('H:i:s', $totime)->format('H:i:s');
+            $query->whereRaw("TIME(event_datetime_off) = ?", [$formattedTotime]);
         }
-        
         
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 2);
@@ -533,8 +518,6 @@ class ScheduleController extends Controller
         return redirect()->route('scheduleadmin.index')->with('success', 'Schedule created successfully!');
     }
 
-
-    
     public function updateState($itemId)
     {
         if (!$itemId) {
