@@ -7,7 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\schedulecontroller; 
 use App\Http\Controllers\schedulefilter_controler; 
-use App\Http\Controllers\dashboardcontroller; 
+use App\Http\Controllers\dashboardcontroller;
+use App\Http\Controllers\NotificationController; 
 
 
 Route::group(['middleware' => 'guest'], function () {
@@ -76,5 +77,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/schedule-list-admin', [schedulefilter_controler::class, 'indexadmin']);
     Route::delete('/schedule/{id}', [schedulefilter_controler::class, 'destroy'])->name('schedule.destroy');
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
+
+
+    Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
+
+
     Route::post('/log-activity', [ActivityLogController::class, 'logActivity']);
 });

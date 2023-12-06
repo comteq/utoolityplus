@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
 
+
 <style>
     .card-container {
         display: flex;
@@ -178,8 +179,35 @@
             background-color: #fcfcfa;
         }
     }
+
+    .notification-window {
+            display: none;
+            position: fixed;
+            /* top: 10px;
+            right: 10px; */
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+    }
     
 </style>
+
+<div style="position: relative;">
+
+    <button class="btn btn-secondary" id="openNotificationBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+        </svg>
+        <span id="notification-count">0</span>
+    </button>
+
+    <div class="notification-window" id="notificationWindow">
+
+    </div>
+</div>
 
 <div class="card-deck">
 
@@ -238,8 +266,6 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
-    
-                
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
                     <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
@@ -334,7 +360,7 @@
     
   </div><!-- card end -->
 
-<!-- ---------------------------------------------------------------------- -->
+<!-- ---------------------------------------------------------------------------------------------------------------------------->
 
   <div class="card">
     <div class="card-header" style="text-align: left">
@@ -494,7 +520,7 @@
         dateFormat: "H:i", // Set the desired time format with AM/PM
         altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
-        time_24hr: false, // Use 12-hour time format with AM/PM
+        time_24hr: true, // Use 12-hour time format with AM/PM
     });
 </script><!-- dateTimePicker timepicker -->
 
@@ -505,7 +531,7 @@
         dateFormat: "H:i", // Set the desired time format with AM/PM
         altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
-        time_24hr: false, // Use 12-hour time format with AM/PM
+        time_24hr: true, // Use 12-hour time format with AM/PM
     });
 </script><!-- dateTimePicker2 timepicker2 -->
 
@@ -516,6 +542,7 @@
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i ", // Set the format for the alternative input field
         noCalendar: false, // Ensure that the calendar is shown, which helps exclude milliseconds
+        time_24hr: true, // Use 12-hour time format with AM/PM
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
             document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
@@ -530,6 +557,7 @@
         dateFormat: "Y-m-d H:i", // Set the desired date and time format
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
+        time_24hr: true, // Use 12-hour time format with AM/PM
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
             document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
@@ -578,11 +606,8 @@
             var description = $('#description').val();
             var yearmonth = $('#yearmonth').val();
             var day = $('#day').val();
-            // var fromtime = $('#dateTimePicker').val();
-            // var totime = $('#dateTimePicker2').val();
-            var fromtime = $('#dateTimePicker').val().split(' ')[1];  // Extract the time part
-            var totime = $('#dateTimePicker2').val().split(' ')[1];  // Extract the time part
-
+            var fromtime = $('#dateTimePicker').val();
+            var totime = $('#dateTimePicker2').val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
             $.ajax({    
@@ -755,7 +780,6 @@
             var description = $('#description').val();
             var event_datetime = $('#dateTimePicker3').val();
             // var event_datetime_off = $('#dateTimePicker4').val();
-
             // loadPage(1, description,event_datetime, event_datetime_off, );
             loadPage(1, description,event_datetime,);
         });
@@ -1090,7 +1114,7 @@
     }
 
 
-</script><!-- update state --> x
+</script><!-- update state --> 
 
 <script>
     function deleteSchedule(itemId) {
@@ -1133,7 +1157,7 @@
         }
     }
 
-</script><!-- Delete --> x
+</script><!-- Delete --> 
 
 <script>
     function openModal(itemId) {
@@ -1400,10 +1424,83 @@
 
             // Clear any error messages
             $('.text-danger').text('');
+            location.reload(true);
 
         });
     });
 </script><!-- reset -->
 
-    
+<script>
+    // Function to update the notification counter
+    function updateNotificationCounter() {
+        $.ajax({
+            url: '/get-pending-schedule-count',
+            method: 'GET',
+            success: function (data) {
+                $('#notification-count').text(data.count);
+            },
+            error: function (error) {
+                console.error('Error fetching notification count:', error);
+            }
+        });
+    }
 
+    // Initial update on page load
+    $(document).ready(function () {
+        updateNotificationCounter();
+        
+        // Update the counter every 60 seconds
+        setInterval(updateNotificationCounter, 60000);
+    });
+</script><!-- notification pending -->
+
+<script>
+    function toggleNotificationWindow() {
+        var notificationWindow = $('#notificationWindow');
+        notificationWindow.slideToggle();
+
+        // Fetch pending schedules count and details and update the content
+        $.ajax({
+            url: '/get-pending-schedule-count',
+            method: 'GET',
+            success: function (data) {
+                updateNotificationContent(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    // Function to update the content of the notification window
+    function updateNotificationContent(data) {
+        var content = '';
+
+        // Display the count
+        $('#notification-count').text(data.count);
+
+        if (data.schedules.length > 0) {
+            content += '<ul>';
+            data.schedules.forEach(function (schedule) {
+                content += '<li><strong>ID:</strong> ' + schedule.id + '<br>';
+                content += '<strong>From:</strong> ' + formatDateTimenotif(schedule.event_datetime) + '<br>';
+                content += '<strong>To:</strong> ' + formatDateTimenotif(schedule.event_datetime_off) + '<br>';
+                content += '<strong>Action:</strong> ' + schedule.description + '</li>';
+                content += '<hr>';
+            });
+            content += '</ul>';
+        } else {
+            content += '<p>No pending schedules</p>';
+        }
+
+        $('#notificationWindow').html(content);
+    }
+
+    function formatDateTimenotif(dateTime) {
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+        return new Date(dateTime).toLocaleTimeString('en-US', options);
+    }
+    // Add a click event listener to the button
+    $('#openNotificationBtn').on('click', toggleNotificationWindow);
+
+</script><!-- notification pending -->
