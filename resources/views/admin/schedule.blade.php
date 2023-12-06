@@ -279,7 +279,7 @@
                     </div>
                 </div> 
 
-                <button type="submit"  class="btn btn-primary w-100" id="sub">Set Schedule</button>
+                <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub">Set Schedule</button>
 
             </div> <!-- other-form-elements -->
 
@@ -382,6 +382,73 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+      $("[name='default_schedule']").click(function(e) {
+        e.preventDefault();
+        
+        // Get CSRF token from meta tag
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        
+        // Check form validity
+        if (!isFormValid()) {
+          // The form is not valid, do not proceed
+          return;
+        }
+    
+        // Get form data
+        var formData = {
+          yearmonth: $("[name='yearmonth']").val(),
+          day: $("[name='day']").val(),
+          fromtime: $("[name='fromtime']").val(),
+          totime: $("[name='totime']").val(),
+          action: "Set Default Schedule" // You may customize this as needed
+        };
+    
+        // Make AJAX request with CSRF token
+        $.ajax({
+          type: "POST",
+          url: "/log-activity", // Replace with your actual endpoint
+          data: formData,
+          dataType: "json",
+          headers: {
+            'X-CSRF-TOKEN': csrfToken
+          },
+          success: function(response) {
+            // Handle success response
+            console.log(response.message);
+            
+            // Only submit the form if the AJAX request is successful
+            $('form').submit();
+          },
+          error: function(error) {
+            // Handle error
+            console.error("Error logging activity:", error);
+          }
+        });
+      });
+      
+      // Function to check form validity
+      function isFormValid() {
+        // Implement your form validation logic here
+        // You may use HTML5 validation or a custom validation library
+        
+        // Example: Check if the 'yearmonth' field is not empty
+        if ($("[name='yearmonth']").val().trim() === '') {
+          alert('Please fill in the Year & Month field.');
+          return false;
+        }
+        
+        // Add more validation checks as needed
+        
+        // If all validation checks pass, return true
+        return true;
+      }
+    });
+</script>
+
+
 
 <script>
     function updateCurrentTime() {
