@@ -22,7 +22,7 @@ class dashboardcontroller extends Controller
         }
     
         // Toggle the 'AC' state
-        $newState = $unit->AC === 'Active' ? 'In-Active' : 'Active';
+        $newState = $unit->AC === '1' ? '0' : '1';
         $unit->update(['AC' => $newState]);
     
         return redirect()->route('dashboard')->with('success', 'AC updated successfully');
@@ -37,7 +37,7 @@ class dashboardcontroller extends Controller
         }
     
         // Toggle the 'Lights' state
-        $newState = $unit->Lights === 'Active' ? 'In-Active' : 'Active';
+        $newState = $unit->Lights === '1' ? '0' : '1';
         $unit->update(['Lights' => $newState]);
     
         return redirect()->route('dashboard')->with('success', 'Lights updated successfully');

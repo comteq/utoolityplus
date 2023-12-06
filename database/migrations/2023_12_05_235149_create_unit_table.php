@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('unit', function (Blueprint $table) {
             $table->id();
-            $table->enum('AC', ['Active', 'In-Active'])->default('In-Active');
-            $table->enum('Lights', ['Active', 'In-Active'])->default('In-Active');
+            $table->enum('AC', ['1', '0'])->default('0');
+            $table->enum('Lights', ['1', '0'])->default('0');
             $table->timestamp('updated_at')->nullable(); 
         });
     }
