@@ -57,10 +57,10 @@ class AuthController extends Controller
                 'message' => 'User logged in successfully.',
                 'created_at' => now(),
             ]);
-            return redirect('/home')->with('success', 'Login Success');
+            return redirect('/dashboard')->with('success', 'Login Success');
         }
  
-        return back()->with('error', 'Error Email or Password');
+        return back()->with('error', 'Incorrect Email or Password');
     }
  
     public function logout()

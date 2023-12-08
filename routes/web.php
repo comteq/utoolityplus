@@ -50,7 +50,6 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/acu', [HomeController::class, 'acu'])->name('acu');
     Route::resource('/users', UserController::class)->except(['show']);
 
     Route::get('/schedule-admin', [schedulecontroller::class, 'indexadmin'])->name('scheduleadmin.index');
