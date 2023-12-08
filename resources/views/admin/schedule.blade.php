@@ -1,7 +1,5 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 <link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
-
 
 <style>
     .card-container {
@@ -228,17 +226,18 @@
                 </select>
             </div>
 
-            <div class="form-group">
+
+            <div class="date-time-group">
+
+                <div class="form-group">
                     <label for="description">Action:</label>
-                    <select name="description" id="description" class="custom-select w-100" required>
+                    <select name="description" id="description1" class="custom-select w-100" required>
                         <option disabled value="">Select Action</option>
                         <option value="ON">ON</option>
                         <option value="OFF">OFF</option>
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>        
-
-            <div class="date-time-group">
+                </div>    
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
@@ -266,6 +265,17 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
+
+            <div class="form-group">
+                    <label for="description">Action: default</label>
+                    <select name="description" id="description" class="custom-select w-100" required>
+                        <option disabled value="">Select Action</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
+            </div>
+
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
                     <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
@@ -371,6 +381,9 @@
         <p class="card-text" id="relatedSchedulesList"></p>
         <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
+
+        <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
+        <button id="nextBtn1" class="btn btn-secondary" style='width: auto;'>Next</button>
     </div><!-- cardbody end -->
 
     <div class="card-header" style="text-align: left">
@@ -471,15 +484,15 @@
 <script>
     flatpickr("#dateTimePicker3", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i:s", // Set the desired date and time format
         altInput: true, // Use an alternative input field
-        altFormat: "F j, Y H:i ", // Set the format for the alternative input field
-        noCalendar: false, // Ensure that the calendar is shown, which helps exclude milliseconds
-        time_24hr: true, // Use 12-hour time format with AM/PM
+        altFormat: "F j, Y H:i", // Set the format for the alternative input field
+        noCalendar: false, 
+        time_24hr: true, 
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
             document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
-
+            console.log(dateStr);
         }
     });
 </script><!-- dateTimePicker3 specific date and time -->
@@ -674,87 +687,88 @@
                     console.error('Error updating related schedules:', error);
                 }
             });
+
+            $('#prevBtn1, #nextBtn1').prop('disabled', true).hide();
+            $('#prevBtn, #nextBtn').prop('disabled', false).show();
         }
+        updateRelatedSchedulesadmin()
+
     });
 </script><!-- filter for to default datepicker -->
 
+
+
 <script>
-    var storedDateTimeValue = localStorage.getItem('dateTimeValue'); // Retrieve the stored datetime value from localStorage
-
-    if (storedDateTimeValue) {
-        $('#dateTimePicker3').val(storedDateTimeValue);
-    }
-
     $(document).ready(function () {
 
-        $(document).on('change', '.toggleCheckbox', function () {
+        $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
-            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime');
 
             $('.toggleCheckbox').not(clickedCheckbox).each(function () {
                 var otherCheckbox = $(this);
-                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+                var otherEventDatetime = otherCheckbox.data('event-datetime');
 
                 if (otherEventDatetime === clickedEventDatetime) {
                     otherCheckbox.prop('checked', false);
                 }
             });
-        });// Uncheck other checkboxes with the same event_datetime
+        }); // Uncheck other checkboxes with the same event_datetime
 
+        var currentPages1 = 1;
+        var schedulesPerPage1 = 2;
 
-        $(document).on('click', '.submitBtn', function () {
-            var itemId = $(this).closest('.editForm').data('id');
-            submitForm(itemId);
+        $('#description1, #dateTimePicker3').on('change', function () {
+            currentPages = 1; // Reset page to 1 when filters change
+            updateRelatedData1();
         });
-    
-        // $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
-        $('#description, #dateTimePicker3').change(function () {
-            var description = $('#description').val();
+
+        $('#nextBtn1').on('click', function () {
+            currentPages++;
+            updateRelatedData1();
+        });
+
+        $('#prevBtn1').on('click', function () {
+            if (currentPages > 1) {
+                currentPages--;
+                updateRelatedData1();
+            }
+        });
+
+        function updateRelatedData1() {
+            var description = $('#description1').val();
             var event_datetime = $('#dateTimePicker3').val();
-            // var event_datetime_off = $('#dateTimePicker4').val();
-            // loadPage(1, description,event_datetime, event_datetime_off, );
-            loadPage(1, description,event_datetime,);
-        });
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-        // Add pagination handling
-        $('#prevBtn').click(function () {
-            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
-            if (currentPage > 1) {
-                loadPage(currentPage - 1);
-            }
-        });
-
-        $('#nextBtn').click(function () {
-            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
-            var lastPage = parseInt($('#relatedSchedulesList').data('last-page')) || 1;
-            if (currentPage < lastPage) {
-                loadPage(currentPage + 1);
-            }
-        });
-
-        // function loadPage(page, event_datetime, event_datetime_off, description) {
-        function loadPage(page, event_datetime, description) {
             $.ajax({
-                type: 'GET',
                 url: '/get-related-data1',
+                method: 'GET',
                 data: {
-                    event_datetime: event_datetime,
-                    // event_datetime_off: event_datetime_off,
                     description: description,
-                    page: page,
+                    event_datetime: event_datetime,
+                    page: currentPages
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
                 },
                 success: function (data) {
-                    updateContent(data);
+                    if (data.hasOwnProperty('relatedData1')) {
+                        updateContent(data); 
+                    } else {
+                        console.error('Invalid response format. Missing "relatedData1" property.');
+                    }
                 },
+
                 error: function (error) {
-                    console.error('Error:', error);
+                    console.error('Error updating related schedules:', error);
                 }
             });
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#prevBtn, #nextBtn').prop('disabled', true).hide();
         }
-
     });
-</script><!-- existing schedule for datetimepicker3 -->
+</script><!-- filter for custom datepicker -->
 
 <script>
     function updateContent(data) {
@@ -872,7 +886,7 @@
             console.error('Invalid response format. Missing "relatedData" property.');
         }
     }
-</script><!-- update content dynamicly -->
+</script><!-- update content dynamicly  -->
 
 <script>
     $(document).ready(function () {
@@ -1097,14 +1111,14 @@
         var modalId = 'myModal-' + itemId;
         var modal = document.getElementById(modalId);
         modal.style.display = "block";
-    } x
+    } 
 
     function closeModal(itemId) {
         var modalId = 'myModal-' + itemId;
         var modal = document.getElementById(modalId);
         modal.style.display = "none";
         
-    } x 
+    } 
 
     function submitForm(itemId) {
         var formId = 'editForm-' + itemId;
@@ -1127,7 +1141,7 @@
                 console.error('Error:', error);
             }
         });
-    } x 
+    } 
 
     function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);
