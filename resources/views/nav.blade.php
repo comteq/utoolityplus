@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-GLhlTQ8i04FZ5LE3r5M46P7u6UdJOmea1BAsjFuCZuUO5/lM6ZIezn3uPOEm1Y6L" crossorigin="anonymous">
   <title>Utoolity+</title>
   <style>
+
+    .customcontainer{
+      margin-right: 10px;
+    }
+
+    #openNotificationBtn{
+      color:red;
+      font-weight: bold;
+    }
     .navbar {
       background-color: #242424; /* Navbar background color */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -104,13 +113,13 @@
     </ul>
 
     <!-- Notification bell -->
-    <div>
-      <button class="btn btn-secondary" id="openNotificationBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+    <div class="customcontainer">
+      <div id="openNotificationBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-bell" viewBox="0 0 16 16">
           <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
         </svg>
         <span id="notification-count">0</span>
-      </button>
+      </div>
       <div class="notification-window" id="notificationWindow"></div>
     </div>
     <!-- End notification bell -->

@@ -16,6 +16,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/register', [AuthController::class, 'registerPost'])->name('register');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'loginPost'])->name('login');
+    
 });
  
 // Routes for authenticated users
@@ -77,7 +78,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
 
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
-
-
     Route::post('/log-activity', [ActivityLogController::class, 'logActivity']);
 });

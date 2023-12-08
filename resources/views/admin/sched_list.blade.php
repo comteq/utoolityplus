@@ -148,12 +148,11 @@
 
 </div> <!-- card-header -->
 
-<div class="card-body">
-    <table class="table table-striped table-light ">
+<div class="card-body" >
+    <table class="table table-striped table-light" id="users-table">
         <thead>
             <tr>
             <th><input type="checkbox" id="checkAll" class="check-all-checkbox"></th>
-            <th>ID</th>
             <th>Day</th>
             <th>Date</th>
             <th>Time</th>
@@ -165,15 +164,9 @@
         </thead>
 
         <tbody>
-            @if($scheduless->isEmpty())
-                <tr>
-                    <td colspan="8" style=" text-align: center;">No records found</td>
-                </tr>
-            @else
                 @foreach($scheduless as $sched)
                 <tr data-schedule-id="{{ $sched->id }}">
                     <td><input type="checkbox" class="schedule-checkbox" data-schedule-id="{{ $sched->id }}"></td>
-                    <td>{{ $sched->id }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('l') }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('Y-m-d') }} - {{ \Carbon\Carbon::parse($sched->event_datetime_off)->format('Y-m-d') }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('h:i A') }} - {{ \Carbon\Carbon::parse($sched->event_datetime_off)->format('h:i A') }}</td>
@@ -185,7 +178,6 @@
                     </td>
                 </tr>
                 @endforeach
-            @endif
         </tbody>
         <div class="card-footer text-right">
             <button class="btn btn-danger delete-selected-btn">Delete Selected</button>
@@ -434,3 +426,29 @@
 
 </script><!-- dynamicly udoate if a schedule is updated -->
 
+
+<link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#users-table').DataTable({
+        responsive: true, // Enable responsiveness
+        dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
+        columnDefs: [
+            { orderable: false, targets: 0 }, // Disable ordering for the first checkbox column
+        ],
+        order: [],
+
+    });
+});
+
+ </script>

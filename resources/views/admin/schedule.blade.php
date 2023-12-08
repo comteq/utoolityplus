@@ -242,7 +242,7 @@
       
             <div class="other-form-elements">
 
-            <div class="form-group">
+                <div class="form-group">
                     <label for="description">Action: default</label>
                     <select name="description" id="description" class="custom-select w-100" required>
                         <option disabled value="">Select Action</option>
@@ -250,7 +250,8 @@
                         <option value="OFF">OFF</option>
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
-            </div>
+                </div>
+            
 
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
