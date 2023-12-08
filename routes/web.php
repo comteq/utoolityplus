@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/update-related-schedules', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
     Route::get('/get-existing-data-user', [schedulecontroller::class, 'getRelatedData1']);
-    Route::get('/get-related-data', [schedulecontroller::class, 'getRelatedData']);
+    Route::get('/get-related-data-user', [schedulecontroller::class, 'getRelatedData']);
 
     Route::get('/check-overlap-user', [schedulecontroller::class, 'checkOverlap']);
     Route::get('/check-existing-schedules-user', [schedulecontroller::class, 'checkExistingSchedules']);
@@ -44,7 +44,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/update-ac/{id}', [DashboardController::class, 'updateAC'])->name('update-ac');
     Route::post('/update-lights/{id}', [DashboardController::class, 'updatelights'])->name('update-lights');
-
 
 
 });
@@ -76,7 +75,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/schedule-list-admin', [schedulefilter_controler::class, 'indexadmin']);
     Route::delete('/schedule/{id}', [schedulefilter_controler::class, 'destroy'])->name('schedule.destroy');
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
-
 
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
 

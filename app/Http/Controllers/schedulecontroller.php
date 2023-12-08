@@ -165,7 +165,6 @@ class ScheduleController extends Controller
 //-------------------------------------------------------User & ADMIN----------------------------------------------------------------//
     private function getScheduleState($event_datetime, $event_datetime_off)
     {
-        // Convert the input date and time strings to Carbon instances
         $startDateTime = Carbon::parse($event_datetime);
         $endDateTime = Carbon::parse($event_datetime_off);
     
@@ -188,30 +187,21 @@ class ScheduleController extends Controller
     public function getRelatedData1(Request $request)
     {
         $eventDatetime = $request->input('event_datetime');
-        $eventDatetimeOff = $request->input('event_datetime_off');
         $description = $request->input('description');
     
         $query = schedules::query();
-
+        
         if ($eventDatetime) {
-            // Use Carbon's format consistently
-            $eventDatetime = Carbon::createFromFormat('Y-m-d H:i', $eventDatetime)->format('Y-m-d H:i:s');
             $query->where('event_datetime', '=', $eventDatetime);
         }
 
-        if ($eventDatetimeOff) {
-            // Use where() instead of whereBetween() for an exact match
-            $query->where('event_datetime_off', '=', Carbon::createFromFormat('Y-m-d H:i', $eventDatetimeOff)->format('Y-m-d H:i'));
-        }
-    
-         // Only apply the description condition if it is provided
-        if ($description !== null && $description !== '') {
+        if ($description) {
             $query->where('description', '=', $description);
         }
-        
+    
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 2);
-    
+
         $offset = ($page - 1) * $perPage;
         $relatedData1 = $query->skip($offset)->take($perPage)->get();
 
@@ -266,7 +256,6 @@ class ScheduleController extends Controller
 
     public function updateRelatedSchedulesadmin(Request $request)
     {
-        // Retrieve and process the input data
         $description = $request->input('description');
         $yearmonth = $request->input('yearmonth');
         $day = $request->input('day');
@@ -294,7 +283,7 @@ class ScheduleController extends Controller
         }
             
         if ($totime) {
-            $formattedTotime = Carbon::createFromFormat('H:i:s', $totime)->format('H:i:s');
+            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
             $query->whereRaw("TIME(event_datetime_off) = ?", [$formattedTotime]);
         }
         
@@ -305,6 +294,7 @@ class ScheduleController extends Controller
         $relatedData3 = $query->skip($offset)->take($perPage)->get();
         
         $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
+        
 
         $relatedData3->each(function ($item) {
             $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
@@ -611,23 +601,6 @@ class ScheduleController extends Controller
             'message' => 'Schedule updated successfully',
             'updatedSchedule' => $updatedSchedule,
         ]);
-    }
-
-    public function simulateSchedule()
-    {
-        while (true) {
-            // Your logic to fetch and update schedules
-            $schedulesToUpdate = schedules::where('status', '!=', 'Finished')
-                ->where('event_datetime_off', '<', now())  
-                ->get();
-
-            foreach ($schedulesToUpdate as $schedule) {
-                $schedule->update(['status' => 'Finished']);
-            }
-
-            // Sleep for a minute (adjust as needed)
-            sleep(60);
-        }
     }
 
 }//controller end

@@ -180,6 +180,20 @@
     
 </style>
 
+<div style="position: relative;">
+
+    <button class="btn btn-secondary" id="openNotificationBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+        </svg>
+        <span id="notification-count">0</span>
+    </button>
+
+    <div class="notification-window" id="notificationWindow">
+
+    </div>
+</div>
+
 <div class="card-deck">
 
   <div class="card">
@@ -189,7 +203,7 @@
     </div><!-- cardheader end -->
 
     <div class="card-body">
-        <form method="post" action="{{ route('store.schedule') }}" id="form">
+        <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
             @csrf
         
             <div class="form-group">
@@ -199,17 +213,18 @@
                 </select>
             </div>
 
-            <div class="form-group">
+
+            <div class="date-time-group">
+
+                <div class="form-group">
                     <label for="description">Action:</label>
-                    <select name="description" id="description" class="custom-select w-100" required>
+                    <select name="description" id="description1" class="custom-select w-100" required>
                         <option disabled value="">Select Action</option>
                         <option value="ON">ON</option>
                         <option value="OFF">OFF</option>
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>        
-
-            <div class="date-time-group">
+                </div>    
 
                 <div class="form-group">
                     <label for="dateTimePicker3">From: Date & Time:</label>
@@ -237,8 +252,17 @@
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
-    
-                
+
+            <div class="form-group">
+                    <label for="description">Action: default</label>
+                    <select name="description" id="description" class="custom-select w-100" required>
+                        <option disabled value="">Select Action</option>
+                        <option value="ON">ON</option>
+                        <option value="OFF">OFF</option>
+                    </select>
+                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
+            </div>
+
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
                     <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
@@ -333,7 +357,7 @@
     
   </div><!-- card end -->
 
-<!------------------------------------------------------------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------------------------------------------------------------->
 
   <div class="card">
     <div class="card-header" style="text-align: left">
@@ -344,6 +368,9 @@
         <p class="card-text" id="relatedSchedulesList"></p>
         <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
+
+        <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
+        <button id="nextBtn1" class="btn btn-secondary" style='width: auto;'>Next</button>
     </div><!-- cardbody end -->
 
     <div class="card-header" style="text-align: left">
@@ -401,7 +428,10 @@
         currentTimeElement.innerText = "Current time: " + formattedTime;
         }
 
+        // Update the time every second
         setInterval(updateCurrentTime, 1000);
+
+        // Initial call to set the initial time
         updateCurrentTime();
 </script> <!-- Current time script -->
 
@@ -423,7 +453,7 @@
         dateFormat: "H:i", // Set the desired time format with AM/PM
         altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
-        time_24hr: false, // Use 12-hour time format with AM/PM
+        time_24hr: true, // Use 12-hour time format with AM/PM
     });
 </script><!-- dateTimePicker timepicker -->
 
@@ -434,21 +464,22 @@
         dateFormat: "H:i", // Set the desired time format with AM/PM
         altFormat: "H:i", // Set the format for the alternative input field
         altInput: true, // Use an alternative input field
-        time_24hr: false, // Use 12-hour time format with AM/PM
+        time_24hr: true, // Use 12-hour time format with AM/PM
     });
 </script><!-- dateTimePicker2 timepicker2 -->
 
 <script>
     flatpickr("#dateTimePicker3", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i:s", // Set the desired date and time format
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
-        noCalendar: false, // Ensure that the calendar is shown, which helps exclude milliseconds
+        noCalendar: false, 
+        time_24hr: true, 
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
             document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
-
+            console.log(dateStr);
         }
     });
 </script><!-- dateTimePicker3 specific date and time -->
@@ -456,9 +487,10 @@
 <script>
     flatpickr("#dateTimePicker4", {
         enableTime: true, // Enable time selection
-        dateFormat: "Y-m-d H:i ", // Set the desired date and time format
+        dateFormat: "Y-m-d H:i", // Set the desired date and time format
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
+        time_24hr: true, // Use 12-hour time format with AM/PM
         onChange: function(selectedDates, dateStr, instance) {
             // Update the result paragraph with the selected date and time
             document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
@@ -507,11 +539,8 @@
             var description = $('#description').val();
             var yearmonth = $('#yearmonth').val();
             var day = $('#day').val();
-            // var fromtime = $('#dateTimePicker').val();
-            // var totime = $('#dateTimePicker2').val();
-            var fromtime = $('#dateTimePicker').val().split(' ')[1];  // Extract the time part
-            var totime = $('#dateTimePicker2').val().split(' ')[1];  // Extract the time part
-
+            var fromtime = $('#dateTimePicker').val();
+            var totime = $('#dateTimePicker2').val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
             $.ajax({    
@@ -541,94 +570,48 @@
                             content += '<div class="container">';
 
                             content += '<div class="row">';
-                            content += '<div class="col-6">';
+                            content += '<div class="col-7">';
                             content += '<p>Schedule Details:</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col">';
                             content += '<p> State: </p>';
-                            content += '</div>';
-                            content += '<div class="col-3">';
-                            content += '<p>Action:</p>';
                             content += '</div>';
                             content += '</div>'; // row end
 
                             content += '<div class="row">';
-                            content += '<div class="col-6">';
+                            content += '<div class="col-7">';
                             content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col">';
                             content += '<div class="schedule-details">';
                             content += '<label class="switch">';
                             content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
                             content += '<span class="slider round"></span>';
                             content += '</label>';
-
                             content += '</div>';
-                            content += '</div>';
-                            content += '<div class="col-3">';
-                            content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
                             content += '</div>';
                             content += '</div>'; // row end
 
                             content += '<div class="row">';
-                            content += '<div class="col-6">';
+                            content += '<div class="col-7">';
                             content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col">';
                             content += '<p></p>';
-                            content += '</div>';
-                            content += '<div class="col-3">';
-                            content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
                             content += '</div>';
                             content += '</div>'; // row end
 
                             content += '<div class="row">';
-                            content += '<div class="col-6">';
+                            content += '<div class="col-7">';
                             content += '<p>Action: ' + item.description + '</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col">';
                             content += '<p></p>';
-                            content += '</div>';
-                            content += '<div class="col-3">';
                             content += '</div>';
                             content += '</div>';// row end
 
                             content += '</div>';//container end
                             content += '</div>';//container fluid end
-
-                            content += '<div id="' + modalId + '" class="modal">';
-                            content += '<div class="modal-content">';
-                            content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
-                            content += '<form id="editForm-' + item.id + '">';
-                            content += '@csrf';
-                            content += '@method("PUT")';
-
-                            content += '<div class="form-group">';
-                            content += '<label for="event_datetime">From:</label>';
-                            content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
-                            content += '</div>';
-
-                            content += '<div class="form-group">';
-                            content += '<label for="event_datetime_off">To:</label>';
-                            content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
-                            content += '</div>';
-
-                            content += '<div class="form-group">';
-                            content += '<label for="description">Action:</label>';
-                            content += '<select id="description" name="description" class="form-control">';
-                            content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                            content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
-                            content += '</select>';
-                            content += '</div>';
-
-                            content += '<div class="form-group" >';
-                            content += '<br>';
-                            content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
-                            content += '</div>';
-                            content += '</form>';
-
-                            content += '</div>';
-                            content += '</div>';
                             content += '<hr>'; // Add a separator
 
                     });
@@ -645,17 +628,14 @@
                     console.error('Error updating related schedules:', error);
                 }
             });
+            $('#prevBtn1, #nextBtn1').prop('disabled', true).hide();
+            $('#prevBtn, #nextBtn').prop('disabled', false).show();
         }
+        updateRelatedSchedulesadmin()
     });
 </script><!-- filter for to default datepicker -->
 
 <script>
-    var storedDateTimeValue = localStorage.getItem('dateTimeValue'); // Retrieve the stored datetime value from localStorage
-
-    if (storedDateTimeValue) {
-        $('#dateTimePicker3').val(storedDateTimeValue);
-    }
-
     $(document).ready(function () {
 
         $(document).on('change', '.toggleCheckbox', function () {
@@ -673,60 +653,59 @@
             });
         });// Uncheck other checkboxes with the same event_datetime
 
+        var currentPages1 = 1;
+        var schedulesPerPage1 = 2;
 
-        $(document).on('click', '.submitBtn', function () {
-            var itemId = $(this).closest('.editForm').data('id');
-            submitForm(itemId);
+        $('#description1, #dateTimePicker3').on('change', function () {
+            currentPages = 1; // Reset page to 1 when filters change
+            updateRelatedData1();
+        });
+
+        $('#nextBtn1').on('click', function () {
+            currentPages++;
+            updateRelatedData1();
+        });
+
+        $('#prevBtn1').on('click', function () {
+            if (currentPages > 1) {
+                currentPages--;
+                updateRelatedData1();
+            }
         });
     
-        // $('#description, #dateTimePicker3, #dateTimePicker4').change(function () {
-        $('#description, #dateTimePicker3').change(function () {
-            var description = $('#description').val();
+        function updateRelatedData1() {
+            var description = $('#description1').val();
             var event_datetime = $('#dateTimePicker3').val();
-            // var event_datetime_off = $('#dateTimePicker4').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            // loadPage(1, description,event_datetime, event_datetime_off, );
-            loadPage(1, description,event_datetime,);
-        });
-
-        // Add pagination handling
-        $('#prevBtn').click(function () {
-            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
-            if (currentPage > 1) {
-                loadPage(currentPage - 1);
-            }
-        });
-
-        $('#nextBtn').click(function () {
-            var currentPage = parseInt($('#relatedSchedulesList').data('current-page')) || 1;
-            var lastPage = parseInt($('#relatedSchedulesList').data('last-page')) || 1;
-            if (currentPage < lastPage) {
-                loadPage(currentPage + 1);
-            }
-        });
-
-        // function loadPage(page, event_datetime, event_datetime_off, description) {
-        function loadPage(page, event_datetime, description) {
             $.ajax({
-                type: 'GET',
                 url: '/get-existing-data-user',
+                method: 'GET',
                 data: {
-                    event_datetime: event_datetime,
-                    // event_datetime_off: event_datetime_off,
                     description: description,
-                    page: page,
+                    event_datetime: event_datetime,
+                    page: currentPages
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
                 },
                 success: function (data) {
-                    updateContent(data);
+                    if (data.hasOwnProperty('relatedData1')) {
+                        updateContent(data); 
+                    } else {
+                        console.error('Invalid response format. Missing "relatedData1" property.');
+                    }
                 },
+
                 error: function (error) {
-                    console.error('Error:', error);
+                    console.error('Error updating related schedules:', error);
                 }
             });
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#prevBtn, #nextBtn').prop('disabled', true).hide();
         }
-
     });
-</script><!-- existing schedule for datetimepicker3 -->
+</script><!-- filter for custom datepicker -->
 
 <script>
     function updateContent(data) {
@@ -743,94 +722,48 @@
                     content += '<div class="container">';
 
                     content += '<div class="row">';
-                    content += '<div class="col-6">';
+                    content += '<div class="col-7">';
                     content += '<p>Schedule Details:</p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col">';
                     content += '<p> State: </p>';
-                    content += '</div>';
-                    content += '<div class="col-3">';
-                    content += '<p>Action:</p>';
                     content += '</div>';
                     content += '</div>';//row end
 
                     content += '<div class="row">';
-                    content += '<div class="col-6">';
+                    content += '<div class="col-7">';
                     content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col">';
                     content += '<div class="schedule-details">';
                     content += '<label class="switch">';
                     content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
-
                     content += '<span class="slider round"></span>';
                     content += '</label>';  
                     content += '</div>';
                     content += '</div>';
-                    content += '<div class="col-3">';
-                    content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
-                    content += '</div>';
                     content += '</div>';//row end
 
                     content += '<div class="row">';
-                    content += '<div class="col-6">';
+                    content += '<div class="col-7">';
                     content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col">';
                     content += '<p></p>';
-                    content += '</div>';
-                    content += '<div class="col-3">';
-                    content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
                     content += '</div>';
                     content += '</div>';//row end
                     
                     content += '<div class="row">';
-                    content += '<div class="col-6">';
+                    content += '<div class="col-7">';
                     content += '<p>' +'Action: '+ item.description + '</p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col">';
                     content += '<p></p>';
-                    content += '</div>';
-                    content += '<div class="col-3">';
                     content += '</div>';
                     content += '</div>';//row end
 
                     content += '</div>';//container end
                     content += '</div>';//container fluid end
-                    
-                    content += '<div id="' + modalId + '" class="modal">';
-                    content += '<div class="modal-content">';
-                    content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
-                    content += '<form id="editForm-' + item.id + '">';
-                    content += '@csrf';
-                    content += '@method("PUT")';
-
-                    content += '<div class="form-group">';
-                    content += '<label for="event_datetime">From:</label>';
-                    content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
-                    content += '</div>';
-
-                    content += '<div class="form-group">';
-                    content += '<label for="event_datetime_off">To:</label>';
-                    content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
-                    content += '</div>';
-
-                    content += '<div class="form-group">';
-                    content += '<label for="description">Action:</label>';
-                    content += '<select id="description" name="description" class="form-control">';
-                    content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                    content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
-                    content += '</select>';
-                    content += '</div>';
-
-                    content += '<div class="form-group" >';
-                    content += '<br>';
-                    content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
-                    content += '</div>';
-                    content += '</form>';
-
-                    content += '</div>';
-                    content += '</div>';
                     content += '<hr>'; // Add a separator
                 });
                     $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
@@ -872,7 +805,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/get-related-data',
+                url: '/get-related-data-user',
                 data: { event_datetime: event_datetime },
                 success: function (data) {
                     
@@ -889,22 +822,19 @@
                                 content += '<div class="container">';
 
                                 content += '<div class="row">';
-                                content += '<div class="col-6">';
+                                content += '<div class="col-7">';
                                 content += '<p>Schedule Details:</p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
+                                content += '<div class="col">';
                                 content += '<p> State: </p>';
-                                content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '<p>Action:</p>';
                                 content += '</div>';
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col-6">';
+                                content += '<div class="col-7">';
                                 content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
+                                content += '<div class="col">';
                                 content += '<div class="schedule-details">';
                                 content += '<label class="switch">';
                                 content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
@@ -912,69 +842,26 @@
                                 content += '</label>';  
                                 content += '</div>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '<button id="myBtn" class="btn btn-dark" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
-                                content += '</div>';
-
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col-6">';
+                                content += '<div class="col-7">';
                                 content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
+                                content += '<div class="col">';
                                 content += '<p></p>';
-                                content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '<button class="btn btn-dark delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
                                 content += '</div>';
                                 content += '</div>';//row end
                                 
                                 content += '<div class="row">';
-                                content += '<div class="col-6">';
+                                content += '<div class="col-7">';
                                 content += '<p>' +'Action: '+ item.description + '</p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
+                                content += '<div class="col">';
                                 content += '<p></p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '</div>';
                                 content += '</div>';
 
-                                content += '</div>';
-                                content += '</div>';
-                                
-                                content += '<div id="' + modalId + '" class="modal">';
-                                content += '<div class="modal-content">';
-                                content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
-                                content += '<form id="editForm-' + item.id + '">';
-                                content += '@csrf';
-                                content += '@method("PUT")';
-
-                                content += '<div class="form-group">';
-                                content += '<label for="event_datetime">From:</label>';
-                                content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
-                                content += '</div>';
-
-                                content += '<div class="form-group">';
-                                content += '<label for="event_datetime_off">To:</label>';
-                                content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
-                                content += '</div>';
-
-                                content += '<div class="form-group">';
-                                content += '<label for="description">Action:</label>';
-                                content += '<select id="description" name="description" class="form-control">';
-                                content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
-                                content += '</select>';
-                                content += '</div>';
-
-                                content += '<div class="form-group" >';
-                                content += '<br>';
-                                content += '<button type="button" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
-                                content += '</div>';
-                                content += '</form>';
-            
                                 content += '</div>';
                                 content += '</div>';
                                 content += '<hr>'; // Add a separator
@@ -995,7 +882,6 @@
         });
     });
 </script><!-- related schedule for datetimepicker3 -->
-
 <script>
         function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);
@@ -1156,7 +1042,7 @@ automatic detect for to: date & time  -->
         $('input[type="text"]').val('');
         $('select').prop('selectedIndex', 0);
     });
-</script><!-- remove the input if refresh; -->
+</script><!-- remove the input if refresd; -->
 
 <script>
     $(document).ready(function () {
@@ -1168,7 +1054,9 @@ automatic detect for to: date & time  -->
 
             // Clear any error messages
             $('.text-danger').text('');
+            location.reload(true);
 
         });
     });
 </script><!-- reset -->
+
