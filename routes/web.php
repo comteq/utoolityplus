@@ -80,4 +80,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
 
 
+    Route::post('/log-activity', [ActivityLogController::class, 'logActivity']);
 });
