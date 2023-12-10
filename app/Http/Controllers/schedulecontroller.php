@@ -438,6 +438,14 @@ class ScheduleController extends Controller
             }
             $schedule->save(); // Save the schedule to the database
 
+            // Log the activity for custom schedule creation
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activity' => 'Create Custom Schedule',
+            'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
+            'created_at' => now(),
+        ]);
+
         } else {
             $validationRules = [
                 'description' => 'required',
@@ -505,6 +513,13 @@ class ScheduleController extends Controller
                 return view('schedule', compact('errorMessage', 'failedSchedules'));
             }
 
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activity' => 'Create Default Schedule',
+                'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
+                'created_at' => now(),
+            ]);
+
         }// else end
         return redirect()->route('scheduleadmin.index')->with('success', 'Schedule created successfully!');
     }
@@ -565,42 +580,65 @@ class ScheduleController extends Controller
     }
 
     public function updateSchedule(Request $request, $id)
-    {
-        // Validate the request data as needed
-        $request->validate([
-            'event_datetime' => 'required',
-            'event_datetime_off' => 'required',
-            'description' => 'required|in:ON,OFF',
-        ]);
+{
+    // Validate the request data as needed
+    $request->validate([
+        'event_datetime' => 'required',
+        'event_datetime_off' => 'required',
+        'description' => 'required|in:ON,OFF',
+    ]);
 
-        $schedule = schedules::findOrFail($id);
+    $schedule = schedules::findOrFail($id);
 
-        // Get the original event times before the update
-        $oldEventDatetime = $schedule->event_datetime;
-        $oldEventDatetimeOff = $schedule->event_datetime_off;
+    // Get the original event times before the update
+    $oldEventDatetime = $schedule->event_datetime;
+    $oldEventDatetimeOff = $schedule->event_datetime_off;
+    $oldescription = $schedule->description;
 
-        $schedule->update([
-            'event_datetime' => $request->input('event_datetime'),
-            'event_datetime_off' => $request->input('event_datetime_off'),
-            'description' => $request->input('description'),
-        ]);
+    // Update the schedule
+    $schedule->update([
+        'event_datetime' => $request->input('event_datetime'),
+        'event_datetime_off' => $request->input('event_datetime_off'),
+        'description' => $request->input('description'),
+    ]);
 
-        // Get the updated event times after the update
-        $newEventDatetime = $schedule->event_datetime;
-        $newEventDatetimeOff = $schedule->event_datetime_off;
+    // Get the updated event times after the update
+    $newEventDatetime = $schedule->event_datetime;
+    $newEventDatetimeOff = $schedule->event_datetime_off;
+    $newdescription = $schedule->description;
 
-        // Log the activity
+    // Log the specific changes
+    $changes = [];
+
+    if ($oldEventDatetime != $newEventDatetime) {
+        $changes[] = 'Event datetime changed from ' . $oldEventDatetime . ' to ' . $newEventDatetime;
+    }
+
+    if ($oldEventDatetimeOff != $newEventDatetimeOff) {
+        $changes[] = 'Event datetime off changed from ' . $oldEventDatetimeOff . ' to ' . $newEventDatetimeOff;
+    }
+
+    if ($oldescription != $newdescription) {
+        $changes[] = 'Action changed from ' . $oldescription . ' to ' . $newdescription;
+    }
+
+    if (!empty($changes)) {
+        // Log the activity if there are changes
         Activity::create([
             'user_id' => auth()->id(),
             'activity' => 'Update Schedule',
-            'message' => 'User updated schedule eventime ' . $oldEventDatetime . ' to ' . $newEventDatetime . ' and ' . $oldEventDatetimeOff . ' to ' . $newEventDatetimeOff,
+            'message' => 'User updated schedule (' . implode(', ', $changes) . ')',
             'created_at' => now(),
-    ]);
-        $updatedSchedule = schedules::findOrFail($id);
-        return response()->json([
-            'message' => 'Schedule updated successfully',
-            'updatedSchedule' => $updatedSchedule,
         ]);
     }
+
+    $updatedSchedule = schedules::findOrFail($id);
+    return response()->json([
+        'message' => 'Schedule updated successfully',
+        'updatedSchedule' => $updatedSchedule,
+    ]);
+}
+
+
 
 }//controller end
