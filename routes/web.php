@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/users', UserController::class)->except(['show']);
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile-password', [UserController::class, 'updatePassword'])->name('password.update');
+
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     
     Route::get('/schedule', [schedulecontroller::class, 'index'])->name('schedule.index');

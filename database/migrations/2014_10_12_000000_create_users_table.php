@@ -16,8 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('role')->default(\App\Models\User::ROLE_USER);
+            $table->string('role')->default(\App\Models\User::ROLE_ADMIN);
             $table->string('password');
+            $table->string('status')->default(\App\Models\User::STATUS_ACTIVE);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
