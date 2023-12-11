@@ -245,7 +245,7 @@
                 <div class="form-group">
                     <label for="description">Action: default</label>
                     <select name="description" id="description" class="custom-select w-100" required>
-                        <option disabled value="">Select Action</option>
+                        <option disabled  Selected value="">Select Action</option>
                         <option value="ON">ON</option>
                         <option value="OFF">OFF</option>
                     </select>
@@ -256,6 +256,7 @@
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
                     <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
+                    <div id="yearmonthError" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
@@ -292,7 +293,7 @@
                     </div>
                 </div> 
 
-                <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub">Set Schedule</button>
+                <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
 
             </div> <!-- other-form-elements -->
 
@@ -358,16 +359,17 @@
         <p class="card-text" id="relatedSchedulesList"></p>
         <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
+        <p id="totalEntries">Total Entries: <span id="entryCount">0</span></p>
 
         <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn1" class="btn btn-secondary" style='width: auto;'>Next</button>
     </div><!-- cardbody end -->
 
-    <div class="card-header" style="text-align: left">
+    <div class="card-header" style="text-align: left" id="otherschedheader">
         <h1>Related Schedule</h1>
     </div><!-- cardheader2 end -->
 
-    <div class="card-body">
+    <div class="card-body" id="othersched">
         <p class="card-text" id="other"></p>
         <button id="prevBtn2" class="btn btn-secondary" style='width: auto;'>Prev</button>
         <button id="nextBtn2" class="btn btn-secondary" style='width: auto;'>Next</button>
@@ -387,6 +389,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -488,8 +491,13 @@
     });
 </script><!-- dateTimePicker4 specific off date and time -->
 
+
+
 <script>
     $(document).ready(function () {
+
+        updateRelatedSchedulesadmin();
+        
         $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -505,8 +513,12 @@
             });
         });// Uncheck other checkboxes with the same event_datetime
 
+        $('#yearmonth').on('change', function () {
+            checkSelectedDate();
+        });
+
         var currentPage = 1;
-        var schedulesPerPage = 2;
+        var schedulesPerPage = 3;
 
         $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
             currentPage = 1; // Reset page to 1 when filters change
@@ -532,7 +544,6 @@
             var fromtime = $('#dateTimePicker').val();
             var totime = $('#dateTimePicker2').val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-            
             $.ajax({    
                 url: '/update-related-schedules-admin',
                 method: 'POST',
@@ -585,7 +596,14 @@
                             content += '</div>';
                             content += '</div>';
                             content += '<div class="col-3">';
-                            content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                            content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">';
+                            
+                            content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">';
+                            content += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>';
+                            content += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>';
+                            content += '</svg>';
+                            content += '</button>';
+
                             content += '</div>';
                             content += '</div>'; // row end
 
@@ -597,7 +615,13 @@
                             content += '<p></p>';
                             content += '</div>';
                             content += '<div class="col-3">';
-                            content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+
+                            content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">';
+                            content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                            content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                            content += '</svg>';
+                            content += '</button>';
+                            
                             content += '</div>';
                             content += '</div>'; // row end
 
@@ -651,6 +675,7 @@
                             content += '<hr>'; // Add a separator
 
                     });
+                    $('#entryCount').text(data.totalEntries);
                     } else {
                         content = 'No Related Schedule';
                     }
@@ -665,12 +690,12 @@
                 }
             });
 
+            $('#othersched, #otherschedheader').prop('disabled', true).hide();
             $('#prevBtn1, #nextBtn1').prop('disabled', true).hide();
             $('#prevBtn, #nextBtn').prop('disabled', false).show();
         }
-        updateRelatedSchedulesadmin()
-
     });
+
 </script><!-- filter for to default datepicker -->
 
 
@@ -1154,14 +1179,17 @@
 
         // Disable/enable other form elements based on the button click
         if ($(".date-time-group").is(":visible")) {
-            // Enable inputs in date-time-group and set the name attribute
             $(".date-time-group input, .date-time-group select").prop("disabled", false);
-            // Disable inputs in other-form-elements
             $(".other-form-elements input, .other-form-elements select").prop("disabled", true);
+            $('#othersched, #otherschedheader').show();
+
         } else {
             $(".date-time-group input, .date-time-group select").prop("disabled", true);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", false);
+            $('#othersched, #otherschedheader').hide();
+            
         }
+        
     });
 
     // Handle form submission
@@ -1353,3 +1381,38 @@
         });
     });
 </script><!-- reset -->
+
+<!-- __________________________________________________________________________________________________________-->
+<!-- automatic detection -->
+
+<script>
+function checkSelectedDate() {
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    var selectedDate = $('#yearmonth').val();
+    var parsedDate = moment(selectedDate, 'MM-YYYY');
+    var formattedDate = parsedDate.isValid() ? parsedDate.format('YYYY-MM') : '';
+
+    $.ajax({
+        url: '/validate-date',
+        method: 'POST',
+        data: { selectedDate: formattedDate, 
+                _token: csrfToken },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function (response) {
+            if (response.error) {
+                $('#yearmonthError').text(response.message);
+                $('[data-custom-id="subd"]').prop('disabled', true);
+            } else {
+                $('#yearmonthError').text('');
+                $('[data-custom-id="subd"]').prop('disabled', false);
+            }
+        },
+        error: function (error) {
+            console.error('Error validating date:', error);
+        }
+    });
+}
+</script><!-- automatic detect for default month and year error -->
+

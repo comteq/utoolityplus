@@ -288,9 +288,10 @@ class ScheduleController extends Controller
         }
         
         $page = $request->input('page', 1);
-        $perPage = $request->input('perPage', 2);
+        $perPage = $request->input('perPage', 3);
     
         $offset = ($page - 1) * $perPage;
+        $totalEntries = $query->count(); 
         $relatedData3 = $query->skip($offset)->take($perPage)->get();
         
         $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
@@ -307,7 +308,7 @@ class ScheduleController extends Controller
         });
 
         
-        return response()->json(['relatedData3' => $relatedData3]);
+        return response()->json(['relatedData3' => $relatedData3 ,'totalEntries' => $totalEntries]);
     }//user/admin
 
     public function checkOverlap(Request $request)
@@ -367,6 +368,20 @@ class ScheduleController extends Controller
     
         return response()->json(['success' => true]);
     }//automatic detection for from: date and time
+
+    public function validateDate(Request $request)
+    {
+        $selectedDate = $request->input('selectedDate');
+        $currentDate = now()->format('Y-m');
+    
+        if ($selectedDate && $selectedDate < $currentDate) {
+            return response()->json(['error' => true, 'message' => 'Selected Month/Year Is In The Past. Please Select A Current Month/Year To Create A Schedule.']);
+        }
+    
+        return response()->json(['error' => false, 'message' => '']);
+    }//automatic detect for default month and year error
+    
+    
 
 //-------------------------------------------------------ADMIN----------------------------------------------------------------//
 
@@ -544,7 +559,7 @@ class ScheduleController extends Controller
             'activity' => 'Update Schedule State',
             'message' => 'User updated the state of schedule at ' . $item->event_datetime . ' from ' . $item->state . ' to ' . $newState,
             'created_at' => now(),
-    ]);
+        ]);
     
         $item->state = $item->state === 'Active' ? 'In-Active' : 'Active'; // Toggle the state
         $item->save();
@@ -629,9 +644,10 @@ class ScheduleController extends Controller
             'activity' => 'Update Schedule',
             'message' => 'User updated schedule (' . implode(', ', $changes) . ')',
             'created_at' => now(),
-        ]);
+            ]);
     }
 
+        
     $updatedSchedule = schedules::findOrFail($id);
     return response()->json([
         'message' => 'Schedule updated successfully',
@@ -641,4 +657,12 @@ class ScheduleController extends Controller
 
 
 
-}//controller end
+}
+
+
+
+
+
+
+
+//controller end
