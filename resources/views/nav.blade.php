@@ -86,12 +86,21 @@
     .navbar-nav.left-nav {
       margin-right: auto; /* Push the left-aligned items to the left */
     }
+
+    /* Media query for screens 992px and below */
+@media (max-width: 992px) {
+    /* Remove or override active state styles for elements */
+    .navbar-toggler-icon  {
+       background-color: transparent;
+    }
+
+}
   </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark px-4">
-  <img src="{{ asset('images/logo-white.png') }}" height="60px" class="navbar-brand">
+  <img src="{{ asset('images/logo-inline.png') }}" height="60px" class="navbar-brand">
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
