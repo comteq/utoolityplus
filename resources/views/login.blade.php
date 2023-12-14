@@ -58,10 +58,12 @@
 
 <style>
     body {
-        background-color: #F0F2F5;
+        background: url('images/bg.png') no-repeat center center fixed;
+        background-size: cover;
         padding: 40px;
-        margin-bottom: 70px; /* Adjust margin to accommodate the fixed footer */
+        margin-bottom: 70px;
     }
+    
 
     .login-text {
         text-align: center;

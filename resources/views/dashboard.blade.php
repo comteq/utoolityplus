@@ -1,12 +1,23 @@
-@include('nav')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @include('nav')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+        body, html, .card {
+            height: 100%;
+            background-color: #ecedee;
+        }
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-<link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
-
-<div class="card">
+        .custom {
+            margin-top: 74px
+        }
+        </style>
+</head> 
+<body>
+    <div class="custom-card">
 
     <div class="card-header" style="text-align:center">
         <h1>Room #</h1>
@@ -24,7 +35,7 @@
                 @endphp
 
                 <img class="card-img-top mx-auto img-fluid" src="{{ asset("images/$acImage") }}" alt="ac" style="height: auto; width: 550px;"> <!-- Add 'mx-auto' class for horizontal centering -->
-                <div class="card-body" style="text-align:center">
+                <div class="card-body custom" style="text-align:center">
 
                     <form id="powerForm" action="{{ route('update-ac', ['id' => 1]) }}" method="post">
                         @csrf
@@ -47,7 +58,7 @@
                 @endphp
 
                 <img class="card-img-top mx-auto img-fluid" src="{{ asset("images/$lightsImage") }}" alt="Lights" style="height: 250px; width: 250px;"> <!-- Add 'mx-auto' class for horizontal centering -->
-                <div class="card-body" style="text-align:center">
+                <div class="" style="text-align:center">
 
                     <form id="lightsForm" action="{{ route('update-lights', ['id' => 1]) }}" method="post">
                         @csrf
@@ -103,3 +114,5 @@
         });
     }
 </script>
+</body>
+</html>
