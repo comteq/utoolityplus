@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
             'role' => 'required|string',
         ], [
@@ -43,7 +43,7 @@ class UserController extends Controller
     
         // Check if a user with the same email exists (including soft-deleted users)
         $existingUser = User::withTrashed()->where('email', $input['email'])->first();
-    
+
         if ($existingUser) {
             // If the user exists and is soft deleted, restore and update the status to 'active'
             if ($existingUser->trashed()) {
@@ -199,8 +199,8 @@ class UserController extends Controller
     // Log soft delete
     Activity::create([
         'user_id' => Auth::id(),
-        'activity' => 'Soft Delete User',
-        'message' => 'Admin soft deleted user: ' . $user->email,
+        'activity' => 'Delete User',
+        'message' => 'Admin deleted user: ' . $user->email,
         'created_at' => now(),
     ]);
 

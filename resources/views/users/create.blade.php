@@ -1,6 +1,6 @@
 @include('nav')
 
-<div class="container">
+<div class="container  border-box-form mt-5">
 
     <h2>Create User</h2>
     <form action="{{ route('users.store') }}" method="POST">
@@ -37,3 +37,18 @@
     </div>
 
     
+    <style>
+        .border-box-form {
+        border: 1px solid #ced4da; /* Border color */
+        border-radius: 10px; /* Border radius for rounded corners */
+        padding: 20px; /* Adjust padding as needed */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for floating effect */
+        background-color: #FFFFFF;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px
+    }
+
+    body {
+    background-color: #ecedee;
+}
+    </style>

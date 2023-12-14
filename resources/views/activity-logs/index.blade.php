@@ -1,6 +1,6 @@
 @include('nav')
 
-<div class="container">
+<div class="container mt-2">
     <h2>Activity Logs</h2>
     <label for="activity-filter">Filter by Activity:</label>
         <select id="activity-filter" class="form-control mb-2">
@@ -11,13 +11,18 @@
             <option value="Create User">Create User</option>
             <option value="Update User">Update User</option>
             <option value="Delete User">Delete User</option>
+            <option value="Change Password">Change Password</option>
             <option value="Update Profile">Update Profile</option>
-            <option value="Power Off ACU">Power Off ACU</option>
-            <option value="Power On ACU">Power On ACU</option>
-            <option value="Lights Turned On">Lights Turned On</option>
-            <option value="Lights Turned Off">Lights Turned Off</option>
-            <option value="Power On ACU">Power On ACU</option>
-            <option value="Power Off ACU">Power Off ACU</option>
+            <option value="Power OFF ACU">Power Off ACU</option>
+            <option value="Power ON ACU">Power On ACU</option>
+            <option value="Power OFF Lights">Power OFF Lights</option>
+            <option value="Power ON Lights">Power ON Lights</option>
+            <option value="Create Custom Schedule">Create Custom Schedule</option>
+            <option value="Create Default Schedule">Create Default Schedule</option>
+            <option value="Update Schedule">Update Schedule</option>
+            <option value="Delete Schedule">Delete Schedule</option>
+
+
         </select>
         <table class="table table-striped" id="activity-table">
     
@@ -26,7 +31,7 @@
                     <th>Date & Time</th>
                     <th>Name</th>
                     <th>Activity</th>
-                    <th>Message</th>
+                    <th class="not-export-column">Message</th>
                 </tr>
             </thead>
     
@@ -42,13 +47,14 @@
                         @endif
                     </td>
                     <td>{{ $log->activity }}</td>
-                    <td>{{ $log->message }}</td>
+                    <td class="not-export-column">{{ $log->message }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
     
+    @include('footer')
     
     <style>
     thead {
@@ -78,7 +84,8 @@
                 'copyHtml5',
                 'excelHtml5',
                 'csvHtml5',
-                'pdfHtml5'
+                'pdfHtml5',
+                'print',
             ],
             columnDefs: [
                 { type: 'date', targets: 0 } // Set the first column as a date type

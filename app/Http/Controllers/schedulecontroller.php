@@ -88,6 +88,13 @@ class ScheduleController extends Controller
                 return redirect()->route('schedule.index')->with('success', 'Schedule created successfully but it is overlaping with an active schedule');
             }
             $schedule->save(); // Save the schedule to the database
+
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activity' => 'Create Custom Schedule',
+                'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
+                'created_at' => now(),
+            ]);
         }
 
         else {
@@ -161,6 +168,13 @@ class ScheduleController extends Controller
                 $errorMessage = 'Some schedules overlap with existing events.';
                 return view('schedule', compact('errorMessage', 'failedSchedules'));
             }
+
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activity' => 'Create Default Schedule',
+                'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
+                'created_at' => now(),
+            ]);
 
         }// else end
 
