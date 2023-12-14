@@ -1,6 +1,7 @@
 @include('nav')
 
 <div class="container">
+
     <h2>Create User</h2>
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
@@ -16,6 +17,14 @@
             <label for="password">Password:</label>
             <input type="password" name="password" class="form-control" required>
         </div>
+
+        <div class="form-group">
+            <label for="password_confirmation">Confirm New Password:</label>
+            <input type="password" name="password_confirmation" class="form-control" required>
+        </div>
+        @error('password')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
         <div class="form-group">
             <label for="role">Role:</label>
             <select name="role" class="form-control" required>
@@ -26,3 +35,5 @@
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
     </div>
+
+    

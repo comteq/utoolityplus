@@ -444,8 +444,6 @@
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
-<!------------------------------------------------------------------------------------------------------------------------------->
-
 <!-- __________________________________________________pickers__________________________________________________________________-->
 
 <script>

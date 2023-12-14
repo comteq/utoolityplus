@@ -34,7 +34,13 @@
                 @foreach ($activityLogs as $log)
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($log->created_at)->format('Y-m-d h:i A') }}</td>
-                    <td>{{ $log->user->name }}</td>
+                    <td>
+                        @if($log->user)
+                            {{ $log->user->name }}
+                        @else
+                            User Deleted
+                        @endif
+                    </td>
                     <td>{{ $log->activity }}</td>
                     <td>{{ $log->message }}</td>
                 </tr>

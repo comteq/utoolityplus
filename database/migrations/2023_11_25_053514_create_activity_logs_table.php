@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('device_id')->nullable();
             $table->unsignedBigInteger('schedule_id')->nullable();
             
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('device_id')->references('id')->on('device');
             $table->foreign('schedule_id')->references('id')->on('schedule');
             $table->timestamps();
