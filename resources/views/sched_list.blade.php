@@ -32,7 +32,7 @@
 </style>
 
 @include('nav')
-@include('nav')
+
 <div class="card-header">
 
     @php

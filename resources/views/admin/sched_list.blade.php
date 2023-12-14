@@ -281,6 +281,78 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Get the form and select elements
+        var filterForm = document.getElementById('filterForm');
+        var filterSelects = filterForm.querySelectorAll('select');
+        // Add event listener to each select element
+        filterSelects.forEach(function (select) {
+            select.addEventListener('change', function () {
+                // Submit the form when a filter option changes
+                filterForm.submit();
+            });
+        });
+    });
+</script>
+
+<script>
+    function toggleFilterForm() {
+        var filterForm = document.getElementById("filterForm");
+        filterForm.style.display = (filterForm.style.display === "none" || filterForm.style.display === "") ? "block" : "none";
+    }
+</script>
+
+<!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add event listener to all delete buttons
+        document.querySelectorAll('.delete-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                // Get the schedule ID from the data attribute
+                var scheduleId = button.dataset.scheduleId;
+
+                // Use SweetAlert for confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Use AJAX to send a delete request to the server
+                        fetch('/schedule/' + scheduleId, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Optionally, you can remove the deleted row from the table
+                                button.closest('tr').remove();
+                                Swal.fire('Deleted!', 'Your schedule has been deleted.', 'success');
+                            } else {
+                                Swal.fire('Error!', 'Failed to delete the schedule.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
         // Get the "Check All" checkbox and the individual checkboxes
         var checkAllCheckbox = document.getElementById('checkAll');
         var scheduleCheckboxes = document.querySelectorAll('.schedule-checkbox');
@@ -307,38 +379,51 @@
                     return checkbox.dataset.scheduleId;
                 });
 
-            // Ask for confirmation before deletion (optional)
-            if (confirm('Are you sure you want to delete the selected schedules?')) {
-                // Use AJAX to send a delete request to the server for each selected schedule
-                selectedIds.forEach(function (id) {
-                    fetch('/schedule/' + id, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                console.error('Failed to delete schedule with ID ' + id);
-                            } else {
-                                // Activity: Create log for deleted schedule
-                                logDeletedSchedule(id);
-                            }
+            // Use SweetAlert for confirmation
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Use AJAX to send a delete request to the server for each selected schedule
+                    selectedIds.forEach(function (id) {
+                        fetch('/schedule/' + id, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            },
                         })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                });
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.error('Failed to delete schedule with ID ' + id);
+                                } else {
+                                    // Activity: Create log for deleted schedule
+                                    logDeletedSchedule(id);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    });
 
-                // Optionally, you can update the UI to remove the deleted rows
-                scheduleCheckboxes.forEach(function (checkbox) {
-                    if (checkbox.checked) {
-                        checkbox.closest('tr').remove();
-                    }
-                });
-            }
+                    // Optionally, you can update the UI to remove the deleted rows
+                    scheduleCheckboxes.forEach(function (checkbox) {
+                        if (checkbox.checked) {
+                            checkbox.closest('tr').remove();
+                        }
+                    });
+
+                    Swal.fire('Deleted!', 'Your selected schedules have been deleted.', 'success');
+                }
+            });
         });
+
 
         // Function to create activity log for deleted schedule
         function logDeletedSchedule(scheduleId) {
