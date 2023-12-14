@@ -127,7 +127,7 @@
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 40%;
+        width: 48%;
     }
 
     .close {
@@ -179,9 +179,25 @@
         }
     }
 
-    
-</style>
+    .error-message {
+        color: red;
+    }
 
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .button-container p {
+        margin-right: auto; /* Push the paragraph to the left */
+    }
+
+    .button-container button {
+        margin-left: 5px; 
+    }
+
+
+</style>
 
 <div class="card-deck">
 
@@ -226,6 +242,8 @@
                     <span id="existingSchedulesError" class="text-danger"></span>
                 </div>
 
+                <input type="hidden" name="fromtime_hidden-custom" id="fromtime_hidden-custom" value="" />
+
                 <div class="form-group">
                     <label for="dateTimePicker4">To: Date & Time:</label>
                     <div class="inline-picker input-group">
@@ -235,15 +253,16 @@
                             </div>
                     </div>
                     <span id="existingSchedulesErrorTo" class="text-danger"></span>
+                    <span id="pasterror" class="text-danger"></span>
                 </div>
 
-                <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub">Set Schedule</button>
+                <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subcustom">Set Schedule</button>
             </div> <!-- date-time-group -->
       
             <div class="other-form-elements">
 
                 <div class="form-group">
-                    <label for="description">Action: default</label>
+                    <label for="description">Action:</label>
                     <select name="description" id="description" class="custom-select w-100" required>
                         <option disabled  Selected value="">Select Action</option>
                         <option value="ON">ON</option>
@@ -251,7 +270,6 @@
                     </select>
                     <!-- <span id="existingactionerror" class="text-danger"></span> -->
                 </div>
-            
 
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
@@ -291,7 +309,10 @@
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
                     </div>
+                    <span id="toError" class="text-danger"></span>
                 </div> 
+
+                <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
 
                 <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
 
@@ -334,7 +355,7 @@
 
         </form><!-- form end --> 
 
-        <div class="form-group" style="text-align: center">
+        <div class="form-group" style="text-align: center; margin-top: 15px;">
             <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
         </div>
 
@@ -352,27 +373,47 @@
 
   <div class="card">
     <div class="card-header" style="text-align: left">
-            <h1>Existing Schedule</h1>        
+        <h1>Existing Schedule</h1>        
     </div><!-- cardheader end -->
 
-    <div class="card-body">
-        <p class="card-text" id="relatedSchedulesList"></p>
-        <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
-        <p id="totalEntries">Total Entries: <span id="entryCount">0</span></p>
+        <div class="card-body">
+            <p class="card-text" id="relatedSchedulesList"></p>
 
-        <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn1" class="btn btn-secondary" style='width: auto;'>Next</button>
-    </div><!-- cardbody end -->
+                <div class="button-container">
+                    <p id="totalEntries">Total Entries: <span id="entryCount"></span></p>
+                    <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                    <button id="nextBtn" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                </div>
+
+                <div class="button-container">
+                    <p id="totalEntries4">Total Entries: <span id="entryCount4">--</span></p>
+                    <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                    <button id="nextBtn1" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                </div><!-- custom -->
+                
+        </div><!-- cardbody end -->
+
 
     <div class="card-header" style="text-align: left" id="otherschedheader">
-        <h1>Related Schedule</h1>
+        <h1>Other Schedule</h1>
     </div><!-- cardheader2 end -->
 
     <div class="card-body" id="othersched">
         <p class="card-text" id="other"></p>
-        <button id="prevBtn2" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn2" class="btn btn-secondary" style='width: auto;'>Next</button>
+
+            <div class="button-container">
+                <p id="totalEntries2">Total Entries: <span id="entryCount2">--</span></p>
+                <button id="prevBtn3" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                <button id="nextBtn3" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+            </div>
+
+            <div class="button-container">
+                <p id="totalEntries5" style='display: none;'>Total Entries: <span id="entryCount5" style='display: none;'>--</span></p>
+                <button id="prevBtn2" class="btn btn-secondary" style='width: auto; display: none;'>Prev</button>
+                <button id="nextBtn2" class="btn btn-secondary" style='width: auto; display: none; margin-right:50px'>Next</button>
+            </div><!-- custom -->
+
+
     </div><!-- cardbody2 end -->
       
   </div><!-- card deck end2 -->
@@ -390,6 +431,7 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -402,98 +444,9 @@
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
+<!------------------------------------------------------------------------------------------------------------------------------->
 
-
-<script>
-    $(document).ready(function() {
-      $("[name='default_schedule']").click(function(e) {
-        e.preventDefault();
-        
-        // Get CSRF token from meta tag
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-        
-        // Check form validity
-        if (!isFormValid()) {
-          // The form is not valid, do not proceed
-          return;
-        }
-    
-        // Get form data
-        var formData = {
-          yearmonth: $("[name='yearmonth']").val(),
-          day: $("[name='day']").val(),
-          fromtime: $("[name='fromtime']").val(),
-          totime: $("[name='totime']").val(),
-          action: "Set Default Schedule" // You may customize this as needed
-        };
-    
-        // Make AJAX request with CSRF token
-        $.ajax({
-          type: "POST",
-          url: "/log-activity", // Replace with your actual endpoint
-          data: formData,
-          dataType: "json",
-          headers: {
-            'X-CSRF-TOKEN': csrfToken
-          },
-          success: function(response) {
-            // Handle success response
-            console.log(response.message);
-            
-            // Only submit the form if the AJAX request is successful
-            $('form').submit();
-          },
-          error: function(error) {
-            // Handle error
-            console.error("Error logging activity:", error);
-          }
-        });
-      });
-      
-      // Function to check form validity
-      function isFormValid() {
-        // Implement your form validation logic here
-        // You may use HTML5 validation or a custom validation library
-        
-        // Example: Check if the 'yearmonth' field is not empty
-        if ($("[name='yearmonth']").val().trim() === '') {
-          alert('Please fill in the Year & Month field.');
-          return false;
-        }
-        
-        // Add more validation checks as needed
-        
-        // If all validation checks pass, return true
-        return true;
-      }
-    });
-</script>
-
-<script>
-    function updateCurrentTime() {
-        var currentTimeElement = document.getElementById("currentTime");
-        var currentTime = new Date();
-        var hours = currentTime.getHours();
-        var minutes = currentTime.getMinutes();
-        var ampm = hours >= 12 ? 'pm' : 'am';
-
-        // Convert to 12-hour format
-        hours = hours % 12;
-        hours = hours ? hours : 12; // Handle midnight (12 AM)
-
-        // Add leading zeros if needed
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-
-        var formattedTime = hours + ":" + minutes + " " + ampm;
-        currentTimeElement.innerText = "Current time: " + formattedTime;
-        }
-
-        // Update the time every second
-        setInterval(updateCurrentTime, 1000);
-
-        // Initial call to set the initial time
-        updateCurrentTime();
-</script> <!-- Current time script -->
+<!-- __________________________________________________pickers__________________________________________________________________-->
 
 <script>
     $(document).ready(function(){
@@ -551,14 +504,10 @@
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
         time_24hr: true, // Use 12-hour time format with AM/PM
-        onChange: function(selectedDates, dateStr, instance) {
-            // Update the result paragraph with the selected date and time
-            document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
-        }
     });
 </script><!-- dateTimePicker4 specific off date and time -->
 
-
+<!-- _______________________________________________existing & related__________________________________________________________-->
 
 <script>
     $(document).ready(function () {
@@ -585,7 +534,7 @@
         });
 
         var currentPage = 1;
-        var schedulesPerPage = 3;
+        var schedulesPerPage = 2;
 
         $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
             currentPage = 1; // Reset page to 1 when filters change
@@ -604,6 +553,7 @@
             }
         });
 
+        
         function updateRelatedSchedulesadmin() {
             var description = $('#description').val();
             var yearmonth = $('#yearmonth').val();
@@ -611,6 +561,7 @@
             var fromtime = $('#dateTimePicker').val();
             var totime = $('#dateTimePicker2').val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            
             $.ajax({    
                 url: '/update-related-schedules-admin',
                 method: 'POST',
@@ -641,10 +592,10 @@
                             content += '<div class="col-6">';
                             content += '<p>Schedule Details:</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col-3" >';
                             content += '<p> State: </p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col-3" style="text-align: center;">';
                             content += '<p>Action:</p>';
                             content += '</div>';
                             content += '</div>'; // row end
@@ -653,42 +604,37 @@
                             content += '<div class="col-6">';
                             content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col-3"  style="text-align: center;">';
                             content += '<div class="schedule-details">';
                             content += '<label class="switch">';
                             content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="'+ item.event_datetime+'" class="toggleCheckbox slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
                             content += '<span class="slider round"></span>';
                             content += '</label>';
-
                             content += '</div>';
                             content += '</div>';
-                            content += '<div class="col-3">';
+                            content += '<div class="col-3" style="text-align: center;">';
                             content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">';
-                            
                             content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">';
                             content += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>';
                             content += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>';
                             content += '</svg>';
                             content += '</button>';
-
                             content += '</div>';
                             content += '</div>'; // row end
 
                             content += '<div class="row">';
-                            content += '<div class="col-6">';
+                            content += '<div class="col-6" >';
                             content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                             content += '</div>';
                             content += '<div class="col-3">';
                             content += '<p></p>';
                             content += '</div>';
-                            content += '<div class="col-3">';
-
+                            content += '<div class="col-3" style="text-align: center;">';
                             content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">';
                             content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
                             content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
                             content += '</svg>';
                             content += '</button>';
-                            
                             content += '</div>';
                             content += '</div>'; // row end
 
@@ -699,7 +645,18 @@
                             content += '<div class="col-3">';
                             content += '<p></p>';
                             content += '</div>';
+                            content += '<div class="col-3" style="text-align: center;">';
+                            content += '</div>';
+                            content += '</div>';// row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-6">';
+                            content += '<p>Status: ' + item.status + '</p>';
+                            content += '</div>';
                             content += '<div class="col-3">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '<div class="col-3" style="text-align: center;">';
                             content += '</div>';
                             content += '</div>';// row end
 
@@ -709,18 +666,22 @@
                             content += '<div id="' + modalId + '" class="modal">';
                             content += '<div class="modal-content">';
                             content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                            content += '<h4>Status: ' + item.status + '</h4>';
                             content += '<form id="editForm-' + item.id + '">';
                             content += '@csrf';
                             content += '@method("PUT")';
 
                             content += '<div class="form-group">';
                             content += '<label for="event_datetime">From:</label>';
+                            content += '<input type="hidden" name="schedule_status" value="' + item.status + '">';
                             content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
                             content += '</div>';
 
                             content += '<div class="form-group">';
                             content += '<label for="event_datetime_off">To:</label>';
-                            content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                            // content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                            content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '" onchange="checkDatetimeValidity(' + item.id + ')">';
+                            content += '<div id="toDatetimeError-' + item.id + '" class="error-message"></div>'; // Use dynamic ID based on the item ID
                             content += '</div>';
 
                             content += '<div class="form-group">';
@@ -733,7 +694,7 @@
 
                             content += '<div class="form-group" >';
                             content += '<br>';
-                            content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                            content += '<button type="button" id="submitedit" class="form-control btn btn-primary" onclick="submitForm(' + item.id + ')">Submit</button>';
                             content += '</div>';
                             content += '</form>';
 
@@ -742,9 +703,11 @@
                             content += '<hr>'; // Add a separator
 
                     });
+                    
                     $('#entryCount').text(data.totalEntries);
                     } else {
                         content = 'No Related Schedule';
+                        $('#entryCount').text(0);
                     }
                     $('#relatedSchedulesList').html(content);
                     } else {
@@ -755,17 +718,234 @@
                 error: function (error) {
                     console.error('Error updating related schedules:', error);
                 }
+                
             });
-
-            $('#othersched, #otherschedheader').prop('disabled', true).hide();
+            $('#totalEntries4, #entryCount4').hide();
             $('#prevBtn1, #nextBtn1').prop('disabled', true).hide();
             $('#prevBtn, #nextBtn').prop('disabled', false).show();
+            
         }
     });
-
 </script><!-- filter for to default datepicker -->
 
+<script>
+    $(document).ready(function () {
 
+        $(document).on('change', '.toggleCheckbox1', function () {
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
+
+        $('#yearmonth').on('change', function () {
+            checkSelectedDate();
+        });
+
+        var currentPage = 1;
+        var schedulesPerPage = 2;
+
+        $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
+            currentPage = 1; // Reset page to 1 when filters change
+            updateotherRelatedSchedulesadmin();
+        });
+
+        $('#nextBtn3').on('click', function () {
+            currentPage++;
+            updateotherRelatedSchedulesadmin();
+        });
+
+        $('#prevBtn3').on('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updateotherRelatedSchedulesadmin();
+            }
+        });
+
+        function updateotherRelatedSchedulesadmin() {
+            var description = $('#description').val();
+            var yearmonth = $('#yearmonth').val();
+            var day = $('#day').val();
+            var fromtime = $('#dateTimePicker').val();
+            var totime = $('#dateTimePicker2').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+
+            $.ajax({    
+                url: '/get-other-related-data',
+                method: 'POST',
+                data: {
+                    description: description,
+                    _token: csrfToken,
+                    yearmonth: yearmonth,
+                    day: day,
+                    fromtime: fromtime,
+                    totime: totime,
+                    page: currentPage,
+                    perPage: schedulesPerPage,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                success: function (data) {
+                if (data.hasOwnProperty('otherrelatedSchedules')) {
+                    var content = '';
+                    if (data.otherrelatedSchedules.length > 0) {
+                        data.otherrelatedSchedules.forEach(function (item) {
+                            
+                                console.log('Item:', item);
+                                var modalId = 'myModal-' + item.id;
+                                content += '<div class="container-fluid" id="schedule-' + item.id + '">';
+                                content += '<div class="container">';
+
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>Schedule Details:</p>';
+                                content += '</div>';
+                                content += '<div class="col-3" >';
+                                content += '<p> State: </p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<p>Action:</p>';
+                                content += '</div>';
+                                content += '</div>'; // row end
+
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3"  style="text-align: center;">';
+                                content += '<div class="schedule-details">';
+                                content += '<label class="switch">';
+                                content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="'+ item.event_datetime+'" class="toggleCheckbox slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
+                                content += '<span class="slider round"></span>';
+                                content += '</label>';
+                                content += '</div>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">';
+                                content += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>';
+                                content += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>';
+                                content += '</svg>';
+                                content += '</button>';
+                                content += '</div>';
+                                content += '</div>'; // row end
+
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<p></p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                                content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                                content += '</svg>';
+                                content += '</button>';
+                                content += '</div>';
+                                content += '</div>'; // row end
+
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>Action: ' + item.description + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<p></p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '</div>';
+                                content += '</div>';// row end
+
+                                
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>Status: ' + item.status + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<p></p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '</div>';
+                                content += '</div>';// row end
+
+                                content += '</div>';//container end
+                                content += '</div>';//container fluid end
+
+                                content += '<div id="' + modalId + '" class="modal">';
+                                content += '<div class="modal-content">';
+                                content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                                content += '<h4>Status: ' + item.status + '</h4>';
+                                content += '<form id="editForm-' + item.id + '">';
+                                content += '@csrf';
+                                content += '@method("PUT")';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="event_datetime">From:</label>';
+                                content += '<input type="hidden" name="schedule_status" value="' + item.status + '">';
+                                content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
+                                content += '</div>';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="event_datetime_off">To:</label>';
+                                // content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '">';
+                                content += '<input type="datetime-local" name="event_datetime_off" class="form-control" value="' + formatDatetimeForInput(item.event_datetime_off) + '" onchange="checkDatetimeValidity(' + item.id + ')">';
+                                content += '<div id="toDatetimeError-' + item.id + '" class="error-message"></div>'; // Use dynamic ID based on the item ID
+                                content += '</div>';
+
+                                content += '<div class="form-group">';
+                                content += '<label for="description">Action:</label>';
+                                content += '<select id="description" name="description" class="form-control">';
+                                content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
+                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
+                                content += '</select>';
+                                content += '</div>';
+
+                                content += '<div class="form-group" >';
+                                content += '<br>';
+                                content += '<button type="button" id="submitedit" class="form-control btn btn-primary" onclick="submitForm(' + item.id + ')">Submit</button>';
+                                content += '</div>';
+                                content += '</form>';
+
+                                content += '</div>';
+                                content += '</div>';
+                                content += '<hr>'; // Add a separator
+                            
+                    });
+                    $('#entryCount2').text(data.totalEntries2);
+                    } else {
+                        content = 'No Related Schedule';
+                        $('#entryCount2').text(0);
+                    }
+                    $('#other').html(content);
+                    } else {
+                        console.error('Invalid response format. Missing "relatedData" property.');
+                    }
+                },
+
+                error: function (error) {
+                    console.error('Error updating related schedules:', error);
+                }
+            });
+
+            // $('#othersched, #otherschedheader').prop('disabled', true).hide();
+           
+            $('#prevBtn2, #nextBtn2').prop('disabled', true).hide();
+            $('#prevBtn3, #nextBtn3').prop('disabled', false).show();
+            $('#totalEntries5, #entryCount5').hide();
+        }
+    });
+</script><!-- filter for to related-default datepicker -->
 
 <script>
     $(document).ready(function () {
@@ -834,7 +1014,9 @@
                 }
             });
             $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#prevBtn2, #nextBtn2').prop('disabled', false).show();
             $('#prevBtn, #nextBtn').prop('disabled', true).hide();
+            
         }
     });
 </script><!-- filter for custom datepicker -->
@@ -860,7 +1042,7 @@
                     content += '<div class="col-3">';
                     content += '<p> State: </p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col-3" style="text-align: center;">';
                     content += '<p>Action:</p>';
                     content += '</div>';
                     content += '</div>';//row end
@@ -878,8 +1060,13 @@
                     content += '</label>';  
                     content += '</div>';
                     content += '</div>';
-                    content += '<div class="col-3">';
-                    content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">';
+                    content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">';
+                    content += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>';
+                    content += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>';
+                    content += '</svg>';
+                    content += '</button>';
                     content += '</div>';
                     content += '</div>';//row end
 
@@ -890,8 +1077,12 @@
                     content += '<div class="col-3">';
                     content += '<p></p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
-                    content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">';
+                    content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                    content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                    content += '</svg>';
+                    content += '</button>';
                     content += '</div>';
                     content += '</div>';//row end
                     
@@ -906,18 +1097,31 @@
                     content += '</div>';
                     content += '</div>';//row end
 
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>Status: ' + item.status + '</p>';
+                    content += '</div>';
+                    content += '<div class="col-3">';
+                    content += '<p></p>';
+                    content += '</div>';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '</div>';
+                    content += '</div>';// row end                    
+
                     content += '</div>';//container end
                     content += '</div>';//container fluid end
                     
                     content += '<div id="' + modalId + '" class="modal">';
                     content += '<div class="modal-content">';
                     content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                    content += '<h4>Status: ' + item.status + '</h4>';
                     content += '<form id="editForm-' + item.id + '">';
                     content += '@csrf';
                     content += '@method("PUT")';
 
                     content += '<div class="form-group">';
                     content += '<label for="event_datetime">From:</label>';
+                    content += '<input type="hidden" name="schedule_status" value="' + item.status + '">';
                     content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
                     content += '</div>';
 
@@ -936,7 +1140,7 @@
 
                     content += '<div class="form-group" >';
                     content += '<br>';
-                    content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                    content += '<button type="button" id="submitedit" class="form-control" onclick="submitForm2(' + item.id + ')">Submit</button>';
                     content += '</div>';
                     content += '</form>';
 
@@ -946,8 +1150,10 @@
                 });
                     $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
                     $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
+                    $('#entryCount4').text(data.totalEntries4);
             } else {
                 content = 'No Related Schedule';
+                $('#entryCount4').text(0);
             }
 
             $('#relatedSchedulesList').html(content);
@@ -959,18 +1165,17 @@
 
 <script>
     $(document).ready(function () {
+        
+        var currentPages2 = 1;
+        var schedulesPerPage2 = 2;  // Adjust this according to your requirements
 
         $(document).on('change', '.toggleCheckbox', function () {
             var clickedCheckbox = $(this);
-            var clickedItemId = clickedCheckbox.data('id');
-            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime');
 
             $('.toggleCheckbox').not(clickedCheckbox).each(function () {
                 var otherCheckbox = $(this);
-                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
-
-                var formattedClickedDatetime = moment(clickedEventDatetime).format();
-                var formattedOtherDatetime = moment(otherEventDatetime).format();
+                var otherEventDatetime = otherCheckbox.data('event-datetime');
 
                 if (otherEventDatetime === clickedEventDatetime) {
                     otherCheckbox.prop('checked', false);
@@ -979,23 +1184,39 @@
         });// Uncheck other checkboxes with the same event_datetime
 
         $('#dateTimePicker3').change(function () {
-            var event_datetime = $(this).val();
+            currentPages2 = 1; // Reset current page when the date changes
+            loadRelatedData2();
+        });
+
+        $('#nextBtn2').on('click', function () {
+            currentPages2++;
+            loadRelatedData2();
+        });
+
+        $('#prevBtn2').on('click', function () {
+            if (currentPages2 > 1) {
+                currentPages2--;
+                loadRelatedData2();
+            }
+        });
+
+        function loadRelatedData2() {
+            var event_datetime = $('#dateTimePicker3').val();
 
             $.ajax({
                 type: 'GET',
                 url: '/get-related-data',
-                data: { event_datetime: event_datetime },
+                data: {
+                    event_datetime: event_datetime,
+                    page: currentPages2,
+                },
                 success: function (data) {
-                    
                     if (data.hasOwnProperty('relatedData')) {
-                        
                         var content = '';
-
                         if (data.relatedData.length > 0) {
-                            // Customize this part based on your actual data structure
                             data.relatedData.forEach(function (item) {
                                 var modalId = 'myModal-' + item.id;
-    
+
                                 content += '<div class="container-fluid" id="schedule-' + item.id + '">';
                                 content += '<div class="container">';
 
@@ -1006,44 +1227,52 @@
                                 content += '<div class="col-3">';
                                 content += '<p> State: </p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
+                                content += '<div class="col-3" style="text-align: center;">';
                                 content += '<p>Action:</p>';
                                 content += '</div>';
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
                                 content += '<div class="col-6">';
-                                content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
+                                content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
                                 content += '</div>';
                                 content += '<div class="col-3">';
                                 content += '<div class="schedule-details">';
                                 content += '<label class="switch">';
-                                content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="'+ item.event_datetime+'" class="toggleCheckbox slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
+                                content += '<input type="checkbox" data-id="' + item.id + '" data-event-datetime="' + item.event_datetime + '" class="toggleCheckbox slider ' + (item.state === 'Active' ? 'green' : 'red') + '" onclick="toggleButtonClick2(' + item.id + ')" ' + (item.state === 'Active' ? 'checked' : '') + '>';
                                 content += '<span class="slider round"></span>';
-                                content += '</label>';  
+                                content += '</label>';
                                 content += '</div>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '<button id="myBtn" class="btn btn-dark" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">✏️</button>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button id="myBtn" class="btn btn-info" data-id="' + item.id + '" onclick="openModal(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">';
+                                content += '<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>';
+                                content += '<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>';
+                                content += '</svg>';
+                                content += '</button>';
                                 content += '</div>';
 
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
                                 content += '<div class="col-6">';
-                                content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                                content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                                 content += '</div>';
                                 content += '<div class="col-3">';
                                 content += '<p></p>';
                                 content += '</div>';
-                                content += '<div class="col-3">';
-                                content += '<button class="btn btn-dark delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">🗑️</button>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button class="btn btn-danger delete-btn" data-id="' + item.id + '" onclick="deleteSchedule(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                                content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                                content += '</svg>';
                                 content += '</div>';
                                 content += '</div>';//row end
-                                
+
                                 content += '<div class="row">';
                                 content += '<div class="col-6">';
-                                content += '<p>' +'Action: '+ item.description + '</p>';
+                                content += '<p>' + 'Action: ' + item.description + '</p>';
                                 content += '</div>';
                                 content += '<div class="col-3">';
                                 content += '<p></p>';
@@ -1052,18 +1281,31 @@
                                 content += '</div>';
                                 content += '</div>';
 
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>Status: ' + item.status + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3">';
+                                content += '<p></p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '</div>';
+                                content += '</div>';// row end     
+
                                 content += '</div>';
                                 content += '</div>';
-                                
+
                                 content += '<div id="' + modalId + '" class="modal">';
                                 content += '<div class="modal-content">';
                                 content += '<span class="close" style="text-align:right";data-id="' + item.id + '" onclick="closeModal(' + item.id + ')">&times;</span>';
+                                content += '<h4>Status: ' + item.status + '</h4>';
                                 content += '<form id="editForm-' + item.id + '">';
                                 content += '@csrf';
                                 content += '@method("PUT")';
 
                                 content += '<div class="form-group">';
                                 content += '<label for="event_datetime">From:</label>';
+                                content += '<input type="hidden" name="schedule_status" value="' + item.status + '">';
                                 content += '<input type="datetime-local" name="event_datetime" class="form-control" value="' + formatDatetimeForInput(item.event_datetime) + '">';
                                 content += '</div>';
 
@@ -1082,16 +1324,18 @@
 
                                 content += '<div class="form-group" >';
                                 content += '<br>';
-                                content += '<button type="button" class="form-control" onclick="submitForm(' + item.id + ')">Submit</button>';
+                                content += '<button type="button" class="form-control" onclick="submitForm2(' + item.id + ')">Submit</button>';
                                 content += '</div>';
                                 content += '</form>';
-            
+
                                 content += '</div>';
                                 content += '</div>';
                                 content += '<hr>'; // Add a separator
                             });
+                            $('#entryCount5').text(data.totalEntries5);
                         } else {
                             content = 'No Related Schedule';
+                            $('#entryCount5').text(0);
                         }
 
                         $('#other').html(content);
@@ -1102,10 +1346,13 @@
                 error: function (error) {
                     console.error('Error:', error);
                 }
-            });//ajax end
-        });
+            }); //ajax end
+            
+        }
     });
 </script><!-- related schedule for datetimepicker3 -->
+
+<!-- ______________________________________________________Crude________________________________________________________________-->
 
 <script>
     function toggleButtonClick2(itemId) {
@@ -1133,84 +1380,481 @@
 </script><!-- update state --> 
 
 <script>
+
     function deleteSchedule(itemId) {
-        // Ask for confirmation before proceeding
-        var isConfirmed = confirm('Are you sure you want to delete this schedule?');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Store the datetime value before the reload
+                var dateTimeValue = $('#dateTimePicker').val();
 
-        // If the user confirms, proceed with the deletion
-        if (isConfirmed) {
-            // Store the datetime value before the reload
-            var dateTimeValue = $('#dateTimePicker').val();
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/delete-schedule/' + itemId,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        console.log('Database deleted successfully');
+                        $('#schedule-' + itemId).remove();
 
-            $.ajax({
-                type: 'DELETE',
-                url: '/delete-schedule/' + itemId,
-                data: {
-                    _token: '{{ csrf_token() }}',
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    console.log('Database deleted successfully');
-                    $('#schedule-' + itemId).remove();
+                        // Store the datetime value in localStorage
+                        localStorage.setItem('dateTimeValue', dateTimeValue);
+                        checkExistingSchedules(dateTimeValue);
+                    },
+                    error: function (error) {
+                        console.error('Error deleting schedule:', error);
 
-                    // Store the datetime value in localStorage
-                    localStorage.setItem('dateTimeValue', dateTimeValue);
-                    checkExistingSchedules(dateTimeValue);
-                },
-                error: function (error) {
-                    console.error('Error deleting schedule:', error);
-
-                    // Check the error status and responseText
-                    if (error.status === 401) {
-                        console.error('Unauthorized access. Make sure you are authenticated.');
-                    } else {
-                        console.error('Unknown error. Check the server logs for more information.');
+                        // Check the error status and responseText
+                        if (error.status === 401) {
+                            console.error('Unauthorized access. Make sure you are authenticated.');
+                        } else {
+                            console.error('Unknown error. Check the server logs for more information.');
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     }
 
 </script><!-- Delete --> 
 
 <script>
+
     function openModal(itemId) {
-        var modalId = 'myModal-' + itemId;
-        var modal = document.getElementById(modalId);
-        modal.style.display = "block";
-    } 
+        // Show SweetAlert instead of directly opening the modal
+        Swal.fire({
+            title: 'Edit Confirmation',
+            text: 'Are you sure you want to edit this schedule?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with opening the modal
+                var modalId = 'myModal-' + itemId;
+                var modal = document.getElementById(modalId);
+                modal.style.display = "block";
+            }
+        });
+    }
 
     function closeModal(itemId) {
         var modalId = 'myModal-' + itemId;
         var modal = document.getElementById(modalId);
         modal.style.display = "none";
-        
+        resetForm(itemId);
     } 
+
+    function resetForm(itemId) {
+        var formId = 'editForm-' + itemId;
+        $('#' + formId)[0].reset(); // Reset the form using the DOM element
+        $('#toDatetimeError-' + itemId).html('').hide(); // Clear and hide the error message
+    }
 
     function submitForm(itemId) {
         var formId = 'editForm-' + itemId;
         var formData = $('#' + formId).serialize();
         var selectedState = $('#state').val();
-        
-        $.ajax({
-            type: 'PUT',
-            url: '/update-schedule/' + itemId,  
-            data: formData,
-            success: function (response) {
-                console.log('Schedule updated successfully');
-                closeModal(itemId);
-                var updatedDateTimeValue = $('#dateTimePicker3').val();
-                localStorage.setItem('dateTimeValue', updatedDateTimeValue);
-                $('#dateTimePicker3').trigger('change'); 
-            },
+        var fromDatetime = $('#' + formId + ' [name="event_datetime"]').val();
+        var toDatetime = $('#' + formId + ' [name="event_datetime_off"]').val();
+        var status = $('#' + formId + ' [name="schedule_status"]').val();
+        var startDate = new Date(fromDatetime);
+        var endDate = new Date(toDatetime);
+        var currentDate = new Date(); // Get the current date
 
+        if (startDate < currentDate && endDate < currentDate) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Cannot create a schedule in the past.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop the submission
+        }
+
+        if (startDate.toDateString() !== endDate.toDateString()) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Schedules cannot span multiple days.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop the submission
+        }
+
+        if (status === 'Processing') {
+                // Display SweetAlert for status check
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Cannot edit schedule with status "Processing"',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop the submission
+        }
+
+        // Make an AJAX call to check for overlapping schedules
+        $.ajax({
+            type: 'POST',
+            url: '/check-overlapping-schedule',
+            data: {
+                event_datetime: fromDatetime,
+                event_datetime_off: toDatetime,
+                schedule_id: itemId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                if (response.overlap && !response.editingOverlap) {
+                    // Display SweetAlert for overlapping schedule
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There is an overlapping schedule.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/get-schedules-count',
+                        data: { event_datetime: fromDatetime },
+                        success: function (response) {
+                            var existingSchedulesCount = response.count;
+
+                            if (existingSchedulesCount >= 2) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Cannot insert more than 2 schedules with the same Start Time',
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                // Proceed with form submission
+                                updateSchedule(itemId, formData);
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            },
             error: function (error) {
                 console.error('Error:', error);
             }
         });
-    } 
+    }
+
+    function updateSchedule(itemId, formData) {
+        $.ajax({
+            type: 'PUT',
+            url: '/update-schedule/' + itemId,
+            data: formData,
+            success: function (response) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Schedule updated successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        closeModal(itemId);
+                        var updatedDateTimeValue = $('#dateTimePicker').val();
+                        localStorage.setItem('dateTimeValue', updatedDateTimeValue);
+                        $('#dateTimePicker').trigger('change');
+                    }
+                });
+            },
+            error: function (error) {
+                // Handle error
+                if (error.responseJSON && error.responseJSON.errors && error.responseJSON.errors.event_datetime_off) {
+                    var errorMessage = error.responseJSON.errors.event_datetime_off[0];
+                    if (errorMessage.includes('Cannot insert more than 2 schedules with the same Start Time')) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                        return; // Stop the submission
+                    } else {
+                        // Display the default error message
+                        $('#toDatetimeError').html(errorMessage);
+                    }
+                }
+
+                if (error.responseJSON && error.responseJSON.errors && error.responseJSON.errors.event_datetime_off.includes('There is an overlapping schedule.')) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There is an overlapping schedule.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                    return submitForm(itemId); // Stop the submission
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error updating the schedule.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                console.error('Error:', error);
+            }
+        });
+    }
+
+
+    function submitForm2(itemId) {
+        var formId = 'editForm-' + itemId;
+        var formData = $('#' + formId).serialize();
+        var selectedState = $('#state').val();
+        var fromDatetime = $('#' + formId + ' [name="event_datetime"]').val();
+        var toDatetime = $('#' + formId + ' [name="event_datetime_off"]').val();
+        var status = $('#' + formId + ' [name="schedule_status"]').val();
+        var startDate = new Date(fromDatetime);
+        var endDate = new Date(toDatetime);
+        var currentDate = new Date(); // Get the current date
+
+        if (startDate < currentDate && endDate < currentDate) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Cannot create a schedule in the past.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop the submission
+        }
+
+        if (startDate.toDateString() !== endDate.toDateString()) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Schedules cannot span multiple days.',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop the submission
+        }
+
+        if (status === 'Processing') {
+                // Display SweetAlert for status check
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Cannot edit schedule with status "Processing"',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop the submission
+        }
+
+        // Make an AJAX call to check for overlapping schedules
+        $.ajax({
+            type: 'POST',
+            url: '/check-overlapping-schedule',
+            data: {
+                event_datetime: fromDatetime,
+                event_datetime_off: toDatetime,
+                schedule_id: itemId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                if (response.overlap && !response.editingOverlap) {
+                    // Display SweetAlert for overlapping schedule
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There is an overlapping schedule.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/get-schedules-count',
+                        data: { event_datetime: fromDatetime },
+                        success: function (response) {
+                            var existingSchedulesCount = response.count;
+
+                            if (existingSchedulesCount >= 2) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Cannot insert more than 2 schedules with the same Start Time',
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                // Proceed with form submission
+                                updateSchedule2(itemId, formData);
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function updateSchedule2(itemId, formData) {
+        $.ajax({
+            type: 'PUT',
+            url: '/update-schedule/' + itemId,
+            data: formData,
+            success: function (response) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Schedule updated successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        closeModal(itemId);
+                        var updatedDateTimeValue = $('#dateTimePicker3').val();
+                        localStorage.setItem('dateTimeValue', updatedDateTimeValue);
+                        $('#dateTimePicker3').trigger('change');
+                    }
+                });
+            },
+            error: function (error) {
+                // Handle error
+                if (error.responseJSON && error.responseJSON.errors && error.responseJSON.errors.event_datetime_off) {
+                    var errorMessage = error.responseJSON.errors.event_datetime_off[0];
+                    if (errorMessage.includes('Cannot insert more than 2 schedules with the same Start Time')) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                        return; // Stop the submission
+                    } else {
+                        // Display the default error message
+                        $('#toDatetimeError').html(errorMessage);
+                    }
+                }
+
+                if (error.responseJSON && error.responseJSON.errors && error.responseJSON.errors.event_datetime_off.includes('There is an overlapping schedule.')) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There is an overlapping schedule.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                    return submitForm(itemId); // Stop the submission
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was an error updating the schedule.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function checkDatetimeValidity(itemId) {
+        var fromDatetime = $('#editForm-' + itemId + ' [name="event_datetime"]').val();
+        var toDatetime = $('#editForm-' + itemId + ' [name="event_datetime_off"]').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/modal-validate-datetime',
+            data: {
+                event_datetime: fromDatetime,
+                event_datetime_off: toDatetime,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                // Check the validation result
+                if (response.success) {
+                    $('#toDatetimeError-' + itemId).html('').hide(); // Clear and hide the error message
+                } else {
+                    $('#toDatetimeError-' + itemId).html(response.errors.event_datetime_off[0]).show(); // Display the error message
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response and display the message
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.errors
+                    ? xhr.responseJSON.errors.event_datetime_off[0]
+                    : 'An error occurred while validating the datetime.';             
+                $('#toDatetimeError-' + itemId).html(errorMessage).show(); // Display the error message
+            }
+        });
+    }
+
+    // function submitForm2(itemId) {
+    //     var formId = 'editForm-' + itemId;
+    //     var formData = $('#' + formId).serialize();
+    //     var selectedState = $('#state').val();
+
+    //     $.ajax({
+    //         type: 'PUT',
+    //         url: '/update-schedule/' + itemId,
+    //         data: formData,
+    //         success: function (response) {
+    //             // Display SweetAlert for successful form submission
+    //             Swal.fire({
+    //                 title: 'Success!',
+    //                 text: 'Schedule updated successfully.',
+    //                 icon: 'success',
+    //                 confirmButtonColor: '#3085d6',
+    //                 confirmButtonText: 'OK'
+    //             }).then((result) => {
+    //                 if (result.isConfirmed) {
+    //                     closeModal(itemId);
+    //                     var updatedDateTimeValue = $('#dateTimePicker3').val();
+    //                     localStorage.setItem('dateTimeValue', updatedDateTimeValue);
+    //                     $('#dateTimePicker3').trigger('change');
+    //                 }
+    //             });
+    //         },
+    //         error: function (error) {
+    //             Swal.fire({
+    //                 title: 'Error!',
+    //                 text: 'There was an error updating the schedule.',
+    //                 icon: 'error',
+    //                 confirmButtonColor: '#3085d6',
+    //                 confirmButtonText: 'OK'
+    //             });
+    //             console.error('Error:', error);
+    //         }
+    //     });
+    // }
 
     function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);
@@ -1240,7 +1884,9 @@
         // Toggle visibility
         $(".date-time-group").toggle();
         $(".other-form-elements").toggle();
-
+        $(this).toggleClass("clicked");
+        var buttonText = $(this).text().trim();
+        $(this).text(buttonText === "Custom Schedule" ? "Default Schedule" : "Custom Schedule");
         // Set the value of the hidden field based on the button click
         $("#customScheduleClicked").val($(".date-time-group").is(":visible") ? "1" : "0");
 
@@ -1249,12 +1895,27 @@
             $(".date-time-group input, .date-time-group select").prop("disabled", false);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", true);
             $('#othersched, #otherschedheader').show();
-
+            $('#totalEntries, #entryCount').hide();
+            $('#totalEntries2, #entryCount2').hide();
+            $('#totalEntries4, #entryCount4').show();
+            $('#prevBtn, #nextBtn').hide();
+            $('#prevBtn2, #nextBtn2').show();
+            $('#prevBtn3, #nextBtn3').hide();
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#totalEntries5, #entryCount5').show();
+          
+            
         } else {
             $(".date-time-group input, .date-time-group select").prop("disabled", true);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", false);
-            $('#othersched, #otherschedheader').hide();
-            
+            $('#othersched, #otherschedheader').show();
+            $('#totalEntries, #entryCount').show();
+            $('#totalEntries2, #entryCount2').show();
+            $('#totalEntries4, #entryCount4').hide();
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).hide();
+            $('#prevBtn, #nextBtn').show();
+            $('#totalEntries5, #entryCount5').hide();
+            $('#prevBtn2, #nextBtn2').hide();
         }
         
     });
@@ -1271,6 +1932,308 @@
     });
 
 </script> <!-- hide button -->
+
+<!-- __________________________________________________automatic detection ______________________________________________________-->
+
+<script>
+    function checkSelectedDate() {
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    var selectedDate = $('#yearmonth').val();
+    var parsedDate = moment(selectedDate, 'MM-YYYY');
+    var formattedDate = parsedDate.isValid() ? parsedDate.format('YYYY-MM') : '';
+
+    $.ajax({
+        url: '/validate-date',
+        method: 'POST',
+        data: { selectedDate: formattedDate, 
+                _token: csrfToken },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function (response) {
+            if (response.error) {
+                $('#yearmonthError').text(response.message);
+                $('[data-custom-id="subd"]').prop('disabled', true);
+            } else {
+                $('#yearmonthError').text('');
+                $('[data-custom-id="subd"]').prop('disabled', false);
+            }
+        },
+        error: function (error) {
+            console.error('Error validating date:', error);
+        }
+    });
+    }
+</script><!-- automatic detect for default month and year error -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("dateTimePicker").addEventListener("change", function () {
+            validateTime();
+        });
+
+        document.getElementById("dateTimePicker2").addEventListener("change", function () {
+            validateTime();
+        });
+    });
+
+    function validateTime() {
+        var fromTime = document.getElementById("dateTimePicker").value;
+        var toTime = document.getElementById("dateTimePicker2").value;
+        var toError = document.getElementById("toError");
+
+        // Parse time strings to extract hours and minutes
+        var fromTimeParts = fromTime.split(":");
+        var toTimeParts = toTime.split(":");
+
+        var fromHours = parseInt(fromTimeParts[0]);
+        var fromMinutes = parseInt(fromTimeParts[1]);
+        var toHours = parseInt(toTimeParts[0]);
+        var toMinutes = parseInt(toTimeParts[1]);
+
+        if (toHours < fromHours || (toHours === fromHours && toMinutes <= fromMinutes)) {
+            toError.textContent = "The schedule end time must be later than the start time.";
+            $('[data-custom-id="subd"]').prop('disabled', true);
+        } else {
+            toError.textContent = "";
+            $('[data-custom-id="subd"]').prop('disabled', false);
+            document.getElementById("fromtime_hidden").value = fromTime;
+            sendAjaxRequest();
+        }
+    }
+
+    function sendAjaxRequest() {
+        var fromTimeHidden = document.getElementById("fromtime_hidden").value;
+        var toTime = document.getElementById("dateTimePicker2").value;
+        $.ajax({
+            type: 'POST',
+            url: '/validate-time',
+            data: {
+                fromtime: fromTimeHidden,
+                totime: toTime,
+                _token: '{{ csrf_token() }}' 
+            },
+            success: function (response) {
+                if (response.error) {
+                    document.getElementById("toError").textContent = response.error;       
+                } else {
+                    document.getElementById("toError").textContent = "";
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+</script><!-- automatic detect for from & time error -->
+
+<script>
+    function checkForOverlap() {
+        var fromDateTime = $('#dateTimePicker3').val();
+        var toDateTime = $('#dateTimePicker4').val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/check-overlap',
+            data: {
+                fromDateTime: fromDateTime,
+                toDateTime: toDateTime,
+            },
+            success: function (response) {
+                if (response.overlap) {
+                    $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
+                } else {
+                    $('#existingSchedulesErrorTo').text('');
+                }
+            },
+            error: function (error) {
+                console.error('Error checking for overlap:', error);
+            }
+        });
+    }
+</script><!-- dynamic change of error message for updating state -->
+
+<script>
+    function checkExistingSchedules(eventDateTime) {
+        $.ajax({
+            url: '/check-existing-schedules',
+            type: 'GET',
+            data: {event_datetime: eventDateTime},
+            success: function (response) {
+                if (response.error) {
+                    $('#existingSchedulesError').text(response.error);
+                } else {
+                    $('#existingSchedulesError').text('');
+                }
+            },
+            error: function () {
+                console.error('Error in AJAX request');
+            }
+        });
+    }
+</script><!-- dynamic change of error message for Cannot insert more than 2 schedules with the same Start Time -->
+
+<script>
+    $(document).ready(function () {
+        $('#dateTimePicker3').on('input', function () {
+            var eventDateTime = $(this).val();
+
+            // Make an AJAX request to check existing schedules
+            $.ajax({
+                url: '/check-existing-schedules',
+                type: 'GET',
+                data: {event_datetime: eventDateTime},
+                success: function (response) {
+                    if (response.error) {
+                        $('#existingSchedulesError').text(response.error);
+                    } else {
+                        $('#existingSchedulesError').text('');
+                    }
+                },
+                error: function () {
+                    console.error('Error in AJAX request');
+                }
+            });
+        });
+    });
+</script><!-- automatic detect for from: date & time --> 
+
+<script>
+    $(document).ready(function () {
+        // Function to check for overlapping schedules
+        function checkForOverlap() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+            var lineBreak = $('<br>');
+            // Perform an AJAX request to check for overlaps
+            $.ajax({
+                type: 'GET',
+                url: '/check-overlap',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                },
+                success: function (response) {
+                    if (response.overlap) {
+                        $('#existingSchedulesErrorTo').text('Schedule Error: Schedule overlaps with an active schedule!').append(lineBreak);;
+                        // $('#sub').prop('disabled', true);
+                        
+                    } else {
+                        $('#existingSchedulesErrorTo').text('');
+                        // $('#sub').prop('disabled', false);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error checking for overlap:', error);
+                }
+            });
+        }
+
+        // Attach the checkForOverlap function to the change event of the date and time inputs
+        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+            checkForOverlap();
+        });
+    });
+</script><!-- automatic detect for to: date & time  Schedule Error: Schedule overlaps with an active schedule!--> 
+
+<script>
+    $(document).ready(function () {
+        function checkFordatetime() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: 'POST',
+                url: '/validate-event-time',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                    _token: csrfToken,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    if (response.error) {
+                        $('#pasterror').text('Schedule Error: To date & time must be after From date & time.');
+                    } else {
+                        $('#pasterror').text('');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error checking for Schedule Error:', error);
+                }
+            });
+        }
+        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+            checkFordatetime();
+        });
+    });
+</script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time--> 
+
+<script>
+    function setSubmitButtonState(disabled) {
+        $('#sub').prop('disabled', disabled);
+    }
+    // AJAX error handler
+    $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+        console.error('AJAX error:', thrownError);
+        setSubmitButtonState(true); // Disable submit button on any AJAX error
+    });
+</script><!-- disable the submit button if there is an error -->
+
+<!-- _______________________________________________________extra________________________________________________________________-->
+
+<script>
+    function updateCurrentTime() {
+        var currentTimeElement = document.getElementById("currentTime");
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+
+        // Convert to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (12 AM)
+
+        // Add leading zeros if needed
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        var formattedTime = hours + ":" + minutes + " " + ampm;
+        currentTimeElement.innerText = "Current time: " + formattedTime;
+        }
+
+        // Update the time every second
+        setInterval(updateCurrentTime, 1000);
+
+        // Initial call to set the initial time
+        updateCurrentTime();
+</script> <!-- Current time script -->
+
+<script>
+    $(document).ready(function () {
+        // Clear input fields on page refresh
+        $('input[type="text"]').val('');
+        $('select').prop('selectedIndex', 0);
+    });
+</script><!-- remove the input if refresd; -->
+
+<script>
+    $(document).ready(function () {
+
+        $('#clearButton').click(function () {
+            // Clear all input fields
+            $('input[type="text"]').val('');
+            $('select').prop('selectedIndex', 0);
+
+            // Clear any error messages
+            $('.text-danger').text('');
+            location.reload(true);
+
+        });
+    });
+</script><!-- reset -->
 
 <!-- <script>
     // Function to check for overlapping schedules based on action
@@ -1304,182 +2267,3 @@
         });
     }
 </script> -->
-
-<script>
-    function checkForOverlap() {
-        var fromDateTime = $('#dateTimePicker3').val();
-        var toDateTime = $('#dateTimePicker4').val();
-
-        // Perform an AJAX request to check for overlaps
-        $.ajax({
-            type: 'GET',
-            url: '/check-overlap',
-            data: {
-                fromDateTime: fromDateTime,
-                toDateTime: toDateTime,
-            },
-            success: function (response) {
-                if (response.overlap) {
-                    // There is an overlap, display the error message
-                    $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
-                    $('#sub').prop('disabled', true);
-                } else {
-                    // No overlap, clear the error message
-                    $('#existingSchedulesErrorTo').text('');
-                    $('#sub').prop('disabled', false);
-                }
-            },
-            error: function (error) {
-                console.error('Error checking for overlap:', error);
-            }
-        });
-    }
-</script><!-- dynamic change of error message for updating state -->
-
-<script>
-    function checkExistingSchedules(eventDateTime) {
-        $.ajax({
-            url: '/check-existing-schedules',
-            type: 'GET',
-            data: {event_datetime: eventDateTime},
-            success: function (response) {
-                if (response.error) {
-                    $('#existingSchedulesError').text(response.error);
-                    $('#sub').prop('disabled', true);
-                } else {
-                    $('#existingSchedulesError').text('');
-                    $('#sub').prop('disabled', false);
-                }
-            },
-            error: function () {
-                console.error('Error in AJAX request');
-            }
-        });
-    }
-</script><!-- dynamic change of error message for automatic detect for from: date & time when deleting -->
-
-<script>
-    $(document).ready(function () {
-        $('#dateTimePicker3').on('input', function () {
-            var eventDateTime = $(this).val();
-
-            // Make an AJAX request to check existing schedules
-            $.ajax({
-                url: '/check-existing-schedules',
-                type: 'GET',
-                data: {event_datetime: eventDateTime},
-                success: function (response) {
-                    if (response.error) {
-                        $('#existingSchedulesError').text(response.error);
-                        $('#sub').prop('disabled', true);
-                    } else {
-                        $('#existingSchedulesError').text('');
-                        $('#sub').prop('disabled', false);
-                    }
-                },
-                error: function () {
-                    console.error('Error in AJAX request');
-                }
-            });
-        });
-    });
-</script><!-- automatic detect for from: date & time --> 
-
-<script>
-    $(document).ready(function () {
-        // Function to check for overlapping schedules
-        function checkForOverlap() {
-            var fromDateTime = $('#dateTimePicker3').val();
-            var toDateTime = $('#dateTimePicker4').val();
-
-            // Perform an AJAX request to check for overlaps
-            $.ajax({
-                type: 'GET',
-                url: '/check-overlap',
-                data: {
-                    fromDateTime: fromDateTime,
-                    toDateTime: toDateTime,
-                    
-                },
-                success: function (response) {
-                    if (response.overlap) {
-                        // There is an overlap, display the error message
-                        $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
-                        $('#sub').prop('disabled', true);
-                    } else {
-                        // No overlap, clear the error message
-                        $('#existingSchedulesErrorTo').text('');
-                        $('#sub').prop('disabled', false);
-                    }
-                },
-                error: function (error) {
-                    console.error('Error checking for overlap:', error);
-                }
-            });
-        }
-
-        // Attach the checkForOverlap function to the change event of the date and time inputs
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkForOverlap();
-        });
-    });
-</script><!-- automatic detect for to: date & time --> 
-
-<script>
-    $(document).ready(function () {
-        // Clear input fields on page refresh
-        $('input[type="text"]').val('');
-        $('select').prop('selectedIndex', 0);
-    });
-</script><!-- remove the input if refresd; -->
-
-<script>
-    $(document).ready(function () {
-
-        $('#clearButton').click(function () {
-            // Clear all input fields
-            $('input[type="text"]').val('');
-            $('select').prop('selectedIndex', 0);
-
-            // Clear any error messages
-            $('.text-danger').text('');
-            location.reload(true);
-
-        });
-    });
-</script><!-- reset -->
-
-<!-- __________________________________________________________________________________________________________-->
-<!-- automatic detection -->
-
-<script>
-function checkSelectedDate() {
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    var selectedDate = $('#yearmonth').val();
-    var parsedDate = moment(selectedDate, 'MM-YYYY');
-    var formattedDate = parsedDate.isValid() ? parsedDate.format('YYYY-MM') : '';
-
-    $.ajax({
-        url: '/validate-date',
-        method: 'POST',
-        data: { selectedDate: formattedDate, 
-                _token: csrfToken },
-        headers: {
-            'X-CSRF-TOKEN': csrfToken
-        },
-        success: function (response) {
-            if (response.error) {
-                $('#yearmonthError').text(response.message);
-                $('[data-custom-id="subd"]').prop('disabled', true);
-            } else {
-                $('#yearmonthError').text('');
-                $('[data-custom-id="subd"]').prop('disabled', false);
-            }
-        },
-        error: function (error) {
-            console.error('Error validating date:', error);
-        }
-    });
-}
-</script><!-- automatic detect for default month and year error -->
-

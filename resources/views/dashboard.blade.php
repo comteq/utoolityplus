@@ -81,7 +81,6 @@
             confirmButtonText: 'Yes, change it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // If confirmed, submit the form
                 document.getElementById('powerForm').submit();
             }
         });

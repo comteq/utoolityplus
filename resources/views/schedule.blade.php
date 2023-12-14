@@ -1,3 +1,4 @@
+@include('nav')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
 
@@ -126,7 +127,7 @@
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 40%;
+        width: 48%;
     }
 
     .close {
@@ -177,22 +178,27 @@
             background-color: #fcfcfa;
         }
     }
-    
+
+    .error-message {
+        color: red;
+    }
+
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .button-container p {
+        margin-right: auto; /* Push the paragraph to the left */
+    }
+
+    .button-container button {
+        margin-left: 5px; 
+    }
+
+
 </style>
 
-<div style="position: relative;">
-
-    <button class="btn btn-secondary" id="openNotificationBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
-        </svg>
-        <span id="notification-count">0</span>
-    </button>
-
-    <div class="notification-window" id="notificationWindow">
-
-    </div>
-</div>
 
 <div class="card-deck">
 
@@ -203,7 +209,7 @@
     </div><!-- cardheader end -->
 
     <div class="card-body">
-        <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
+        <form method="post" action="{{ route('store.schedule') }}" id="form">
             @csrf
         
             <div class="form-group">
@@ -254,7 +260,7 @@
             <div class="other-form-elements">
 
             <div class="form-group">
-                    <label for="description">Action: default</label>
+                    <label for="description">Action:</label>
                     <select name="description" id="description" class="custom-select w-100" required>
                         <option disabled value="">Select Action</option>
                         <option value="ON">ON</option>
@@ -266,6 +272,7 @@
                 <div class="form-group">
                     <label for="yearmonth">Month & Year:</label>
                     <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
+                    <div id="yearmonthError" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
@@ -300,9 +307,11 @@
                             <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
                         </div>
                     </div>
+                    <span id="toError" class="text-danger"></span>
                 </div> 
 
-                <button type="submit"  class="btn btn-primary w-100" id="sub">Set Schedule</button>
+                <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value=""/>
+                <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
 
             </div> <!-- other-form-elements -->
 
@@ -343,7 +352,7 @@
 
         </form><!-- form end --> 
 
-        <div class="form-group" style="text-align: center">
+        <div class="form-group" style="text-align: center; margin-top: 15px;">
             <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
         </div>
 
@@ -366,21 +375,40 @@
 
     <div class="card-body">
         <p class="card-text" id="relatedSchedulesList"></p>
-        <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn" class="btn btn-secondary" style='width: auto;'>Next</button>
 
-        <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn1" class="btn btn-secondary" style='width: auto;'>Next</button>
+            <div class="button-container">
+                <p id="totalEntries">Total Entries: <span id="entryCount"></span></p>
+                <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                <button id="nextBtn" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+            </div>
+
+            <div class="button-container">
+                <p id="totalEntries4">Total Entries: <span id="entryCount4">--</span></p>
+                <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                <button id="nextBtn1" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+            </div><!-- custom -->
     </div><!-- cardbody end -->
 
-    <div class="card-header" style="text-align: left">
-        <h1>Related Schedule</h1>
+    <div class="card-header" style="text-align: left" id="otherschedheader">
+        <h1>Other Schedule</h1>
     </div><!-- cardheader2 end -->
 
-    <div class="card-body">
+    <div class="card-body" id="othersched">
         <p class="card-text" id="other"></p>
-        <button id="prevBtn2" class="btn btn-secondary" style='width: auto;'>Prev</button>
-        <button id="nextBtn2" class="btn btn-secondary" style='width: auto;'>Next</button>
+
+            <div class="button-container">
+                <p id="totalEntries2">Total Entries: <span id="entryCount2">--</span></p>
+                <button id="prevBtn3" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                <button id="nextBtn3" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+            </div>
+
+            <div class="button-container">
+                <p id="totalEntries5" style='display: none;'>Total Entries: <span id="entryCount5" style='display: none;'>--</span></p>
+                <button id="prevBtn2" class="btn btn-secondary" style='width: auto; display: none;'>Prev</button>
+                <button id="nextBtn2" class="btn btn-secondary" style='width: auto; display: none; margin-right:50px'>Next</button>
+            </div><!-- custom -->
+
+
     </div><!-- cardbody2 end -->
       
   </div><!-- card deck end2 -->
@@ -397,6 +425,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -408,6 +438,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<!------------------------------------------------------------------------------------------------------------------------------->
 
 <script>
     function updateCurrentTime() {
@@ -435,6 +467,7 @@
         updateCurrentTime();
 </script> <!-- Current time script -->
 
+<!-- __________________________________________________pickers__________________________________________________________________-->
 <script>
     $(document).ready(function(){
         $("#yearmonth").datepicker({
@@ -491,15 +524,15 @@
         altInput: true, // Use an alternative input field
         altFormat: "F j, Y H:i", // Set the format for the alternative input field
         time_24hr: true, // Use 12-hour time format with AM/PM
-        onChange: function(selectedDates, dateStr, instance) {
-            // Update the result paragraph with the selected date and time
-            document.getElementById("relatedSchedulesList").textContent = "Selected Date & Time: " + dateStr;
-        }
     });
 </script><!-- dateTimePicker4 specific off date and time -->
 
+<!-- _______________________________________________existing & related__________________________________________________________-->
 <script>
     $(document).ready(function () {
+
+        updateRelatedSchedulesadmin();
+
         $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -514,6 +547,10 @@
                 }
             });
         });// Uncheck other checkboxes with the same event_datetime
+
+        $('#yearmonth').on('change', function () {
+            checkSelectedDate();
+        });
 
         var currentPage = 1;
         var schedulesPerPage = 2;
@@ -610,13 +647,23 @@
                             content += '</div>';
                             content += '</div>';// row end
 
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>Action: ' + item.status + '</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '</div>';// row end
+
                             content += '</div>';//container end
                             content += '</div>';//container fluid end
                             content += '<hr>'; // Add a separator
-
                     });
+                    $('#entryCount').text(data.totalEntries);
                     } else {
                         content = 'No Related Schedule';
+                        $('#entryCount').text(0);
                     }
                     $('#relatedSchedulesList').html(content);
                     } else {
@@ -628,16 +675,168 @@
                     console.error('Error updating related schedules:', error);
                 }
             });
+            $('#totalEntries4, #entryCount4').hide();
             $('#prevBtn1, #nextBtn1').prop('disabled', true).hide();
             $('#prevBtn, #nextBtn').prop('disabled', false).show();
         }
-        updateRelatedSchedulesadmin()
     });
 </script><!-- filter for to default datepicker -->
 
 <script>
     $(document).ready(function () {
 
+        $(document).on('change', '.toggleCheckbox1', function () {
+            var clickedCheckbox = $(this);
+            var clickedItemId = clickedCheckbox.data('id');
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+
+            $('.toggleCheckbox').not(clickedCheckbox).each(function () {
+                var otherCheckbox = $(this);
+                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
+
+                if (otherEventDatetime === clickedEventDatetime) {
+                    otherCheckbox.prop('checked', false);
+                }
+            });
+        });// Uncheck other checkboxes with the same event_datetime
+
+        $('#yearmonth').on('change', function () {
+            checkSelectedDate();
+        });
+
+        var currentPage = 1;
+        var schedulesPerPage = 2;
+
+        $('#description, #yearmonth, #day, #dateTimePicker, #dateTimePicker2').on('change', function () {
+            currentPage = 1; // Reset page to 1 when filters change
+            updateotherRelatedSchedulesadmin();
+        });
+
+        $('#nextBtn').on('click', function () {
+            currentPage++;
+            updateotherRelatedSchedulesadmin();
+        });
+
+        $('#prevBtn').on('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updateotherRelatedSchedulesadmin();
+            }
+        });
+
+        function updateotherRelatedSchedulesadmin() {
+            var description = $('#description').val();
+            var yearmonth = $('#yearmonth').val();
+            var day = $('#day').val();
+            var fromtime = $('#dateTimePicker').val();
+            var totime = $('#dateTimePicker2').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            
+            $.ajax({    
+                url: '/get-other-related-data-user',
+                method: 'POST',
+                data: {
+                    description: description,
+                    _token: csrfToken,
+                    yearmonth: yearmonth,
+                    day: day,
+                    fromtime: fromtime,
+                    totime: totime,
+                    page: currentPage,
+                    perPage: schedulesPerPage
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                success: function (data) {
+                if (data.hasOwnProperty('otherrelatedSchedules')) {
+                    var content = '';
+                    if (data.otherrelatedSchedules.length > 0) {
+                        data.otherrelatedSchedules.forEach(function (item) {
+                            console.log('Item:', item);
+                            var modalId = 'myModal-' + item.id;
+                            content += '<div class="container-fluid" id="schedule-' + item.id + '">';
+                            content += '<div class="container">';
+
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>Schedule Details:</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<p> State: </p>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<div class="schedule-details">';
+                            content += '<label class="switch">';
+                            content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
+                            content += '<span class="slider round"></span>';
+                            content += '</label>';
+                            content += '</div>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '</div>'; // row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>Action: ' + item.description + '</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '</div>';// row end
+
+                            content += '<div class="row">';
+                            content += '<div class="col-7">';
+                            content += '<p>Action: ' + item.status + '</p>';
+                            content += '</div>';
+                            content += '<div class="col">';
+                            content += '<p></p>';
+                            content += '</div>';
+                            content += '</div>';// row end
+
+                            content += '</div>';//container end
+                            content += '</div>';//container fluid end
+                            content += '<hr>'; // Add a separator
+                    });
+                    $('#entryCount2').text(data.totalEntries2);
+                    } else {
+                        content = 'No Related Schedule';
+                        $('#entryCount2').text(0);
+                    }
+                    $('#other').html(content);
+                    } else {
+                        console.error('Invalid response format. Missing "relatedData" property.');
+                    }
+                },
+
+                error: function (error) {
+                    console.error('Error updating related schedules:', error);
+                }
+            });
+            $('#prevBtn2, #nextBtn2').prop('disabled', true).hide();
+            $('#prevBtn3, #nextBtn3').prop('disabled', false).show();
+            $('#totalEntries5, #entryCount5').hide();
+        }
+    });
+</script><!-- filter for to related-default datepicker -->
+
+<script>
+    $(document).ready(function () {
+        
         $(document).on('change', '.toggleCheckbox', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -702,6 +901,7 @@
                 }
             });
             $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#prevBtn2, #nextBtn2').prop('disabled', false).show();
             $('#prevBtn, #nextBtn').prop('disabled', true).hide();
         }
     });
@@ -762,14 +962,24 @@
                     content += '</div>';
                     content += '</div>';//row end
 
+                    content += '<div class="row">';
+                    content += '<div class="col-6">';
+                    content += '<p>Status: ' + item.status + '</p>';
+                    content += '</div>';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '</div>';
+                    content += '</div>';// row end         
+
                     content += '</div>';//container end
                     content += '</div>';//container fluid end
                     content += '<hr>'; // Add a separator
                 });
                     $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
                     $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
+                    $('#entryCount4').text(data.totalEntries4);
             } else {
                 content = 'No Related Schedule';
+                $('#entryCount4').text(0);
             }
 
             $('#relatedSchedulesList').html(content);
@@ -781,18 +991,17 @@
 
 <script>
     $(document).ready(function () {
+        
+        var currentPages2 = 1;
+        var schedulesPerPage2 = 2;  // Adjust this according to your requirements
 
         $(document).on('change', '.toggleCheckbox', function () {
             var clickedCheckbox = $(this);
-            var clickedItemId = clickedCheckbox.data('id');
-            var clickedEventDatetime = clickedCheckbox.data('event-datetime'); 
+            var clickedEventDatetime = clickedCheckbox.data('event-datetime');
 
             $('.toggleCheckbox').not(clickedCheckbox).each(function () {
                 var otherCheckbox = $(this);
-                var otherEventDatetime = otherCheckbox.data('event-datetime'); 
-
-                var formattedClickedDatetime = moment(clickedEventDatetime).format();
-                var formattedOtherDatetime = moment(otherEventDatetime).format();
+                var otherEventDatetime = otherCheckbox.data('event-datetime');
 
                 if (otherEventDatetime === clickedEventDatetime) {
                     otherCheckbox.prop('checked', false);
@@ -801,73 +1010,98 @@
         });// Uncheck other checkboxes with the same event_datetime
 
         $('#dateTimePicker3').change(function () {
-            var event_datetime = $(this).val();
+            currentPages2 = 1; // Reset current page when the date changes
+            loadRelatedData2();
+        });
+
+        $('#nextBtn2').on('click', function () {
+            currentPages2++;
+            loadRelatedData2();
+        });
+
+        $('#prevBtn2').on('click', function () {
+            if (currentPages2 > 1) {
+                currentPages2--;
+                loadRelatedData2();
+            }
+        });
+
+        function loadRelatedData2() {
+            var event_datetime = $('#dateTimePicker3').val();
 
             $.ajax({
                 type: 'GET',
                 url: '/get-related-data-user',
-                data: { event_datetime: event_datetime },
+                data: {
+                    event_datetime: event_datetime,
+                    page: currentPages2,
+                },
                 success: function (data) {
-                    
                     if (data.hasOwnProperty('relatedData')) {
-                        
                         var content = '';
-
                         if (data.relatedData.length > 0) {
-                            // Customize this part based on your actual data structure
                             data.relatedData.forEach(function (item) {
                                 var modalId = 'myModal-' + item.id;
-    
+
                                 content += '<div class="container-fluid" id="schedule-' + item.id + '">';
                                 content += '<div class="container">';
 
                                 content += '<div class="row">';
-                                content += '<div class="col-7">';
+                                content += '<div class="col-6">';
                                 content += '<p>Schedule Details:</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
-                                content += '<p> State: </p>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '<p>Action:</p>';
                                 content += '</div>';
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col-7">';
-                                content += '<p>'+ item.event_datetime_time  + ' -- ' + item.event_datetime_off_time + '</p>';
+                                content += '<div class="col-6">';
+                                content += '<p>' + item.event_datetime_time + ' -- ' + item.event_datetime_off_time + '</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
+                                content += '<div class="col-3">';
                                 content += '<div class="schedule-details">';
                                 content += '<label class="switch">';
                                 content += '<input type="checkbox" ' + (item.state === 'Active' ? 'checked' : '') + ' disabled>';
                                 content += '<span class="slider round"></span>';
-                                content += '</label>';  
+                                content += '</label>';
                                 content += '</div>';
                                 content += '</div>';
                                 content += '</div>';//row end
 
                                 content += '<div class="row">';
-                                content += '<div class="col-7">';
-                                content += '<p>'+ item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
+                                content += '<div class="col-6">';
+                                content += '<p>' + item.event_datetime_date + ' -- ' + item.event_datetime_off_date + '</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
+                                content += '<div class="col-3">';
                                 content += '<p></p>';
                                 content += '</div>';
                                 content += '</div>';//row end
-                                
+
                                 content += '<div class="row">';
-                                content += '<div class="col-7">';
-                                content += '<p>' +'Action: '+ item.description + '</p>';
+                                content += '<div class="col-6">';
+                                content += '<p>' + 'Action: ' + item.description + '</p>';
                                 content += '</div>';
-                                content += '<div class="col">';
-                                content += '<p></p>';
+                                content += '<div class="col-3">';
                                 content += '</div>';
                                 content += '</div>';
+
+                                content += '<div class="row">';
+                                content += '<div class="col-6">';
+                                content += '<p>Status: ' + item.status + '</p>';
+                                content += '</div>';
+                                content += '<div class="col-3" style="text-align: center;">';
+                                content += '</div>';
+                                content += '</div>';// row end     
 
                                 content += '</div>';
                                 content += '</div>';
                                 content += '<hr>'; // Add a separator
                             });
+                            $('#entryCount5').text(data.totalEntries5);
                         } else {
                             content = 'No Related Schedule';
+                            $('#entryCount5').text(0);
                         }
 
                         $('#other').html(content);
@@ -878,26 +1112,13 @@
                 error: function (error) {
                     console.error('Error:', error);
                 }
-            });//ajax end
-        });
+            }); //ajax end
+            
+        }
     });
 </script><!-- related schedule for datetimepicker3 -->
-<script>
-        function formatDatetimeForInput(datetime) {
-        var parsedDatetime = new Date(datetime);
-        var year = parsedDatetime.getFullYear();
-        var month = ('0' + (parsedDatetime.getMonth() + 1)).slice(-2);
-        var day = ('0' + parsedDatetime.getDate()).slice(-2);
-        var hours = ('0' + parsedDatetime.getHours()).slice(-2);
-        var minutes = ('0' + parsedDatetime.getMinutes()).slice(-2);
 
-        // Construct the formatted datetime string for input
-        var formattedDatetime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
-
-        console.log('Formatted Datetime:', formattedDatetime);
-        return formattedDatetime;
-    }
-</script><!-- formatted time -->
+<!-- ______________________________________________________Crude________________________________________________________________-->
 
 <script>
     $(document).ready(function() {
@@ -910,20 +1131,40 @@
         // Toggle visibility
         $(".date-time-group").toggle();
         $(".other-form-elements").toggle();
-
+        $(this).toggleClass("clicked");
+        var buttonText = $(this).text().trim();
+        $(this).text(buttonText === "Custom Schedule" ? "Default Schedule" : "Custom Schedule");
         // Set the value of the hidden field based on the button click
         $("#customScheduleClicked").val($(".date-time-group").is(":visible") ? "1" : "0");
 
         // Disable/enable other form elements based on the button click
         if ($(".date-time-group").is(":visible")) {
-            // Enable inputs in date-time-group and set the name attribute
             $(".date-time-group input, .date-time-group select").prop("disabled", false);
-            // Disable inputs in other-form-elements
             $(".other-form-elements input, .other-form-elements select").prop("disabled", true);
+            $('#othersched, #otherschedheader').show();
+            $('#totalEntries, #entryCount').hide();
+            $('#totalEntries2, #entryCount2').hide();
+            $('#totalEntries4, #entryCount4').show();
+            $('#prevBtn, #nextBtn').hide();
+            $('#prevBtn2, #nextBtn2').show();
+            $('#prevBtn3, #nextBtn3').hide();
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
+            $('#totalEntries5, #entryCount5').show();
+          
+            
         } else {
             $(".date-time-group input, .date-time-group select").prop("disabled", true);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", false);
+            $('#othersched, #otherschedheader').show();
+            $('#totalEntries, #entryCount').show();
+            $('#totalEntries2, #entryCount2').show();
+            $('#totalEntries4, #entryCount4').hide();
+            $('#prevBtn1, #nextBtn1').prop('disabled', false).hide();
+            $('#prevBtn, #nextBtn').show();
+            $('#totalEntries5, #entryCount5').hide();
+            $('#prevBtn2, #nextBtn2').hide();
         }
+        
     });
 
     // Handle form submission
@@ -938,6 +1179,100 @@
     });
 
 </script> <!-- hide button -->
+
+<!-- __________________________________________________automatic detection ______________________________________________________-->
+
+<script>
+    function checkSelectedDate() {
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    var selectedDate = $('#yearmonth').val();
+    var parsedDate = moment(selectedDate, 'MM-YYYY');
+    var formattedDate = parsedDate.isValid() ? parsedDate.format('YYYY-MM') : '';
+
+    $.ajax({
+        url: '/validate-date-user',
+        method: 'POST',
+        data: { selectedDate: formattedDate, 
+                _token: csrfToken },
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function (response) {
+            if (response.error) {
+                $('#yearmonthError').text(response.message);
+                $('[data-custom-id="subd"]').prop('disabled', true);
+            } else {
+                $('#yearmonthError').text('');
+                $('[data-custom-id="subd"]').prop('disabled', false);
+            }
+        },
+        error: function (error) {
+            console.error('Error validating date:', error);
+        }
+    });
+    }
+</script><!-- automatic detect for default month and year error -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("dateTimePicker").addEventListener("change", function () {
+            validateTime();
+        });
+
+        document.getElementById("dateTimePicker2").addEventListener("change", function () {
+            validateTime();
+        });
+    });
+
+    function validateTime() {
+        var fromTime = document.getElementById("dateTimePicker").value;
+        var toTime = document.getElementById("dateTimePicker2").value;
+        var toError = document.getElementById("toError");
+
+        // Parse time strings to extract hours and minutes
+        var fromTimeParts = fromTime.split(":");
+        var toTimeParts = toTime.split(":");
+
+        var fromHours = parseInt(fromTimeParts[0]);
+        var fromMinutes = parseInt(fromTimeParts[1]);
+        var toHours = parseInt(toTimeParts[0]);
+        var toMinutes = parseInt(toTimeParts[1]);
+
+        if (toHours < fromHours || (toHours === fromHours && toMinutes <= fromMinutes)) {
+            toError.textContent = "The schedule end time must be later than the start time.";
+            $('[data-custom-id="subd"]').prop('disabled', true);
+        } else {
+            toError.textContent = "";
+            $('[data-custom-id="subd"]').prop('disabled', false);
+            document.getElementById("fromtime_hidden").value = fromTime;
+            sendAjaxRequest();
+        }
+    }
+
+    function sendAjaxRequest() {
+        var fromTimeHidden = document.getElementById("fromtime_hidden").value;
+        var toTime = document.getElementById("dateTimePicker2").value;
+        $.ajax({
+            type: 'POST',
+            url: '/validate-time-user',
+            data: {
+                fromtime: fromTimeHidden,
+                totime: toTime,
+                _token: '{{ csrf_token() }}' 
+            },
+            success: function (response) {
+                if (response.error) {
+                    document.getElementById("toError").textContent = response.error;       
+                } else {
+                    document.getElementById("toError").textContent = "";
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+</script><!-- automatic detect for from & time error -->
 
 <script>
     function checkForOverlap() {
@@ -968,73 +1303,33 @@
     }
 </script><!-- dynamic change of error message for updating state -->
 
-<!-- <script>
-    $(document).ready(function () {
-        $('#dateTimePicker3').on('input', function () {
-            var eventDateTime = $(this).val();
+<!-- _______________________________________________________extra________________________________________________________________-->
 
-            // Make an AJAX request to check existing schedules
-            $.ajax({
-                url: '/check-existing-schedules-user',
-                type: 'GET',
-                data: {event_datetime: eventDateTime},
-                success: function (response) {
-                    if (response.error) {
-                        $('#existingSchedulesError').text(response.error);
-                        $('#sub').prop('disabled', true);
-                    } else {
-                        $('#existingSchedulesError').text('');
-                        $('#sub').prop('disabled', false);
-                    }
-                },
-                error: function () {
-                    console.error('Error in AJAX request');
-                }
-            });
-        });
-    });
-</script> automatic detect for from: date & time   -->
+<script>
+    function updateCurrentTime() {
+        var currentTimeElement = document.getElementById("currentTime");
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
 
-<!-- <script>
-    $(document).ready(function () {
-        // Function to check for overlapping schedules
-        function checkForOverlap() {
-            var fromDateTime = $('#dateTimePicker3').val();
-            var toDateTime = $('#dateTimePicker4').val();
+        // Convert to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (12 AM)
 
-            // Perform an AJAX request to check for overlaps
-            $.ajax({
-                type: 'GET',
-                url: '/check-overlap-user',
-                data: {
-                    fromDateTime: fromDateTime,
-                    toDateTime: toDateTime,
-                    
-                },
-                success: function (response) {
-                    if (response.overlap) {
-                        // There is an overlap, display the error message
-                        $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
-                        $('#sub').prop('disabled', true);
-                    } else {
-                        // No overlap, clear the error message
-                        $('#existingSchedulesErrorTo').text('');
-                        $('#sub').prop('disabled', false);
-                    }
-                },
-                error: function (error) {
-                    console.error('Error checking for overlap:', error);
-                }
-            });
+        // Add leading zeros if needed
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        var formattedTime = hours + ":" + minutes + " " + ampm;
+        currentTimeElement.innerText = "Current time: " + formattedTime;
         }
 
-        // Attach the checkForOverlap function to the change event of the date and time inputs
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkForOverlap();
-        });
-    });
-</script>
-automatic detect for to: date & time  -->
+        // Update the time every second
+        setInterval(updateCurrentTime, 1000);
+
+        // Initial call to set the initial time
+        updateCurrentTime();
+</script> <!-- Current time script -->
 
 <script>
     $(document).ready(function () {
@@ -1059,4 +1354,54 @@ automatic detect for to: date & time  -->
         });
     });
 </script><!-- reset -->
+
+<script>
+        function formatDatetimeForInput(datetime) {
+        var parsedDatetime = new Date(datetime);
+        var year = parsedDatetime.getFullYear();
+        var month = ('0' + (parsedDatetime.getMonth() + 1)).slice(-2);
+        var day = ('0' + parsedDatetime.getDate()).slice(-2);
+        var hours = ('0' + parsedDatetime.getHours()).slice(-2);
+        var minutes = ('0' + parsedDatetime.getMinutes()).slice(-2);
+
+        // Construct the formatted datetime string for input
+        var formattedDatetime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+
+        console.log('Formatted Datetime:', formattedDatetime);
+        return formattedDatetime;
+    }
+</script><!-- formatted time -->
+
+<!-- <script>
+    // Function to check for overlapping schedules based on action
+    function checkForActionOverlap() {
+        var fromDateTime = $('#dateTimePicker3').val();
+        var toDateTime = $('#dateTimePicker4').val();
+        var description = $('#description').val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/check-for-action-overlap', 
+            data: {
+                fromDateTime: fromDateTime,
+                toDateTime: toDateTime,
+                description: description,
+            },
+            success: function (response) {
+                if (response.overlap) {
+                    // There is an overlap, display the error message
+                    $('#existingactionerror').text('Schedule action overlaps with an active schedule!');
+                    $('#sub').prop('disabled', true);
+                } else {
+                    // No overlap, clear the error message
+                    $('#existingactionerror').text('');
+                    $('#sub').prop('disabled', false);
+                }
+            },
+            error: function (error) {
+                console.error('Error checking for overlap:', error);
+            }
+        });
+    }
+</script> -->
 

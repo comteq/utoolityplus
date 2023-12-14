@@ -12,6 +12,7 @@ use App\Models\Activity;
 
 class ScheduleController extends Controller
 {
+//---------------------------------------------------------User---------------------------------------------------------------------//
     public function index()
     {
         return view('schedule');
@@ -99,16 +100,19 @@ class ScheduleController extends Controller
 
             $request->validate($validationRules, $customMessages);
             $yearMonth = Carbon::createFromFormat('m-Y', $request->input('yearmonth'));
-
-            // $formattedTime = Carbon::createFromFormat('h:i A', $request->input('fromtime'));
-            // $formattedTime2 = Carbon::createFromFormat('h:i A', $request->input('totime'));
             $formattedTime = Carbon::parse($request->input('fromtime'));
             $formattedTime2 = Carbon::parse($request->input('totime'));
+            $currentDateTime = Carbon::now();
             $failedSchedules = [];
 
             // Create a new Schedule instance for each day in the selected month
             for ($day = 1; $day <= $yearMonth->daysInMonth; $day++) {
                 $currentDay = $yearMonth->setDay($day)->format('l'); // Get the day name (e.g., Sunday)
+                $currentDate = $yearMonth->setDay($day)->setTime(0, 0, 0);
+
+                if ($currentDate->lessThan($currentDateTime) && !$currentDate->isSameDay($currentDateTime)) {
+                    continue; // Skip past dates (excluding the current day)
+                }
             
                 if (strtolower($currentDay) == strtolower($request->day)) {
                     $newEventStart = $yearMonth->setDay($day)
@@ -131,7 +135,7 @@ class ScheduleController extends Controller
                                 ->where('state', '=', 'Active');
 
                         });
-                    })->exists();
+                    })->get()->count() > 0;
             
                     // If there's an overlap, add the schedule to the failedSchedules array
                     if ($overlap) {
@@ -204,8 +208,9 @@ class ScheduleController extends Controller
 
         $offset = ($page - 1) * $perPage;
         $relatedData1 = $query->skip($offset)->take($perPage)->get();
+        $totalEntries4 = $query->count(); 
 
-        $relatedData1 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
+        $relatedData1 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state', 'status']);
     
         $activeSchedules = $relatedData1->where('state', 'Active');
 
@@ -226,34 +231,42 @@ class ScheduleController extends Controller
             });
 
         return response()->json([
-            'relatedData1' => $relatedData1
+            'relatedData1' => $relatedData1, 'totalEntries4' => $totalEntries4
         ]);
     }//user/admin
 
     public function getRelatedData(Request $request)
     {
-        // Retrieve specific columns from related data
         $eventDatetime = $request->input('event_datetime');
-        $relatedData = schedules::whereDate('event_datetime', '=', \Carbon\Carbon::parse($eventDatetime)->toDateString())
-            ->where('event_datetime', '!=', $eventDatetime)
-            ->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
-
-            $relatedData->each(function ($item) {
-                $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
-                $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
-            });
-        
-            // Format time for event_datetime_off
-            $relatedData->each(function ($item) {
-                $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
-                $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
-            });
-
+    
+        $query = schedules::query();
+        $relatedData = $query
+            ->whereDate('event_datetime', '=', \Carbon\Carbon::parse($eventDatetime)->toDateString())
+            ->where('event_datetime', '!=', $eventDatetime);
+    
+        $page = $request->input('page', 1);
+        $perPage = $request->input('perPage', 2);
+    
+        $offset = ($page - 1) * $perPage;
+        $totalEntries5 = $query->count(); 
+        $relatedData = $query->skip($offset)->take($perPage)->get(['id', 'event_datetime', 'event_datetime_off', 'description', 'state', 'status']);
+    
+        $relatedData->each(function ($item) {
+            $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
+            $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
+        });
+    
+        // Format time for event_datetime_off
+        $relatedData->each(function ($item) {
+            $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
+            $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
+        });
+    
         return response()->json([
-            'relatedData' => $relatedData
+            'relatedData' => $relatedData, 'totalEntries5' => $totalEntries5
         ]);
-    }//user/admin
-
+    }
+    
     public function updateRelatedSchedulesadmin(Request $request)
     {
         $description = $request->input('description');
@@ -288,15 +301,14 @@ class ScheduleController extends Controller
         }
         
         $page = $request->input('page', 1);
-        $perPage = $request->input('perPage', 3);
+        $perPage = $request->input('perPage', 2);
     
         $offset = ($page - 1) * $perPage;
         $totalEntries = $query->count(); 
         $relatedData3 = $query->skip($offset)->take($perPage)->get();
         
-        $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state']);
+        $relatedData3 = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state', 'status']);
         
-
         $relatedData3->each(function ($item) {
             $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
             $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
@@ -311,27 +323,113 @@ class ScheduleController extends Controller
         return response()->json(['relatedData3' => $relatedData3 ,'totalEntries' => $totalEntries]);
     }//user/admin
 
-    public function checkOverlap(Request $request)
+    public function getotherRelatedSchedules(Request $request)
+    {
+        $description = $request->input('description');
+        $yearmonth = $request->input('yearmonth');
+        $day = $request->input('day');
+        $fromtime = $request->input('fromtime');
+        $totime = $request->input('totime');
+        $query = schedules::query();
+
+
+        if ($description) {
+            
+        }
+        
+        if ($yearmonth) {
+
+        }
+        
+        
+        if ($day) {
+
+        }
+        
+        if ($fromtime) {
+            $formattedFromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
+            $query->where(function ($query) use ($formattedFromtime) {
+                $query->whereRaw("TIME(event_datetime) != ?", [$formattedFromtime])
+                      ->orWhereNull('event_datetime');
+            });
+        }
+        
+        if ($totime) {
+            $formattedTotime = Carbon::createFromFormat('H:i', $totime)->format('H:i');
+            $query->where(function ($query) use ($formattedTotime) {
+                $query->whereRaw("TIME(event_datetime_off) != ?", [$formattedTotime])
+                      ->orWhereNull('event_datetime_off');
+            });
+        }
+        
+
+        $page = $request->input('page', 1);
+        $perPage = $request->input('perPage', 2);
+    
+        $offset = ($page - 1) * $perPage;
+        $totalEntries2 = $query->count(); 
+        $otherrelatedSchedules = $query->skip($offset)->take($perPage)->get();
+        
+        $otherrelatedSchedules = $query->get(['id','event_datetime', 'event_datetime_off', 'description', 'state', 'status']);
+
+        $otherrelatedSchedules->each(function ($item) {
+            $item->event_datetime_time = date('h:i A', strtotime($item->event_datetime));
+            $item->event_datetime_date = date('Y-m-d', strtotime($item->event_datetime));
+        });
+        
+        $otherrelatedSchedules->each(function ($item) {
+            $item->event_datetime_off_time = date('h:i A', strtotime($item->event_datetime_off));
+            $item->event_datetime_off_date = date('Y-m-d', strtotime($item->event_datetime_off));
+        });
+
+        return response()->json(['otherrelatedSchedules' => $otherrelatedSchedules ,'totalEntries2' => $totalEntries2]);
+    }
+//----------------------------------------------------automatic detection--------------------------------------------------------//
+
+    public function validateDate(Request $request)
+    {
+        $selectedDate = $request->input('selectedDate');
+        $currentDate = now()->format('Y-m');
+        if ($selectedDate && $selectedDate < $currentDate) {
+            return response()->json(['error' => true, 'message' => 'The selected month/year is in the past. Please choose a current or future month/year to create a schedule.']);
+        }
+        return response()->json(['error' => false, 'message' => '']);
+    }//automatic detect for default month and year error
+
+    public function validateTime(Request $request)
+    {
+        $request->validate([
+            'totime' => [
+                'required',
+                'date_format:H:i',
+                'after:' . $request->input('fromtime'),
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value == $request->input('fromtime')) {
+                        $fail('The schedule end time must be later than the start time.');
+                    }
+                },
+            ],
+        ]);
+        return response()->json(['success' => true]);
+    }//automatic detect for default from and time error
+
+    public function validateEventTime(Request $request)
     {
         $fromDateTime = $request->input('fromDateTime');
         $toDateTime = $request->input('toDateTime');
-    
-        // Check for overlapping schedules
-        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime) {
-            $query->where('state', 'Active')
-                ->where(function ($query) use ($fromDateTime, $toDateTime) {
-                    $query->whereBetween('event_datetime', [$fromDateTime, $toDateTime])
-                        ->orWhereBetween('event_datetime_off', [$fromDateTime, $toDateTime])
-                        ->orWhere(function ($query) use ($fromDateTime, $toDateTime) {
-                            $query->where('event_datetime', '<', $fromDateTime)
-                                ->where('event_datetime_off', '>', $toDateTime);
-                        });
-                });
-        })->exists();
-    
-        return response()->json(['overlap' => $overlappingSchedule]);
-    }//automatic detection for to: date and time and from: date and time
 
+        // Perform your validation logic here
+        $error = $this->checkForError($fromDateTime, $toDateTime);
+
+        return response()->json(['error' => $error]);
+    }
+
+    private function checkForError($fromDateTime, $toDateTime)
+    {
+        $error = $toDateTime <= $fromDateTime;
+        return $error;
+    }
+    
     public function checkForActionOverlap(Request $request)
     {
         $fromDateTime = $request->input('fromDateTime');
@@ -369,19 +467,26 @@ class ScheduleController extends Controller
         return response()->json(['success' => true]);
     }//automatic detection for from: date and time
 
-    public function validateDate(Request $request)
+    public function checkOverlap(Request $request)
     {
-        $selectedDate = $request->input('selectedDate');
-        $currentDate = now()->format('Y-m');
+        $fromDateTime = $request->input('fromDateTime');
+        $toDateTime = $request->input('toDateTime');
     
-        if ($selectedDate && $selectedDate < $currentDate) {
-            return response()->json(['error' => true, 'message' => 'Selected Month/Year Is In The Past. Please Select A Current Month/Year To Create A Schedule.']);
-        }
+        // Check for overlapping schedules
+        $overlappingSchedule = schedules::where(function ($query) use ($fromDateTime, $toDateTime) {
+            $query->where('state', 'Active')
+                ->where(function ($query) use ($fromDateTime, $toDateTime) {
+                    $query->whereBetween('event_datetime', [$fromDateTime, $toDateTime])
+                        ->orWhereBetween('event_datetime_off', [$fromDateTime, $toDateTime])
+                        ->orWhere(function ($query) use ($fromDateTime, $toDateTime) {
+                            $query->where('event_datetime', '<', $fromDateTime)
+                                ->where('event_datetime_off', '>', $toDateTime);
+                        });
+                });
+        })->exists();
     
-        return response()->json(['error' => false, 'message' => '']);
-    }//automatic detect for default month and year error
-    
-    
+        return response()->json(['overlap' => $overlappingSchedule]);
+    }//automatic detection for to: date and time and from: date and time
 
 //-------------------------------------------------------ADMIN----------------------------------------------------------------//
 
@@ -392,7 +497,6 @@ class ScheduleController extends Controller
 
     public function storeadmin(Request $request)
     {
-        // Validation messages
         $customMessages = [
             'event_datetime.required' => 'From: Date & Time: field is required.',
             'event_datetime_off.required' => 'To: Date & Time: field is required.',
@@ -401,7 +505,7 @@ class ScheduleController extends Controller
         ];
 
         if ($request->has('custom_schedule')) {
-        $validationRules = [
+            $validationRules = [
                 'event_datetime' => 'required|date',
                 'event_datetime_off' => [
                     'required',
@@ -452,8 +556,9 @@ class ScheduleController extends Controller
                 return redirect()->route('scheduleadmin.index')->with('error', 'Schedule overlaps with an active schedule!');
             }
             $schedule->save(); // Save the schedule to the database
-
-        } else {
+        } 
+        
+        else {
             $validationRules = [
                 'description' => 'required',
                 'yearmonth' => 'required',
@@ -464,14 +569,20 @@ class ScheduleController extends Controller
 
             $request->validate($validationRules, $customMessages);
             $yearMonth = Carbon::createFromFormat('m-Y', $request->input('yearmonth'));
-
             $formattedTime = Carbon::parse($request->input('fromtime'));
             $formattedTime2 = Carbon::parse($request->input('totime'));
             $failedSchedules = [];
+            $currentDateTime = Carbon::now();
 
             // Create a new Schedule instance for each day in the selected month
             for ($day = 1; $day <= $yearMonth->daysInMonth; $day++) {
                 $currentDay = $yearMonth->setDay($day)->format('l'); // Get the day name (e.g., Sunday)
+
+                $currentDate = $yearMonth->setDay($day)->setTime(0, 0, 0);
+
+                if ($currentDate->lessThan($currentDateTime) && !$currentDate->isSameDay($currentDateTime)) {
+                    continue; // Skip past dates (excluding the current day)
+                }
             
                 if (strtolower($currentDay) == strtolower($request->day)) {
                     $newEventStart = $yearMonth->setDay($day)
@@ -494,11 +605,11 @@ class ScheduleController extends Controller
                                 ->where('state', '=', 'Active');
 
                         });
-                    })->exists();
+                    })->get()->count() > 0;
             
                     // If there's an overlap, add the schedule to the failedSchedules array
                     if ($overlap) {
-                        $failedSchedules[] = [
+                        $failedSchedules[] = [  
                             'start' => $newEventStart,
                             'end' => $newEventEnd,
                         ];
@@ -517,7 +628,7 @@ class ScheduleController extends Controller
             // If there were failed schedules, pass the error message and the failed schedules to the view
             if (!empty($failedSchedules)) {
                 $errorMessage = 'Some schedules overlap with existing events.';
-                return view('schedule', compact('errorMessage', 'failedSchedules'));
+                return view('admin.schedule', compact('errorMessage', 'failedSchedules'));
             }
 
         }// else end
@@ -584,15 +695,37 @@ class ScheduleController extends Controller
         // Validate the request data as needed
         $request->validate([
             'event_datetime' => 'required',
-            'event_datetime_off' => 'required',
+            'event_datetime_off' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $eventDatetime = $request->input('event_datetime');
+                    if ($value <= $eventDatetime) {
+                        $fail('The To field must be after the From field.');
+                    }
+                },
+            ],
             'description' => 'required|in:ON,OFF',
         ]);
 
         $schedule = schedules::findOrFail($id);
 
+        // Check if the schedule status is "Processing"
+        if ($schedule->status === 'Processing') {
+            return response()->json([
+                'message' => 'Cannot edit schedule with status "Processing".',
+                'status' => 'error' 
+            ], 400);
+        }
+
         // Get the original event times before the update
         $oldEventDatetime = $schedule->event_datetime;
         $oldEventDatetimeOff = $schedule->event_datetime_off;
+
+        $schedule->update([
+            'event_datetime' => $request->input('event_datetime'),
+            'event_datetime_off' => $request->input('event_datetime_off'),
+            'description' => $request->input('description'),
+        ]);
 
         $schedule->update([
             'event_datetime' => $request->input('event_datetime'),
@@ -619,4 +752,114 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function modalvaliddatetime(Request $request)
+    {
+        $request->validate([
+            'event_datetime' => 'required',
+            'event_datetime_off' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $eventDatetime = $request->input('event_datetime');
+                    $eventDatetimeOff = $request->input('event_datetime_off');
+                    $existingSchedulesCount = schedules::where('event_datetime', $eventDatetime)->count();
+                    $startDate = Carbon::parse($eventDatetime)->format('Y-m-d');
+                    $endDate = Carbon::parse($eventDatetimeOff)->format('Y-m-d');
+    
+                    // Fetch the details of the editing schedule
+                    $editingScheduleId = $request->input('schedule_id');
+    
+                    $overlappingSchedule = schedules::where(function ($query) use ($eventDatetime, $eventDatetimeOff, $editingScheduleId) {
+                        $query->where('state', 'Active')
+                            ->where('id', '<>', $editingScheduleId) // Exclude the editing schedule
+                            ->where(function ($query) use ($eventDatetime, $eventDatetimeOff) {
+                                $query->whereBetween('event_datetime', [$eventDatetime, $eventDatetimeOff])
+                                    ->orWhereBetween('event_datetime_off', [$eventDatetime, $eventDatetimeOff])
+                                    ->orWhere(function ($query) use ($eventDatetime, $eventDatetimeOff) {
+                                        $query->where('event_datetime', '<', $eventDatetime)
+                                            ->where('event_datetime_off', '>', $eventDatetimeOff);
+                                    });
+                            });
+                    })->exists();
+
+                    // if ($overlappingSchedule) {
+                    //     $fail('Schedule Error: There is an overlapping schedule.');
+                    // }
+
+                    // Check if the start or end date is in the past
+                    if (Carbon::parse($eventDatetime) < Carbon::now() && Carbon::parse($eventDatetimeOff) < Carbon::now()) {
+                        $fail('Schedule Error: Cannot create a schedule in the past.');
+                    }
+                        
+                    // Check if the inserted already exists in the database
+                    if ($existingSchedulesCount >= 2) {
+                        $fail('Schedule Error: Cannot insert more than 2 schedules with the same Start Time');
+                    }
+    
+                    // Check if the start and end dates are the same
+                    if ($startDate != $endDate) {
+                        $fail('Schedule Error: The schedule must be within the same day.');
+                    }
+    
+                    // Check if the end time is after the start time
+                    if ($value <= $eventDatetime) {
+                        $fail('Schedule Error: The end time of the schedule must occur after the start time.');
+                    }
+                },
+            ],
+        ]);
+    
+        return response()->json(['success' => true]);
+    }
+
+    public function getScheduleCount(Request $request)
+    {
+        $eventDatetime = $request->input('event_datetime');
+        $existingSchedulesCount = schedules::where('event_datetime', $eventDatetime)->count();
+        return response()->json(['count' => $existingSchedulesCount]);
+    }
+
+    public function checkOverlappingSchedule(Request $request)
+    {
+        $request->validate([
+            'event_datetime' => 'required',
+            'event_datetime_off' => 'required',
+            'schedule_id' => 'required',
+        ]);
+    
+        $eventDatetime = $request->input('event_datetime');
+        $eventDatetimeOff = $request->input('event_datetime_off');
+        $scheduleId = $request->input('schedule_id');
+
+        $editingScheduleId = $request->input('schedule_id');
+        $editingSchedule = schedules::where('id', $editingScheduleId)->first();
+
+        // Check if editing schedule overlaps with itself
+        $editingOverlap =
+            $editingSchedule &&
+            (
+                ($eventDatetime >= $editingSchedule->event_datetime && $eventDatetime < $editingSchedule->event_datetime_off) ||
+                ($eventDatetimeOff > $editingSchedule->event_datetime && $eventDatetimeOff <= $editingSchedule->event_datetime_off) ||
+                ($eventDatetime <= $editingSchedule->event_datetime && $eventDatetimeOff >= $editingSchedule->event_datetime_off)
+            );
+
+        $overlappingSchedule = schedules::where('state', 'Active')
+            ->where('id', '<>', $scheduleId) 
+            ->where(function ($query) use ($eventDatetime, $eventDatetimeOff) {
+                $query->whereBetween('event_datetime', [$eventDatetime, $eventDatetimeOff])
+                    ->orWhereBetween('event_datetime_off', [$eventDatetime, $eventDatetimeOff])
+                    ->orWhere(function ($query) use ($eventDatetime, $eventDatetimeOff) {
+                        $query->where('event_datetime', '<', $eventDatetime)
+                            ->where('event_datetime_off', '>', $eventDatetimeOff);
+                    });
+            })
+            ->exists();
+
+            if ($editingOverlap && !$overlappingSchedule) {
+                // Editing schedule overlaps with itself, no need to display an error
+                return response()->json(['success' => true]);
+            }
+
+        return response()->json(['overlap' => $overlappingSchedule]);
+    }
+    
 }//controller end

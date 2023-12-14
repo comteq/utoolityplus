@@ -46,6 +46,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-ac/{id}', [DashboardController::class, 'updateAC'])->name('update-ac');
     Route::post('/update-lights/{id}', [DashboardController::class, 'updatelights'])->name('update-lights');
 
+    Route::post('/get-other-related-data-user', [schedulecontroller::class, 'getotherRelatedSchedules']);//default related sched
+    Route::post('/validate-date-user', [schedulecontroller::class, 'validateDate']);
+    Route::post('/validate-time-user', [schedulecontroller::class, 'validateTime']);
 
 });
 
@@ -80,6 +83,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
     Route::post('/log-activity', [ActivityLogController::class, 'logActivity']);
 
+    Route::post('/get-other-related-data', [schedulecontroller::class, 'getotherRelatedSchedules']);//default related sched
+
     // automatic detect
     Route::post('/validate-date', [schedulecontroller::class, 'validateDate']);
+    Route::post('/validate-time', [schedulecontroller::class, 'validateTime']);
+    Route::post('/modal-validate-datetime', [schedulecontroller::class, 'modalvaliddatetime']);
+    Route::get('/get-schedules-count', [schedulecontroller::class, 'getScheduleCount']);
+    Route::post('/check-overlapping-schedule', [schedulecontroller::class, 'checkOverlappingSchedule']);
+    Route::post('/validate-event-time', [schedulecontroller::class, 'validateEventTime']);
 });
