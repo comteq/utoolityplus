@@ -199,227 +199,229 @@
 
 </style>
 
-<div class="card-deck">
+<div class="card" style="overflow-x: hidden;">
+    <div class="card-deck">
 
-  <div class="card">
-    <div class="card-header" style="text-align: left">
-        <h1>Schedule Action</h1>
-        <p id="currentTime"></p>
-    </div><!-- cardheader end -->
+    <div class="card" style="margin-left: 30px; margin-top: 20px; margin-bottom: 30px;">
+        <div class="card-header" style="text-align: left">
+            <h1>Schedule Action</h1>
+            <p id="currentTime"></p>
+        </div><!-- cardheader end -->
 
-    <div class="card-body">
-        <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
-            @csrf
-        
-            <div class="form-group">
-                <label for="device" >Device:</label>
-                <select name="device" id="device"  class="custom-select w-100">
-                    <option disabled selected>Utoolity+</option>
-                </select>
-            </div>
-
-
-            <div class="date-time-group">
-
+        <div class="card-body">
+            <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
+                @csrf
+            
                 <div class="form-group">
-                    <label for="description">Action:</label>
-                    <select name="description" id="description1" class="custom-select w-100" required>
-                        <option disabled value="">Select Action</option>
-                        <option value="ON">ON</option>
-                        <option value="OFF">OFF</option>
+                    <label for="device" >Device:</label>
+                    <select name="device" id="device"  class="custom-select w-100">
+                        <option disabled selected>Utoolity+</option>
                     </select>
-                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>    
-
-                <div class="form-group">
-                    <label for="dateTimePicker3">From: Date & Time:</label>
-                    <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off" required/>
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="calendar-icon">📅</i></span>
-                        </div>
-                    </div>
-                    <span id="existingSchedulesError" class="text-danger"></span>
                 </div>
 
-                <input type="hidden" name="fromtime_hidden-custom" id="fromtime_hidden-custom" value="" />
 
-                <div class="form-group">
-                    <label for="dateTimePicker4">To: Date & Time:</label>
-                    <div class="inline-picker input-group">
-                        <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off" required/>
+                <div class="date-time-group">
+
+                    <div class="form-group">
+                        <label for="description">Action:</label>
+                        <select name="description" id="description1" class="custom-select w-100" required>
+                            <option disabled value="">Select Action</option>
+                            <option value="ON">ON</option>
+                            <option value="OFF">OFF</option>
+                        </select>
+                        <!-- <span id="existingactionerror" class="text-danger"></span> -->
+                    </div>    
+
+                    <div class="form-group">
+                        <label for="dateTimePicker3">From: Date & Time:</label>
+                        <div class="inline-picker input-group">
+                            <input type="text" name="event_datetime" id="dateTimePicker3" class="form-control" required autocomplete="off" required/>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="calendar-icon">📅</i></span>
                             </div>
+                        </div>
+                        <span id="existingSchedulesError" class="text-danger"></span>
                     </div>
-                    <span id="existingSchedulesErrorTo" class="text-danger"></span>
-                    <span id="pasterror" class="text-danger"></span>
-                </div>
 
-                <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subcustom">Set Schedule</button>
-            </div> <!-- date-time-group -->
-      
-            <div class="other-form-elements">
+                    <input type="hidden" name="fromtime_hidden-custom" id="fromtime_hidden-custom" value="" />
 
-                <div class="form-group">
-                    <label for="description">Action:</label>
-                    <select name="description" id="description" class="custom-select w-100" required>
-                        <option disabled  Selected value="">Select Action</option>
-                        <option value="ON">ON</option>
-                        <option value="OFF">OFF</option>
-                    </select>
-                    <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                </div>
+                    <div class="form-group">
+                        <label for="dateTimePicker4">To: Date & Time:</label>
+                        <div class="inline-picker input-group">
+                            <input type="text" name="event_datetime_off" id="dateTimePicker4" class="form-control" required autocomplete="off" required/>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="calendar-icon">📅</i></span>
+                                </div>
+                        </div>
+                        <span id="existingSchedulesErrorTo" class="text-danger"></span>
+                        <span id="pasterror" class="text-danger"></span>
+                        <span id="separateError" class="text-danger"></span>
+                    </div>
 
-                <div class="form-group">
-                    <label for="yearmonth">Month & Year:</label>
-                    <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
-                    <div id="yearmonthError" class="text-danger"></div>
-                </div>
+                    <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subcustom">Set Schedule</button>
+                </div> <!-- date-time-group -->
+        
+                <div class="other-form-elements">
 
-                <div class="form-group">
-                    <label for="day">Day:</label>
-                        <select name="day" id="day" class="custom-select w-100" required>
-                            <option disabled selected value="">Select Day</option>
-                            <option>Monday</option>
-                            <option>Tuesday</option>
-                            <option>Wednesday</option>
-                            <option>Thursday</option>
-                            <option>Friday</option>
-                            <option>Saturday</option>
-                            <option>Sunday</option>
+                    <div class="form-group">
+                        <label for="description">Action:</label>
+                        <select name="description" id="description" class="custom-select w-100" required>
+                            <option disabled  Selected value="">Select Action</option>
+                            <option value="ON">ON</option>
+                            <option value="OFF">OFF</option>
                         </select>
-                </div>
+                        <!-- <span id="existingactionerror" class="text-danger"></span> -->
+                    </div>
 
-                <div class="form-group">
-                    <label for="fromtime">From:</label>
-                    <div class="inline-picker input-group">
-                        <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                    <div class="form-group">
+                        <label for="yearmonth">Month & Year:</label>
+                        <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
+                        <div id="yearmonthError" class="text-danger"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="day">Day:</label>
+                            <select name="day" id="day" class="custom-select w-100" required>
+                                <option disabled selected value="">Select Day</option>
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fromtime">From:</label>
+                        <div class="inline-picker input-group">
+                            <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="totime">To:</label>
-                    <div class="inline-picker input-group">
-                        <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                    <div class="form-group">
+                        <label for="totime">To:</label>
+                        <div class="inline-picker input-group">
+                            <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                            </div>
                         </div>
-                    </div>
-                    <span id="toError" class="text-danger"></span>
-                </div> 
+                        <span id="toError" class="text-danger"></span>
+                    </div> 
 
-                <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
+                    <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
 
-                <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
+                    <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
 
-            </div> <!-- other-form-elements -->
+                </div> <!-- other-form-elements -->
 
-            @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
 
-                    @if($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    @if(isset($errorMessage))
-                        <div class="alert alert-danger">
-                            {{ $errorMessage }}
-                            @if(!empty($failedSchedules))
+                        @if($errors->any())
+                            <div class="alert alert-danger">
                                 <ul>
-                                    @foreach($failedSchedules as $failedSchedule)
-                                        <li>{{ $failedSchedule['start']->format('Y-m-d h:i A') }} - {{ $failedSchedule['end']->format('Y-m-d h:i A') }}</li>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
                                     @endforeach
                                 </ul>
-                            @endif
-                        </div>
-                    @endif
+                            </div>
+                        @endif
 
-        </form><!-- form end --> 
+                        @if(isset($errorMessage))
+                            <div class="alert alert-danger">
+                                {{ $errorMessage }}
+                                @if(!empty($failedSchedules))
+                                    <ul>
+                                        @foreach($failedSchedules as $failedSchedule)
+                                            <li>{{ $failedSchedule['start']->format('Y-m-d h:i A') }} - {{ $failedSchedule['end']->format('Y-m-d h:i A') }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        @endif
 
-        <div class="form-group" style="text-align: center; margin-top: 15px;">
-            <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
-        </div>
+            </form><!-- form end --> 
 
-        <hr class="hr-text" data-content="OR">
-        
-            <div class="form-group" style="text-align: center">
-                <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
+            <div class="form-group" style="text-align: center; margin-top: 15px;">
+                <button type="button" class="btn btn-light w-80" id="clearButton" >Reset</button>
             </div>
 
-    </div><!-- cardbody end -->   
-    
-  </div><!-- card end -->
+            <hr class="hr-text" data-content="OR">
+            
+                <div class="form-group" style="text-align: center">
+                    <button type="button" name="custom_schedule" class="btn btn-dark" id="showHideButton">Custom Schedule</button>
+                </div>
 
-<!-- ---------------------------------------------------------------------------------------------------------------------------->
+        </div><!-- cardbody end -->   
+        
+    </div><!-- card end -->
 
-  <div class="card">
-    <div class="card-header" style="text-align: left">
-        <h1>Existing Schedule</h1>        
-    </div><!-- cardheader end -->
+    <!-- ---------------------------------------------------------------------------------------------------------------------------->
 
-        <div class="card-body">
-            <p class="card-text" id="relatedSchedulesList"></p>
+    <div class="card" style="margin-right: 30px; margin-top: 20px; margin-bottom: 30px;">
+        <div class="card-header" style="text-align: left">
+            <h1>Existing Schedule</h1>        
+        </div><!-- cardheader end -->
+
+            <div class="card-body">
+                <p class="card-text" id="relatedSchedulesList"></p>
+
+                    <div class="button-container">
+                        <p id="totalEntries">Total Entries: <span id="entryCount"></span></p>
+                        <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                        <button id="nextBtn" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                    </div>
+
+                    <div class="button-container">
+                        <p id="totalEntries4">Total Entries: <span id="entryCount4">--</span></p>
+                        <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                        <button id="nextBtn1" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                    </div><!-- custom -->
+                    
+            </div><!-- cardbody end -->
+
+
+        <div class="card-header" style="text-align: left" id="otherschedheader">
+            <h1>Other Schedule</h1>
+        </div><!-- cardheader2 end -->
+
+        <div class="card-body" id="othersched">
+            <p class="card-text" id="other"></p>
 
                 <div class="button-container">
-                    <p id="totalEntries">Total Entries: <span id="entryCount"></span></p>
-                    <button id="prevBtn" class="btn btn-secondary" style='width: auto;'>Prev</button>
-                    <button id="nextBtn" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                    <p id="totalEntries2">Total Entries: <span id="entryCount2">--</span></p>
+                    <button id="prevBtn3" class="btn btn-secondary" style='width: auto;'>Prev</button>
+                    <button id="nextBtn3" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
                 </div>
 
                 <div class="button-container">
-                    <p id="totalEntries4">Total Entries: <span id="entryCount4">--</span></p>
-                    <button id="prevBtn1" class="btn btn-secondary" style='width: auto;'>Prev</button>
-                    <button id="nextBtn1" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
+                    <p id="totalEntries5" style='display: none;'>Total Entries: <span id="entryCount5" style='display: none;'>--</span></p>
+                    <button id="prevBtn2" class="btn btn-secondary" style='width: auto; display: none;'>Prev</button>
+                    <button id="nextBtn2" class="btn btn-secondary" style='width: auto; display: none; margin-right:50px'>Next</button>
                 </div><!-- custom -->
-                
-        </div><!-- cardbody end -->
 
 
-    <div class="card-header" style="text-align: left" id="otherschedheader">
-        <h1>Other Schedule</h1>
-    </div><!-- cardheader2 end -->
+        </div><!-- cardbody2 end -->
+        
+    </div><!-- card deck end2 -->
 
-    <div class="card-body" id="othersched">
-        <p class="card-text" id="other"></p>
-
-            <div class="button-container">
-                <p id="totalEntries2">Total Entries: <span id="entryCount2">--</span></p>
-                <button id="prevBtn3" class="btn btn-secondary" style='width: auto;'>Prev</button>
-                <button id="nextBtn3" class="btn btn-secondary" style='width: auto; margin-right:50px'>Next</button>
-            </div>
-
-            <div class="button-container">
-                <p id="totalEntries5" style='display: none;'>Total Entries: <span id="entryCount5" style='display: none;'>--</span></p>
-                <button id="prevBtn2" class="btn btn-secondary" style='width: auto; display: none;'>Prev</button>
-                <button id="nextBtn2" class="btn btn-secondary" style='width: auto; display: none; margin-right:50px'>Next</button>
-            </div><!-- custom -->
-
-
-    </div><!-- cardbody2 end -->
-      
-  </div><!-- card deck end2 -->
-
+    </div><!-- card deck end -->
 </div><!-- card deck end -->
-
 <!------------------------------------------------------------------------------------------------------------------------------->
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -2038,10 +2040,12 @@
                 toDateTime: toDateTime,
             },
             success: function (response) {
-                if (response.overlap) {
+                if (response.overlap || response.error) {
                     $('#existingSchedulesErrorTo').text('Schedule overlaps with an active schedule!');
+                    $('#sub').prop('disabled', true);
                 } else {
                     $('#existingSchedulesErrorTo').text('');
+                    
                 }
             },
             error: function (error) {
@@ -2060,8 +2064,10 @@
             success: function (response) {
                 if (response.error) {
                     $('#existingSchedulesError').text(response.error);
+                    $('#sub').prop('disabled', true);
                 } else {
                     $('#existingSchedulesError').text('');
+                    
                 }
             },
             error: function () {
@@ -2084,8 +2090,10 @@
                 success: function (response) {
                     if (response.error) {
                         $('#existingSchedulesError').text(response.error);
+                        $('#sub').prop('disabled', true);
                     } else {
                         $('#existingSchedulesError').text('');
+                        
                     }
                 },
                 error: function () {
@@ -2112,13 +2120,14 @@
                     toDateTime: toDateTime,
                 },
                 success: function (response) {
-                    if (response.overlap) {
+                    if (response.overlap || response.error) {
                         $('#existingSchedulesErrorTo').text('Schedule Error: Schedule overlaps with an active schedule!').append(lineBreak);;
-                        // $('#sub').prop('disabled', true);
+                        $('#sub').prop('disabled', true);
                         
                     } else {
                         $('#existingSchedulesErrorTo').text('');
                         // $('#sub').prop('disabled', false);
+                        
                     }
                 },
                 error: function (error) {
@@ -2155,8 +2164,11 @@
                 success: function (response) {
                     if (response.error) {
                         $('#pasterror').text('Schedule Error: To date & time must be after From date & time.');
+                        $('#sub').prop('disabled', true);
                     } else {
                         $('#pasterror').text('');
+                        // $('#sub').prop('disabled', false);
+                        
                     }
                 },
                 error: function (error) {
@@ -2168,18 +2180,66 @@
             checkFordatetime();
         });
     });
-</script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time--> 
+</script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time-->
 
 <script>
-    function setSubmitButtonState(disabled) {
-        $('#sub').prop('disabled', disabled);
-    }
-    // AJAX error handler
-    $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
-        console.error('AJAX error:', thrownError);
-        setSubmitButtonState(true); // Disable submit button on any AJAX error
+    $(document).ready(function() {
+        $('#dateTimePicker3, #dateTimePicker4').on('change', function() {
+            var dateTime = $(this).val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: '/validate-datetime',
+                method: 'POST',
+                data: { dateTime: dateTime,
+                        _token: csrfToken },
+                success: function(response) {
+                    if (!response.isValid) {
+                        $('#separateError').text('You cannot make a schedule in the past');
+                        $('#sub').prop('disabled', true);
+                    } else {
+                        $('#separateError').text('');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error validating date and time:', error);
+                }
+            });
+        });
     });
-</script><!-- disable the submit button if there is an error -->
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the form elements
+        var descriptionInput = document.getElementById('description1');
+        var dateTimePicker3Input = document.getElementById('dateTimePicker3');
+        var dateTimePicker4Input = document.getElementById('dateTimePicker4');
+        var submitButton = document.getElementById('sub');
+
+        // Disable the submit button initially
+        submitButton.disabled = true;
+
+        // Function to check if all inputs are filled
+        function checkInputs() {
+            var descriptionValue = descriptionInput.value;
+            var dateTimePicker3Value = dateTimePicker3Input.value;
+            var dateTimePicker4Value = dateTimePicker4Input.value;
+
+            if (descriptionValue.trim() !== '' && dateTimePicker3Value.trim() !== '' && dateTimePicker4Value.trim() !== '') {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        // Add event listeners to input fields
+        descriptionInput.addEventListener('input', checkInputs);
+        dateTimePicker3Input.addEventListener('input', checkInputs);
+        dateTimePicker4Input.addEventListener('input', checkInputs);
+    });
+</script><!-- disble the button if it does not have a data-->
 
 <!-- _______________________________________________________extra________________________________________________________________-->
 

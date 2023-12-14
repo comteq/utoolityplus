@@ -51,6 +51,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/get-other-related-data-user', [schedulecontroller::class, 'getotherRelatedSchedules']);//default related sched
     Route::post('/validate-date-user', [schedulecontroller::class, 'validateDate']);
     Route::post('/validate-time-user', [schedulecontroller::class, 'validateTime']);
+    Route::post('/validate-event-time-user', [schedulecontroller::class, 'validateEventTime']);
+    Route::post('/validate-datetime-user', [schedulecontroller::class, 'validateDateTime']);
 
 });
 
@@ -94,4 +96,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-schedules-count', [schedulecontroller::class, 'getScheduleCount']);
     Route::post('/check-overlapping-schedule', [schedulecontroller::class, 'checkOverlappingSchedule']);
     Route::post('/validate-event-time', [schedulecontroller::class, 'validateEventTime']);
+
+    Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
+
+
 });

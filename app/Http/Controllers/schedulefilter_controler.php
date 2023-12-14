@@ -111,7 +111,6 @@ class schedulefilter_controler extends Controller
         $filterText = $dateString ? $dateString : '--/--/--';
 
         return view('sched_list', compact('scheduless','uniqueYears', 'uniqueMonths', 'uniqueDays', 'filterText', 'currentYear','currentMonth', 'currentWeek', 'currentDay'));
-    
     } 
  
     public function indexadmin(){
@@ -240,7 +239,6 @@ class schedulefilter_controler extends Controller
         // Return a response if needed
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
-
 
     public function updateSchedulesManually()
     {

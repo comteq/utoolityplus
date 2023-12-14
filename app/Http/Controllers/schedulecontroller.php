@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Events\UpdateSchedulesEvent;
 use App\Models\Activity;
+use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
@@ -502,6 +503,14 @@ class ScheduleController extends Controller
         return response()->json(['overlap' => $overlappingSchedule]);
     }//automatic detection for to: date and time and from: date and time
 
+    public function validateDateTime(Request $request)
+    {
+        $dateTime = $request->input('dateTime');
+        $isValid = strtotime($dateTime) > time();
+
+        return response()->json(['isValid' => $isValid]);
+    }
+
 //-------------------------------------------------------ADMIN----------------------------------------------------------------//
 
     public function indexadmin()
@@ -516,11 +525,25 @@ class ScheduleController extends Controller
             'event_datetime_off.required' => 'To: Date & Time: field is required.',
             'description.required' => 'Action field is required.',
             'same_day' => 'Cannot make a schedule that covers multiple days.',
+            'event_datetime.after_or_equal' => 'You cannot make a schedule in the past.',
         ];
 
         if ($request->has('custom_schedule')) {
             $validationRules = [
-                'event_datetime' => 'required|date',
+                'event_datetime' => [
+                    'required',
+                    'date',
+                    'after_or_equal:today', // Check if the date is today or in the future
+                    function ($attribute, $value, $fail) use ($request) {
+                        // Custom validation rule to check if time is after the current time
+                        $currentTime = now()->format('H:i');
+                        $selectedTime = (new \DateTime($value))->format('H:i');
+        
+                        if ($currentTime > $selectedTime && now()->format('Y-m-d') == (new \DateTime($value))->format('Y-m-d')) {
+                            $fail('You cannot make a schedule in the past');
+                        }
+                    },
+                ],
                 'event_datetime_off' => [
                     'required',
                     'date',
@@ -537,24 +560,25 @@ class ScheduleController extends Controller
                 ],
                 'description' => 'required|string',
             ];
-
-            $request->validate($validationRules, $customMessages);
-
+        
+            $request->validate($validationRules,$customMessages);
+        
             $schedule = new schedules();
             $schedule->event_datetime = $request->input('event_datetime');
             $schedule->event_datetime_off = $request->input('event_datetime_off');
             $schedule->description = $request->input('description');
-
+        
             // Set the schedule state based on the date and time
             $schedule->state = $this->getScheduleState($request->input('event_datetime'), $request->input('event_datetime_off'));
-
+        
             $existingSchedulesCount = schedules::where('event_datetime', $request->input('event_datetime'))->count();
             if ($existingSchedulesCount >= 2) {
                 // Display an error message and redirect back
                 return redirect()->route('scheduleadmin.index')->with('error', 'Cannot insert more than 2 schedules with the same Start Time!');
             }
-
-            $overlappingSchedule = schedules::where(function ($query) use ($request) {// Check if the new schedule overlaps with existing schedules
+        
+            $overlappingSchedule = schedules::where(function ($query) use ($request) {
+                // Check if the new schedule overlaps with existing schedules
                 $query->where('state', 'Active')
                     ->where(function ($query) use ($request) {
                         $query->whereBetween('event_datetime', [$request->input('event_datetime'), $request->input('event_datetime_off')])
@@ -565,22 +589,21 @@ class ScheduleController extends Controller
                             });
                     });
             })->first();
-
+        
             if ($overlappingSchedule) {
                 return redirect()->route('scheduleadmin.index')->with('error', 'Schedule overlaps with an active schedule!');
             }
-            $schedule->save(); // Save the schedule to the database
-
-            // Log the activity for custom schedule creation
-        Activity::create([
-            'user_id' => auth()->id(),
-            'activity' => 'Create Custom Schedule',
-            'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
-            'created_at' => now(),
-        ]);
-
-        }
         
+            $schedule->save(); // Save the schedule to the database
+        
+            // Log the activity for custom schedule creation
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activity' => 'Create Custom Schedule',
+                'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
+                'created_at' => now(),
+            ]);
+        }
         
         else {
             $validationRules = [
@@ -748,54 +771,54 @@ class ScheduleController extends Controller
             ], 400);
         }
 
-    // Get the original event times before the update
-    $oldEventDatetime = $schedule->event_datetime;
-    $oldEventDatetimeOff = $schedule->event_datetime_off;
-    $oldescription = $schedule->description;
+        // Get the original event times before the update
+        $oldEventDatetime = $schedule->event_datetime;
+        $oldEventDatetimeOff = $schedule->event_datetime_off;
+        $oldescription = $schedule->description;
 
-    // Update the schedule
-    $schedule->update([
-        'event_datetime' => $request->input('event_datetime'),
-        'event_datetime_off' => $request->input('event_datetime_off'),
-        'description' => $request->input('description'),
-    ]);
-
-    // Get the updated event times after the update
-    $newEventDatetime = $schedule->event_datetime;
-    $newEventDatetimeOff = $schedule->event_datetime_off;
-    $newdescription = $schedule->description;
-
-    // Log the specific changes
-    $changes = [];
-
-    if ($oldEventDatetime != $newEventDatetime) {
-        $changes[] = 'Event datetime changed from ' . $oldEventDatetime . ' to ' . $newEventDatetime;
-    }
-
-    if ($oldEventDatetimeOff != $newEventDatetimeOff) {
-        $changes[] = 'Event datetime off changed from ' . $oldEventDatetimeOff . ' to ' . $newEventDatetimeOff;
-    }
-
-    if ($oldescription != $newdescription) {
-        $changes[] = 'Action changed from ' . $oldescription . ' to ' . $newdescription;
-    }
-
-    if (!empty($changes)) {
-        // Log the activity if there are changes
-        Activity::create([
-            'user_id' => auth()->id(),
-            'activity' => 'Update Schedule',
-            'message' => 'User updated schedule (' . implode(', ', $changes) . ')',
-            'created_at' => now(),
-            ]);
-    }
-
-        
-        $updatedSchedule = schedules::findOrFail($id);
-        return response()->json([
-            'message' => 'Schedule updated successfully',
-            'updatedSchedule' => $updatedSchedule,
+        // Update the schedule
+        $schedule->update([
+            'event_datetime' => $request->input('event_datetime'),
+            'event_datetime_off' => $request->input('event_datetime_off'),
+            'description' => $request->input('description'),
         ]);
+
+        // Get the updated event times after the update
+        $newEventDatetime = $schedule->event_datetime;
+        $newEventDatetimeOff = $schedule->event_datetime_off;
+        $newdescription = $schedule->description;
+
+        // Log the specific changes
+        $changes = [];
+
+        if ($oldEventDatetime != $newEventDatetime) {
+            $changes[] = 'Event datetime changed from ' . $oldEventDatetime . ' to ' . $newEventDatetime;
+        }
+
+        if ($oldEventDatetimeOff != $newEventDatetimeOff) {
+            $changes[] = 'Event datetime off changed from ' . $oldEventDatetimeOff . ' to ' . $newEventDatetimeOff;
+        }
+
+        if ($oldescription != $newdescription) {
+            $changes[] = 'Action changed from ' . $oldescription . ' to ' . $newdescription;
+        }
+
+        if (!empty($changes)) {
+            // Log the activity if there are changes
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activity' => 'Update Schedule',
+                'message' => 'User updated schedule (' . implode(', ', $changes) . ')',
+                'created_at' => now(),
+                ]);
+        }
+
+            
+            $updatedSchedule = schedules::findOrFail($id);
+            return response()->json([
+                'message' => 'Schedule updated successfully',
+                'updatedSchedule' => $updatedSchedule,
+            ]);
     }
 
     public function modalvaliddatetime(Request $request)
