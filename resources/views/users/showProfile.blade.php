@@ -87,6 +87,8 @@
     </form>
 </div>
 
+
+
 <style>
     .border-box-form {
     border: 1px solid #ced4da; /* Border color */
@@ -96,5 +98,9 @@
     background-color: #FFFFFF;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px
+}
+
+body {
+    background-color: #ecedee;
 }
 </style>

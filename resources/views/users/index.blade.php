@@ -1,10 +1,16 @@
 @include('nav')
 
-<div class="container">
+<div class="container mt-2">
     <h2>Account List</h2>
     @if(session('flash_message'))
         <div class="alert alert-success">
             {{ session('flash_message') }}
+        </div>
+    @endif
+
+    @if(session('error_message'))
+        <div class="alert alert-danger">
+            {{ session('error_message') }}
         </div>
     @endif
     <a href="{{ route('users.create') }}" class="btn btn-primary mb-2">Create User</a>
@@ -15,7 +21,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Date Created</th>
-                <th>Actions</th>
+                <th class="not-export-column">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +49,8 @@
     </table>
 </div>
 
+
+
 <style>
     thead {
         background-color: #007BFF;
@@ -63,13 +71,22 @@
     $(document).ready(function () {
        $('#users-table').DataTable({
           responsive: true, // Enable responsiveness
-          dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
+          dom: 'Bfrtip',
           buttons: [
              'copyHtml5',
              'excelHtml5',
              'csvHtml5',
-             'pdfHtml5'
-          ]
+             'pdfHtml5',
+            {
+                extend: 'print',
+                title: "Accounts List",
+                exportOptions: 
+                {
+                    columns: ":not(.not-export-column)"
+                }
+            }
+          ],
+          order: [[0, 'asc']], // Sort by the first column (Date & Time) in descending order
        });
     });
  </script>

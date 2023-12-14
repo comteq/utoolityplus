@@ -149,7 +149,7 @@
 </div> <!-- card-header -->
 
 <div class="card-body" >
-    <table class="table table-striped table-light" id="users-table">
+    <table class="table table-striped table-light" id="schedule-table">
         <thead>
             <tr>
             <th><input type="checkbox" id="checkAll" class="check-all-checkbox"></th>
@@ -159,7 +159,7 @@
             <th>Activity</th>
             <th>State</th>
             <th>Status</th>
-            <th>Action</th>
+            <th class="not-export-column">Action</th>
             </tr>
         </thead>
 
@@ -185,6 +185,7 @@
     </table>
 </div> <!-- card-body -->
 
+@include('footer')
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
@@ -269,64 +270,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Get the form and select elements
-        var filterForm = document.getElementById('filterForm');
-        var filterSelects = filterForm.querySelectorAll('select');
-
-        // Add event listener to each select element
-        filterSelects.forEach(function (select) {
-            select.addEventListener('change', function () {
-                // Submit the form when a filter option changes
-                filterForm.submit();
-            });
-        });
-    });
-</script>
-
-<script>
-    function toggleFilterForm() {
-        var filterForm = document.getElementById("filterForm");
-        filterForm.style.display = (filterForm.style.display === "none" || filterForm.style.display === "") ? "block" : "none";
-    }
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add event listener to all delete buttons
-        document.querySelectorAll('.delete-btn').forEach(function (button) {
-            button.addEventListener('click', function () {
-                // Get the schedule ID from the data attribute
-                var scheduleId = button.dataset.scheduleId;
-
-                // Ask for confirmation before deletion (optional)
-                if (confirm('Are you sure you want to delete this schedule?')) {
-                    // Use AJAX to send a delete request to the server
-                    fetch('/schedule/' + scheduleId, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                // Optionally, you can remove the deleted row from the table
-                                button.closest('tr').remove();
-                            } else {
-                                alert('Failed to delete the schedule.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-            });
-        });
-    });
-</script><!-- delete and confirmation -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
         // Get the "Check All" checkbox and the individual checkboxes
         var checkAllCheckbox = document.getElementById('checkAll');
         var scheduleCheckboxes = document.querySelectorAll('.schedule-checkbox');
@@ -367,6 +310,9 @@
                         .then(response => {
                             if (!response.ok) {
                                 console.error('Failed to delete schedule with ID ' + id);
+                            } else {
+                                // Activity: Create log for deleted schedule
+                                logDeletedSchedule(id);
                             }
                         })
                         .catch(error => {
@@ -382,6 +328,25 @@
                 });
             }
         });
+
+        // Function to create activity log for deleted schedule
+        function logDeletedSchedule(scheduleId) {
+            fetch('/log-deleted-schedule/' + scheduleId, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to create activity log for deleted schedule with ID ' + scheduleId);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     });
 </script><!-- checkall and delete -->
 
@@ -434,15 +399,23 @@
 <script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.js"></script>
 <script>
 $(document).ready(function () {
-    $('#users-table').DataTable({
+    $('#schedule-table').DataTable({
         responsive: true, // Enable responsiveness
         dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
         buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],
+             'copyHtml5',
+             'excelHtml5',
+             'csvHtml5',
+             'pdfHtml5',
+            {
+                extend: 'print',
+                title: "Schedule List",
+                exportOptions: 
+                {
+                    columns: ":not(.not-export-column)"
+                }
+            }
+          ],
         columnDefs: [
             { orderable: false, targets: 0 }, // Disable ordering for the first checkbox column
         ],

@@ -113,14 +113,25 @@
       <li class="nav-item @if(request()->url() == route('activity-logs.index')) active @endif">
         <a class="nav-link" href="{{ route('activity-logs.index') }}">Activity Logs</a>
       </li>
+      
+      @if(auth()->user()->role == 'user')
+      <li class="nav-item @if(request()->url() == route('schedule.index')) active @endif">
+        <a class="nav-link" href="{{ route('schedule.index') }}">Set Schedule</a>
+      </li>
+      <li class="nav-item @if(request()->url() == route('schedule.filter')) active @endif">
+        <a class="nav-link" href="{{ route('schedule.filter') }}">Schedule List</a>
+      </li>
+      @else
       <li class="nav-item @if(request()->url() == route('scheduleadmin.index')) active @endif">
         <a class="nav-link" href="{{ route('scheduleadmin.index') }}">Set Schedule</a>
       </li>
       <li class="nav-item @if(request()->url() == route('schedule-admin.filter')) active @endif">
         <a class="nav-link" href="{{ route('schedule-admin.filter') }}">Schedule List</a>
       </li>
-    </ul>
+      @endif
 
+    </ul>
+    @if(auth()->user() && auth()->user()->role !== 'user')
     <!-- Notification bell -->
     <div class="customcontainer">
       <div id="openNotificationBtn">
@@ -132,7 +143,7 @@
       <div class="notification-window" id="notificationWindow"></div>
     </div>
     <!-- End notification bell -->
-
+@endif
     <!-- User dropdown -->
     <ul class="navbar-nav">
       <li class="nav-item dropdown @if(request()->routeIs(['profile.show', 'users.index'])) active @endif">
@@ -143,7 +154,10 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <!-- Add dropdown items as needed -->
           <a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a>
+          {{-- Check if the user's role is not 'user' before displaying the 'Accounts' link --}}
+          @if(auth()->user()->role != 'user')
           <a class="dropdown-item" href="{{ route('users.index') }}">Accounts</a>
+          @endif
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             Logout
