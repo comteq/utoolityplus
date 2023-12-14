@@ -21,7 +21,8 @@ class schedulefilter_controler extends Controller
             ->orderBy('event_datetime')
             ->pluck(DB::raw('YEAR(event_datetime) as year'))
             ->toArray();
-    
+
+        $status = $request->input('status');
         $year = $request->input('year');
         $month = $request->input('month');
         $day = $request->input('day');
@@ -62,6 +63,10 @@ class schedulefilter_controler extends Controller
 
         if ($state && in_array($state, ['Active', 'In-Active'])) {
             $query->where('state', $state);
+        }
+
+        if ($status && in_array($status, ['In-Progress','Pending','Processing' ,'Finished'])) {
+            $query->where('status', $status);
         }
         
         if ($week) {
@@ -125,6 +130,7 @@ class schedulefilter_controler extends Controller
             ->pluck(DB::raw('YEAR(event_datetime) as year'))
             ->toArray();
     
+        $status = $request->input('status');
         $year = $request->input('year');
         $month = $request->input('month');
         $day = $request->input('day');
@@ -135,6 +141,7 @@ class schedulefilter_controler extends Controller
         $filterWeek = $request->has('week');
         $state = $request->input('state');
         $dayOfWeek = $request->input('dayOfWeek');
+        
 
         $query = schedules::query();
         if ($year) {
@@ -165,6 +172,10 @@ class schedulefilter_controler extends Controller
 
         if ($state && in_array($state, ['Active', 'In-Active'])) {
             $query->where('state', $state);
+        }
+
+        if ($status && in_array($status, ['In-Progress','Pending','Processing' ,'Finished'])) {
+            $query->where('status', $status);
         }
         
         if ($week) {

@@ -140,21 +140,32 @@
                 <option value="Active"{{ request('state') == 'Active' ? ' selected' : '' }}>Active</option>
                 <option value="In-Active"{{ request('state') == 'In-Active' ? ' selected' : '' }}>In-Active</option>
             </select>
+
+            <select name="status" id="status" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('status') == '' ? ' selected' : '' }} disabled>Status</option>
+                <option value="">All</option>
+                <option value="In-Progress"{{ request('status') == 'In-Progress' ? ' selected' : '' }}>In-Progress</option>
+                <option value="Pending"{{ request('status') == 'Pending' ? ' selected' : '' }}>Pending</option>
+                <option value="Processing"{{ request('status') == 'Processing' ? ' selected' : '' }}>Processing</option>
+                <option value="Finished"{{ request('status') == 'Finished' ? ' selected' : '' }}>Finished</option>
+            </select>
+
         </form>
     </div> <!-- row2 -->
 
 </div> <!-- card-header -->
 
 <div class="card-body">
-    <table class="table table-striped table-light ">
+    <table class="table table-striped table-light" id="users-table">
         <thead>
             <tr>
-            <th>ID</th>
             <th>Day</th>
             <th>Date</th>
             <th>Time</th>
             <th>Activity</th>
             <th>State</th>
+            <th>Status</th>
+            <th>Date Created</th>
             </tr>
         </thead>
 
@@ -166,12 +177,13 @@
             @else
                 @foreach($scheduless as $sched)
                 <tr>
-                    <td>{{ $sched->id }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('l') }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('Y-m-d') }} - {{ \Carbon\Carbon::parse($sched->event_datetime_off)->format('Y-m-d') }}</td>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('h:i A') }} - {{ \Carbon\Carbon::parse($sched->event_datetime_off)->format('h:i A') }}</td>
                     <td>{{ $sched->description }}</td>
                     <td>{{ $sched->state }}</td>
+                    <td class="status-column">{{ $sched->status }}</td>
+                    <td class="status-column">{{ $sched->created_at }}</td>
                     <!-- <td>
                         @if($sched->activity)
                             @foreach($sched->activity as $activity)
@@ -291,3 +303,28 @@
         filterForm.style.display = (filterForm.style.display === "none" || filterForm.style.display === "") ? "block" : "none";
     }
 </script>
+
+<link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#users-table').DataTable({
+        responsive: true, // Enable responsiveness
+        dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
+        columnDefs: [
+            { orderable: false, targets: 0 }, // Disable ordering for the first checkbox column
+        ],
+        order: [],
+
+    });
+});
+ </script>

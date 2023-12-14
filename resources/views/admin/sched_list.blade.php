@@ -48,9 +48,9 @@
     <div class="row">
 
     <div class="col-md-auto custom-border text-center" style="margin-top: 10px;">
-        <a href="{{ route('schedule.filter', ['year' => $filterYear, 'month' => $filterMonth, 'day' => $filterDay]) }}" class="btn btn-dark" id="prevButton"><</a>
+        <a href="{{ route('schedule-admin.filter', ['year' => $filterYear, 'month' => $filterMonth, 'day' => $filterDay]) }}" class="btn btn-dark" id="prevButton"><</a>
         <a href="" class="btn btn-secondary"> <p>{{ $filterText}}</p></a>
-        <a href="{{ route('schedule.filter', ['year' => $filterYear, 'month' => $filterMonth, 'day' => $filterDay,'week' => $currentWeek]) }}" class="btn btn-dark" id="nextButton">></a>
+        <a href="{{ route('schedule-admin.filter', ['year' => $filterYear, 'month' => $filterMonth, 'day' => $filterDay,'week' => $currentWeek]) }}" class="btn btn-dark" id="nextButton">></a>
     </div>
 
     <div class="col custom-border text-center" style="margin-top: 10px;">
@@ -143,6 +143,15 @@
                 <option value="In-Active"{{ request('state') == 'In-Active' ? ' selected' : '' }}>In-Active</option>
             </select>
 
+            <select name="status" id="status" class="btn btn-secondary dropdown-toggle">
+                <option value=""{{ request('status') == '' ? ' selected' : '' }} disabled>Status</option>
+                <option value="">All</option>
+                <option value="In-Progress"{{ request('status') == 'In-Progress' ? ' selected' : '' }}>In-Progress</option>
+                <option value="Pending"{{ request('status') == 'Pending' ? ' selected' : '' }}>Pending</option>
+                <option value="Processing"{{ request('status') == 'Processing' ? ' selected' : '' }}>Processing</option>
+                <option value="Finished"{{ request('status') == 'Finished' ? ' selected' : '' }}>Finished</option>
+            </select>
+
         </form>
     </div> <!-- row2 -->
 
@@ -159,6 +168,7 @@
             <th>Activity</th>
             <th>State</th>
             <th>Status</th>
+            <th>Date Created</th>
             <th>Action</th>
             </tr>
         </thead>
@@ -173,6 +183,7 @@
                     <td>{{ $sched->description }}</td>
                     <td>{{ $sched->state }}</td>
                     <td class="status-column">{{ $sched->status }}</td>
+                    <td class="status-column">{{ $sched->created_at }}</td>
                     <td>
                         <button class="btn btn-danger delete-btn" data-schedule-id="{{ $sched->id }}">🗑️</button>
                     </td>
