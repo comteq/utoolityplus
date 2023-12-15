@@ -12,6 +12,9 @@ use App\Http\Controllers\NotificationController;
 
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::get('/', function () {
+        return redirect()->route('login');
+    });
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'registerPost'])->name('register');
     Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -21,7 +24,6 @@ Route::group(['middleware' => 'guest'], function () {
  
 // Routes for authenticated users
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home'); // Rename to 'home' route
     Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::resource('/users', UserController::class)->except(['show']);
     Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');

@@ -11,7 +11,7 @@ class dashboardcontroller extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        return view('roomControls');
     }
 
     public function checkUpdates()
