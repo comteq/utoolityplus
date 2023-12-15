@@ -2202,7 +2202,7 @@
                         _token: csrfToken },
                 success: function(response) {
                     if (!response.isValid) {
-                        $('#separateError').text('You cannot make a schedule in the past');
+                        $('#separateError').text('The scheduled start time has already passed');
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#separateError').text('');

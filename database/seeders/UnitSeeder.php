@@ -12,9 +12,13 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        unit::create([
-            'AC' => '0',
-            'Lights' => '0',
-        ]);
+
+        $data = [
+            ['AC' => '0'],
+            ['Lights' => '0'],
+            // Add more data as needed
+        ];
+
+        unit::insert($data);
     }
 }

@@ -31,7 +31,20 @@ class ScheduleController extends Controller
 
         if ($request->has('custom_schedule')) {
             $validationRules = [
-                'event_datetime' => 'required|date',
+                'event_datetime' => [
+                    'required',
+                    'date',
+                    'after_or_equal:today', // Check if the date is today or in the future
+                    // function ($attribute, $value, $fail) use ($request) {
+                    //     // Custom validation rule to check if time is after the current time
+                    //     $currentTime = now()->format('H:i');
+                    //     $selectedTime = (new \DateTime($value))->format('H:i');
+        
+                    //     if ($currentTime > $selectedTime && now()->format('Y-m-d') == (new \DateTime($value))->format('Y-m-d')) {
+                    //         $fail('You cannot make a schedule in the past');
+                    //     }
+                    // },
+                ],
                 'event_datetime_off' => [
                     'required',
                     'date',
@@ -534,15 +547,15 @@ class ScheduleController extends Controller
                     'required',
                     'date',
                     'after_or_equal:today', // Check if the date is today or in the future
-                    function ($attribute, $value, $fail) use ($request) {
-                        // Custom validation rule to check if time is after the current time
-                        $currentTime = now()->format('H:i');
-                        $selectedTime = (new \DateTime($value))->format('H:i');
+                    // function ($attribute, $value, $fail) use ($request) {
+                    //     // Custom validation rule to check if time is after the current time
+                    //     $currentTime = now()->format('H:i');
+                    //     $selectedTime = (new \DateTime($value))->format('H:i');
         
-                        if ($currentTime > $selectedTime && now()->format('Y-m-d') == (new \DateTime($value))->format('Y-m-d')) {
-                            $fail('You cannot make a schedule in the past');
-                        }
-                    },
+                    //     if ($currentTime > $selectedTime && now()->format('Y-m-d') == (new \DateTime($value))->format('Y-m-d')) {
+                    //         $fail('You cannot make a schedule in the past');
+                    //     }
+                    // },
                 ],
                 'event_datetime_off' => [
                     'required',
