@@ -1567,3 +1567,4 @@
     }
 </script> -->
 
+@include('footer')

@@ -57,7 +57,7 @@ class AuthController extends Controller
                 'message' => 'User logged in successfully.',
                 'created_at' => now(),
             ]);
-            return redirect('/dashboard')->with('success', 'Login Success');
+            return redirect('/room-controls')->with('success', 'Login Success');
         }
  
         return back()->with('error', 'Incorrect Email or Password');

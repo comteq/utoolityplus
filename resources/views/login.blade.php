@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<footer class="fixed-bottom bg-light text-center p-3">
+<footer class="fixed-bottom bg-dark text-center p-3">
     <p>&copy; <span id="currentYear"></span> Utoolity+. All rights reserved.</p>
 </footer>
 
@@ -57,6 +57,10 @@
 </script>
 
 <style>
+footer p {
+    color: white;
+}
+
     body {
         background: url('images/bg.png') no-repeat center center fixed;
         background-size: cover;

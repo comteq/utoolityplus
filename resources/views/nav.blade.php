@@ -107,8 +107,8 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav left-nav">
-      <li class="nav-item @if(request()->url() == route('dashboard')) active @endif">
-        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+      <li class="nav-item @if(request()->url() == route('room-controls')) active @endif">
+        <a class="nav-link" href="{{ route('room-controls') }}">Room Controls</a>
       </li>
       <li class="nav-item @if(request()->url() == route('activity-logs.index')) active @endif">
         <a class="nav-link" href="{{ route('activity-logs.index') }}">Activity Logs</a>

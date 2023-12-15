@@ -1,3 +1,4 @@
+<div class="wrapper">
 @include('nav')
 
 <div class="container mt-2">
@@ -48,7 +49,8 @@
         </tbody>
     </table>
 </div>
-
+</div>
+@include('footer')
 
 
 <style>
@@ -59,6 +61,29 @@
     tr td {
         font-weight: bold;
     }
+
+    body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content {
+            flex: 1;
+            /* Add other styles for your content */
+            margin-top: 20px; /* Adjust as needed */
+            margin-bottom: 20px; /* Adjust as needed */
+        }
+
+        .footer {
+            /* Add styles for your footer */
+            padding: 10px;
+        }
 </style>
 
 <link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.css" rel="stylesheet">

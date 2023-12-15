@@ -43,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/schedule-List?year=&month=&day=', function () { return view('sched_list'); });
     Route::get('/schedule-List', [schedulefilter_controler::class, 'filter'])->name('schedule.filter');
 
-    Route::get('/dashboard', [dashboardcontroller::class, 'index'])->name('dashboard');
+    Route::get('/room-controls', [dashboardcontroller::class, 'index'])->name('room-controls');
 
     Route::post('/update-ac/{id}', [DashboardController::class, 'updateAC'])->name('update-ac');
     Route::post('/update-lights/{id}', [DashboardController::class, 'updatelights'])->name('update-lights');
