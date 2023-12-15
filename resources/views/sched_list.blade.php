@@ -29,8 +29,30 @@
         padding-top: 5px;
         padding-bottom: 5px;
     }
-</style>
 
+    body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .site-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+
+        }
+
+        .custom-card {
+            flex: 1;
+        }
+
+        .card-footer {
+            margin-top: auto;
+        }
+</style>
+<div class="site-container">
 @include('nav')
 
 <div class="card-header">
@@ -199,7 +221,7 @@
         </tbody>
     </table>
 </div> <!-- card-body -->
-
+</div>
 @include('footer')
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>

@@ -53,7 +53,7 @@ class dashboardcontroller extends Controller
             'created_at' => now(),
         ]);
     
-        return redirect()->route('dashboard')->with('success', 'ACU updated successfully');
+        return redirect()->route('room-controls')->with('success', 'ACU updated successfully');
     }
     
     
@@ -82,7 +82,7 @@ class dashboardcontroller extends Controller
             'created_at' => now(),
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Lights updated successfully');
+        return redirect()->route('room-controls')->with('success', 'Lights updated successfully');
     }
 
     
