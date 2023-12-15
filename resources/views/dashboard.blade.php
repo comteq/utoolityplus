@@ -78,6 +78,20 @@
 
 </div>
 
+<script>
+    function checkForUpdates() {
+        fetch("{{ route('check-updates') }}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.hasUpdates) {
+                    location.reload(); // Refresh the page if updates are detected
+                }
+            });
+    }
+
+    // Poll for updates every 5 seconds (adjust the interval as needed)
+    setInterval(checkForUpdates, 5000); // 5000 milliseconds = 5 seconds
+</script>
 
 <script>
     function confirmPowerAction() {

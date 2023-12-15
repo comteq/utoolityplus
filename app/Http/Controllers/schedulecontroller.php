@@ -725,6 +725,15 @@ class ScheduleController extends Controller
     public function deleteSchedule($itemId)
     {
         $schedule = schedules::find($itemId);
+
+        // Check if the schedule status is "Processing"
+        if ($schedule->status === 'Processing') {
+            return response()->json([
+                'message' => 'Cannot delete schedule with status "Processing".',
+                'status' => 'error' 
+            ], 400);
+        }
+
         if ($schedule) {
             $eventTimeFrom = $schedule->event_datetime; // Replace 'from' with your actual attribute name
             $eventTimeTo = $schedule->event_datetime_off;     // Replace 'to' with your actual attribute name

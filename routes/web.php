@@ -99,5 +99,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
 
-
 });
+
+Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');

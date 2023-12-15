@@ -397,7 +397,7 @@
 
 
         <div class="card-header" style="text-align: left" id="otherschedheader">
-            <h1>Other Schedule</h1>
+            <h1>All Schedule</h1>
         </div><!-- cardheader2 end -->
 
         <div class="card-body" id="othersched">
@@ -1380,7 +1380,6 @@
 </script><!-- update state --> 
 
 <script>
-
     function deleteSchedule(itemId) {
         Swal.fire({
             title: 'Are you sure?',
@@ -1394,6 +1393,7 @@
             if (result.isConfirmed) {
                 // Store the datetime value before the reload
                 var dateTimeValue = $('#dateTimePicker').val();
+                // var status = $('#' + itemId + ' [name="schedule_status"]').val();
 
                 $.ajax({
                     type: 'DELETE',
@@ -1420,6 +1420,13 @@
                             console.error('Unauthorized access. Make sure you are authenticated.');
                         } else {
                             console.error('Unknown error. Check the server logs for more information.');
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Cannot Delete schedule with status "Processing"',
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     }
                 });
