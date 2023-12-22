@@ -9,6 +9,8 @@ use App\Http\Controllers\schedulecontroller;
 use App\Http\Controllers\schedulefilter_controler; 
 use App\Http\Controllers\dashboardcontroller;
 use App\Http\Controllers\NotificationController; 
+use App\Http\Controllers\LightsController;
+
 
 
 Route::group(['middleware' => 'guest'], function () {
@@ -104,3 +106,4 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');
+

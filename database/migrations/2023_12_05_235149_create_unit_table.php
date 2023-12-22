@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('unit', function (Blueprint $table) {
+         Schema::create('unit', function (Blueprint $table) {
             $table->id();
-            $table->enum('AC', ['1', '0'])->default('0');
-            $table->enum('Lights', ['1', '0'])->default('0');
-            $table->timestamp('updated_at')->nullable(); 
+            $table->string('Pin_Num')->nullable();
+            $table->string('Pin_Name')->nullable();
+            $table->string('Status')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
@@ -24,6 +25,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unit');
+        Schema::table('unit', function (Blueprint $table) {
+            $table->enum('AC', ['1', '0'])->default('0');
+            $table->enum('Lights', ['1', '0'])->default('0');
+            $table->dropColumn('Pin_Num');
+            $table->dropColumn('Pin_Name');
+            $table->dropColumn('Status');
+            $table->dropColumn('updated_at');
+        });
     }
 };
