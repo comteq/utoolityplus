@@ -157,6 +157,7 @@
           {{-- Check if the user's role is not 'user' before displaying the 'Accounts' link --}}
           @if(auth()->user()->role != 'user')
           <a class="dropdown-item" href="{{ route('users.index') }}">Accounts</a>
+          <a class="dropdown-item" href="{{ route('device') }}">Device</a>
           @endif
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

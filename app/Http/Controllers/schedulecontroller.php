@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Events\UpdateSchedulesEvent;
 use App\Models\Activity;
+use App\Models\Device;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -16,7 +17,8 @@ class ScheduleController extends Controller
 //---------------------------------------------------------User---------------------------------------------------------------------//
     public function index()
     {
-        return view('schedule');
+        $deviceSettings = Device::first();
+        return view('schedule', compact('deviceSettings'));
     }
 
     public function store(Request $request)
@@ -528,7 +530,8 @@ class ScheduleController extends Controller
 
     public function indexadmin()
     {
-        return view('admin.schedule');
+        $deviceSettings = Device::first();
+        return view('admin.schedule', compact('deviceSettings'));
     }
 
     public function storeadmin(Request $request)

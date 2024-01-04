@@ -38,6 +38,10 @@
         .custom {
             margin-top: 74px;
         }
+
+        .border {
+            background: rgba(107, 214, 119, 0.3);
+        }
         </style>
 </head> 
 <body>
@@ -73,6 +77,15 @@
                             </button>
                         </form>
                     </div>
+                    
+                    <div class="pin-container d-flex flex-wrap justify-content-center align-items-center" id="acPinContainer">
+                        @for ($i = 1; $i <= $deviceSettings->acNumPins; $i++)
+                            <div class="pin-box m-2 p-3 border">
+                                <label for="acPin{{ $i }}" class="text-center">{{ $i }}</label>
+                                <!-- Add more content or styling as needed for each pin box -->
+                            </div>
+                        @endfor
+                    </div>
                 </div>
 
         
@@ -97,14 +110,20 @@
                             </button>
                         </form>
                     </div>
+
+                    <div class="pin-container d-flex flex-wrap mt-4 justify-content-center align-items-center" id="lightPinContainer">
+                        @for ($i = 1; $i <= $deviceSettings->lightsNumPins; $i++)
+                            <div class="pin-box m-2 p-3 border">
+                                <label for="lightPin{{ $i }}" class="text-center">{{ $i }}</label>
+                                <!-- Add more content or styling as needed for each pin box -->
+                            </div>
+                        @endfor
+                    </div>
                 </div>
 
 
                    
 
-                    
-
-        
                 </div><!-- card deck -->
         
             </div>
@@ -112,6 +131,55 @@
         </div>
     </div>
 
+    <script>
+        function updateACPinBoxes() {
+            var numACSelectedPins = document.getElementById('acNumPins').value;
+    
+            // Clear the AC pin container
+            document.getElementById('acPinContainer').innerHTML = '';
+    
+            // Add AC pin boxes dynamically
+            for (var i = 1; i <= numACSelectedPins; i++) {
+                var acPinBox = document.createElement('div');
+                acPinBox.className = 'pin-box m-2 p-3';
+                acPinBox.innerHTML = '<label for="acPin' + i + '" class="text-center">AC Pin ' + i + '</label>';
+                // Add more content or styling as needed for each pin box
+                document.getElementById('acPinContainer').appendChild(acPinBox);
+            }
+        }
+    
+        // Call the updateACPinBoxes function when the acNumPins dropdown changes
+        document.getElementById('acNumPins').addEventListener('change', updateACPinBoxes);
+    
+        // Initial call to set up the AC pin boxes based on the default selected number of AC pins
+        updateACPinBoxes();
+    
+        // Similar logic for light pins
+        // ...
+    
+        function updateLightPinBoxes() {
+            var numLightSelectedPins = document.getElementById('lightsNumPins').value;
+    
+            // Clear the light pin container
+            document.getElementById('lightPinContainer').innerHTML = '';
+    
+            // Add light pin boxes dynamically
+            for (var i = 1; i <= numLightSelectedPins; i++) {
+                var lightPinBox = document.createElement('div');
+                lightPinBox.className = 'pin-box m-2 p-3';
+                lightPinBox.innerHTML = '<label for="lightPin' + i + '" class="text-center">Light Pin ' + i + '</label>';
+                // Add more content or styling as needed for each pin box
+                document.getElementById('lightPinContainer').appendChild(lightPinBox);
+            }
+        }
+    
+        // Call the updateLightPinBoxes function when the lightsNumPins dropdown changes
+        document.getElementById('lightsNumPins').addEventListener('change', updateLightPinBoxes);
+    
+        // Initial call to set up the light pin boxes based on the default selected number of light pins
+        updateLightPinBoxes();
+    </script>
+    
 
     
 

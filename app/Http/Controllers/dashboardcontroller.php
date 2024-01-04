@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\unit;
 use App\Models\activity;
+use App\Models\device;
 
 class dashboardcontroller extends Controller
 {
     public function index()
     {
-        return view('roomControls');
+        $deviceSettings = Device::first();
+
+        return view('roomControls', compact('deviceSettings'));
+
     }
 
     public function checkUpdates()

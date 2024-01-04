@@ -206,7 +206,17 @@
         <div class="card-header" style="text-align: left">
             <h1>Schedule Action</h1>
             <p id="currentTime"></p>
+           
         </div><!-- cardheader end -->
+
+        <div class="pin-container d-flex flex-wrap" id="lightPinContainer">
+            @for ($i = 1; $i <= $deviceSettings->lightsNumPins; $i++)
+                <div class="pin-box m-2 p-2 border">
+                    <label for="lightPin{{ $i }}" class="text-center">{{ $i }}</label>
+                    <!-- Add more content or styling as needed for each pin box -->
+                </div>
+            @endfor
+        </div>
 
         <div class="card-body">
             <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">

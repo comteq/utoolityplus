@@ -10,6 +10,7 @@ use App\Http\Controllers\schedulefilter_controler;
 use App\Http\Controllers\dashboardcontroller;
 use App\Http\Controllers\NotificationController; 
 use App\Http\Controllers\LightsController;
+use App\Http\Controllers\DeviceController;
 
 
 
@@ -103,7 +104,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
 
+    Route::get('/device', [DeviceController::class, 'index'])->name('device');
+    Route::post('/device', [DeviceController::class, 'updateSettings'])->name('update-device-settings');
+
 });
 
 Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');
-
