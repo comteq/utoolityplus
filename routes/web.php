@@ -98,9 +98,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-schedules-count', [schedulecontroller::class, 'getScheduleCount']);
     Route::post('/check-overlapping-schedule', [schedulecontroller::class, 'checkOverlappingSchedule']);
     Route::post('/validate-event-time', [schedulecontroller::class, 'validateEventTime']);
-
     Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
 
+    Route::post('/validate-dates', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
 });
 
 Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');

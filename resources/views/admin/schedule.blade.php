@@ -219,15 +219,12 @@
                     </select>
                 </div>
 
-
                 <div class="date-time-group">
 
                     <div class="form-group">
                         <label for="description">Action:</label>
                         <select name="description" id="description1" class="custom-select w-100" required>
-                            <option disabled value="">Select Action</option>
-                            <option value="ON">ON</option>
-                            <option value="OFF">OFF</option>
+                            <option Selected value="ON">ON</option>
                         </select>
                         <!-- <span id="existingactionerror" class="text-danger"></span> -->
                     </div>    
@@ -256,6 +253,7 @@
                         <span id="existingSchedulesErrorTo" class="text-danger"></span>
                         <span id="pasterror" class="text-danger"></span>
                         <span id="separateError" class="text-danger"></span>
+                        <span id="datespanerror" class="text-danger"></span>
                     </div>
 
                     <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subcustom">Set Schedule</button>
@@ -266,9 +264,7 @@
                     <div class="form-group">
                         <label for="description">Action:</label>
                         <select name="description" id="description" class="custom-select w-100" required>
-                            <option disabled  Selected value="">Select Action</option>
-                            <option value="ON">ON</option>
-                            <option value="OFF">OFF</option>
+                            <option Selected value="ON">ON</option>
                         </select>
                         <!-- <span id="existingactionerror" class="text-danger"></span> -->
                     </div>
@@ -281,16 +277,16 @@
 
                     <div class="form-group">
                         <label for="day">Day:</label>
-                            <select name="day" id="day" class="custom-select w-100" required>
-                                <option disabled selected value="">Select Day</option>
-                                <option>Monday</option>
-                                <option>Tuesday</option>
-                                <option>Wednesday</option>
-                                <option>Thursday</option>
-                                <option>Friday</option>
-                                <option>Saturday</option>
-                                <option>Sunday</option>
-                            </select>
+                        <select name="day[]" id="day" class="custom-select w-100" multiple required>
+                            <option disabled selected value="">Select Day</option>
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                            <option>Sunday</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -321,6 +317,7 @@
                 </div> <!-- other-form-elements -->
 
                 @if(session('success'))
+
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
@@ -2075,8 +2072,7 @@
                     $('#existingSchedulesError').text(response.error);
                     $('#sub').prop('disabled', true);
                 } else {
-                    $('#existingSchedulesError').text('');
-                    
+                    $('#existingSchedulesError').text('');   
                 }
             },
             error: function () {
@@ -2102,7 +2098,6 @@
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#existingSchedulesError').text('');
-                        
                     }
                 },
                 error: function () {
@@ -2132,11 +2127,8 @@
                     if (response.overlap || response.error) {
                         $('#existingSchedulesErrorTo').text('Schedule Error: Schedule overlaps with an active schedule!').append(lineBreak);;
                         $('#sub').prop('disabled', true);
-                        
                     } else {
                         $('#existingSchedulesErrorTo').text('');
-                        // $('#sub').prop('disabled', false);
-                        
                     }
                 },
                 error: function (error) {
@@ -2172,12 +2164,10 @@
                 },
                 success: function (response) {
                     if (response.error) {
-                        $('#pasterror').text('Schedule Error: To date & time must be after From date & time.');
+                        $('#pasterror').text('Schedule Error: To Date & Time must be after From Date & Time.').append('<br>');
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#pasterror').text('');
-                        // $('#sub').prop('disabled', false);
-                        
                     }
                 },
                 error: function (error) {
@@ -2185,15 +2175,82 @@
                 }
             });
         }
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkFordatetime();
+        
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
         });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#pasterror').text('');
+            }
+        }
     });
 </script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time-->
 
 <script>
+    $(document).ready(function () {
+        function checkFordatetime() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Make an AJAX request to the server for validation
+            $.ajax({
+                url: '/validate-dates', // Change this to your Laravel route
+                type: 'POST',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                    _token: csrfToken,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    displayErrorMessages(response.dateError);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function displayErrorMessages(dateError) {
+            // Clear existing error messages
+            $('#datespanerror').text('');
+
+            // Display the specific error message
+            if (dateError) {
+                $('#datespanerror').text(dateError);
+                $('#sub').prop('disabled', true);
+            } else {
+                // Enable the submit button if no error
+                $('#datespanerror').text('');
+            }
+        }
+
+        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+            checkFordatetime();
+        });
+    });
+</script><!-- check for schedule that cover multiple days-->
+
+<script>
     $(document).ready(function() {
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function() {
+        $('#dateTimePicker4').on('change', function() {
             var dateTime = $(this).val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -2204,7 +2261,7 @@
                         _token: csrfToken },
                 success: function(response) {
                     if (!response.isValid) {
-                        $('#separateError').text('The scheduled start time has already passed');
+                        $('#separateError').text('The scheduled start time has already passed').append('<br>');;
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#separateError').text('');
@@ -2216,8 +2273,7 @@
             });
         });
     });
-</script>
-
+</script><!-- scheduled start time has already passed-->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -2302,35 +2358,10 @@
     });
 </script><!-- reset -->
 
-<!-- <script>
-    // Function to check for overlapping schedules based on action
-    function checkForActionOverlap() {
-        var fromDateTime = $('#dateTimePicker3').val();
-        var toDateTime = $('#dateTimePicker4').val();
-        var description = $('#description').val();
-
-        $.ajax({
-            type: 'GET',
-            url: '/check-for-action-overlap', 
-            data: {
-                fromDateTime: fromDateTime,
-                toDateTime: toDateTime,
-                description: description,
-            },
-            success: function (response) {
-                if (response.overlap) {
-                    // There is an overlap, display the error message
-                    $('#existingactionerror').text('Schedule action overlaps with an active schedule!');
-                    $('#sub').prop('disabled', true);
-                } else {
-                    // No overlap, clear the error message
-                    $('#existingactionerror').text('');
-                    $('#sub').prop('disabled', false);
-                }
-            },
-            error: function (error) {
-                console.error('Error checking for overlap:', error);
-            }
+<script>
+    $(document).ready(function() {       
+        $('#countries').multiselect({		
+            nonSelectedText: 'Select Teams'				
         });
-    }
-</script> -->
+    });
+</script><!-- multiple -->
