@@ -9,5 +9,5 @@ class unit extends Model
 {
     use HasFactory;
     protected $table = 'unit';
-    protected $fillable = ['AC', 'Lights'];
+    protected $fillable = ['AC', 'Lights','Pin_Num','Pin_Name','Status'];
 }

@@ -9,6 +9,9 @@ use App\Http\Controllers\schedulecontroller;
 use App\Http\Controllers\schedulefilter_controler; 
 use App\Http\Controllers\dashboardcontroller;
 use App\Http\Controllers\NotificationController; 
+use App\Http\Controllers\LightsController;
+use App\Http\Controllers\DeviceController;
+
 
 
 Route::group(['middleware' => 'guest'], function () {
@@ -99,6 +102,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/check-overlapping-schedule', [schedulecontroller::class, 'checkOverlappingSchedule']);
     Route::post('/validate-event-time', [schedulecontroller::class, 'validateEventTime']);
     Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
+
+    Route::get('/device', [DeviceController::class, 'index'])->name('device');
+    Route::post('/device', [DeviceController::class, 'updateSettings'])->name('update-device-settings');
 
     Route::post('/validate-dates', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
 });

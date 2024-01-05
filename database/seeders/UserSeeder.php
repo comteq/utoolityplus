@@ -26,10 +26,21 @@ class UserSeeder extends Seeder
         ]);
 
         $data = [
-            ['AC' => '0'],
-            
+            [
+                'id' => 1,
+                'Pin_Num' => 1,
+                'Pin_Name' => 'AC',
+                'Status' => '0'
+            ],
+            [
+                'id' => 2,
+                'Pin_Num' => 2,
+                'Pin_Name' => 'Lights',
+                'Status' => '0'
+            ]
         ];
 
-        unit::insert($data);
+        Unit::insert($data);
+        
     }
 }

@@ -11,14 +11,9 @@ class UnitSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
+    {   
 
-        $data = [
-            ['AC' => '0'],
-            ['Lights' => '0'],
-            // Add more data as needed
-        ];
-
-        unit::insert($data);
+   
+  
     }
 }
