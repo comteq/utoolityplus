@@ -239,6 +239,7 @@ class schedulefilter_controler extends Controller
                 'status' => 'error' 
             ], 400);
         }
+        
         $eventTimeFrom = $schedule->event_datetime;
         $eventTimeTo = $schedule->event_datetime_off; 
 
@@ -274,20 +275,31 @@ class schedulefilter_controler extends Controller
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
 
-    public function updateSchedulesManually()
+    public function deleteSelected(Request $request)
     {
-        // Get all schedules where the status is not 'Finished' and the event end time has passed
-        $schedulesToUpdate = schedules::where('status', '!=', 'Finished')
-            ->where('event_datetime_off', '<', now())  
-            ->get();
+        $scheduleIds = $request->input('schedule_ids');
     
-        // Update the status for each schedule
-        foreach ($schedulesToUpdate as $schedule) {
-            $schedule->update(['status' => 'Finished']);
+        if (!empty($scheduleIds)) {
+            $schedulesToDelete = schedules::whereIn('id', $scheduleIds)->get();
+    
+            foreach ($schedulesToDelete as $schedule) {
+                if ($schedule->status === 'Processing') {
+                    return response()->json([
+                        'message' => 'Cannot delete schedule with status "Processing".',
+                        'status' => 'error'
+                    ], 400);
+                }
+            }
+    
+            schedules::whereIn('id', $scheduleIds)->delete();
+    
+            return response()->json(['success' => true, 'message' => 'Schedules deleted successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'No schedules selected for deletion'], 400);
         }
-        return response()->json($schedulesToUpdate);
     }
     
+
     
 
 }

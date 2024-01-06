@@ -92,6 +92,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::delete('/schedule/{id}', [schedulefilter_controler::class, 'destroy'])->name('schedule.destroy');
     Route::delete('/scheduleforce/{id}', [schedulefilter_controler::class, 'forcedestroy'])->name('schedule.forcedestroy');
+  
+    Route::post('/delete-selected-schedules', [schedulefilter_controler::class, 'deleteSelected'])->name('schedules.deleteSelected');
+    
 
 
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');

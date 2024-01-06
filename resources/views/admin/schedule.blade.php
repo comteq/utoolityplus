@@ -209,14 +209,6 @@
            
         </div><!-- cardheader end -->
 
-        <div class="pin-container d-flex flex-wrap" id="lightPinContainer">
-            @for ($i = 1; $i <= $deviceSettings->lightsNumPins; $i++)
-                <div class="pin-box m-2 p-2 border">
-                    <label for="lightPin{{ $i }}" class="text-center">{{ $i }}</label>
-                    <!-- Add more content or styling as needed for each pin box -->
-                </div>
-            @endfor
-        </div>
 
         <div class="card-body">
             <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
@@ -404,7 +396,7 @@
 
 
         <div class="card-header" style="text-align: left" id="otherschedheader">
-            <h1>All Schedule</h1>
+            <h1 id="textchangetorela">All Schedule</h1>
         </div><!-- cardheader2 end -->
 
         <div class="card-body" id="othersched">
@@ -702,7 +694,6 @@
                             content += '<label for="description">Action:</label>';
                             content += '<select id="description" name="description" class="form-control">';
                             content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                            content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                             content += '</select>';
                             content += '</div>';
 
@@ -724,6 +715,7 @@
                         $('#entryCount').text(0);
                     }
                     $('#relatedSchedulesList').html(content);
+                    
                     } else {
                         console.error('Invalid response format. Missing "relatedData" property.');
                     }
@@ -744,7 +736,7 @@
 
 <script>
     $(document).ready(function () {
-
+        updateotherRelatedSchedulesadmin();
         $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -926,7 +918,6 @@
                                 content += '<label for="description">Action:</label>';
                                 content += '<select id="description" name="description" class="form-control">';
                                 content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                                 content += '</select>';
                                 content += '</div>';
 
@@ -942,6 +933,7 @@
                             
                     });
                     $('#entryCount2').text(data.totalEntries2);
+                    
                     } else {
                         content = 'No Related Schedule';
                         $('#entryCount2').text(0);
@@ -1158,7 +1150,6 @@
                     content += '<label for="description">Action:</label>';
                     content += '<select id="description" name="description" class="form-control">';
                     content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                    content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                     content += '</select>';
                     content += '</div>';
 
@@ -1174,6 +1165,7 @@
                 });
                     $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
                     $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
+                    
                     $('#entryCount4').text(data.totalEntries4);
             } else {
                 content = 'No Related Schedule';
@@ -1431,7 +1423,7 @@
                     success: function (response) {
                         console.log('Database deleted successfully');
                         $('#schedule-' + itemId).remove();
-
+                        $('#entryCount').text(response.totalEntries - 1);
                         // Store the datetime value in localStorage
                         localStorage.setItem('dateTimeValue', dateTimeValue);
                         checkExistingSchedules(dateTimeValue);
@@ -1488,7 +1480,7 @@
                     success: function (response) {
                         console.log('Database deleted successfully');
                         $('#schedule-' + itemId).remove();
-
+                        $('#entryCount').text(response.totalEntries - 1);
                         // Store the datetime value in localStorage
                         localStorage.setItem('dateTimeValue', dateTimeValue);
                         checkExistingSchedules(dateTimeValue);
@@ -1978,6 +1970,12 @@
         // Set the value of the hidden field based on the button click
         $("#customScheduleClicked").val($(".date-time-group").is(":visible") ? "1" : "0");
 
+        if (buttonText === "Custom Schedule") {
+            $('#textchangetorela').text('Related Schedule');
+        } else {
+            $('#textchangetorela').text('All Schedule');
+        }
+
         // Disable/enable other form elements based on the button click
         if ($(".date-time-group").is(":visible")) {
             $(".date-time-group input, .date-time-group select").prop("disabled", false);
@@ -1992,7 +1990,6 @@
             $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
             $('#totalEntries5, #entryCount5').show();
           
-            
         } else {
             $(".date-time-group input, .date-time-group select").prop("disabled", true);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", false);

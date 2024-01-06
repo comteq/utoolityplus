@@ -12,6 +12,7 @@ use App\Models\Activity;
 use App\Models\unit;
 use App\Models\Device;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -313,9 +314,14 @@ class ScheduleController extends Controller
                 ->whereMonth('event_datetime', $parsedDate->month);
         }
     
+        // if ($day) {
+        //     $query->whereRaw('DAYNAME(event_datetime) = ?', [$day]);
+        // }
+
         if ($day) {
-            $query->whereRaw('DAYNAME(event_datetime) = ?', [$day]);
+            $query->whereIn(DB::raw('DAYNAME(event_datetime)'), $day);
         }
+        
         
         if ($fromtime) {
             $formattedFromtime = Carbon::createFromFormat('H:i', $fromtime)->format('H:i');
@@ -765,15 +771,21 @@ class ScheduleController extends Controller
             $eventTimeTo = $schedule->event_datetime_off;     // Replace 'to' with your actual attribute name
     
             $schedule->delete();
-    
+
             Activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Delete Schedule',
                 'message' => 'User deleted a schedule from ' . $eventTimeFrom . ' to ' . $eventTimeTo . '.',
                 'created_at' => now(),
             ]);
-
-            return response()->json(['message' => 'Schedule deleted successfully']);
+            $totalEntries = schedules::count();
+            $totalEntries2 = schedules::count();
+            return response()->json([
+                'message' => 'Schedule deleted successfully',
+                'totalEntries' => $totalEntries,
+                'totalEntries2' => $totalEntries2,
+   
+            ]);
         } else {
             return response()->json(['error' => 'Schedule not found'], 404);
         }
@@ -790,7 +802,6 @@ class ScheduleController extends Controller
             // unit::update(['Status' => 0]);
             unit::query()->update(['Status' => 0]);
 
-
             $schedule->delete();
             Activity::create([
                 'user_id' => auth()->id(),
@@ -798,8 +809,11 @@ class ScheduleController extends Controller
                 'message' => 'User deleted a schedule from ' . $eventTimeFrom . ' to ' . $eventTimeTo . '.',
                 'created_at' => now(),
             ]);
-
-            return response()->json(['message' => 'Schedule deleted successfully']);
+            $totalEntries = schedules::count();
+            return response()->json([
+                'message' => 'Schedule deleted successfully',
+                'totalEntries' => $totalEntries,
+            ]);
         } else {
             return response()->json(['error' => 'Schedule not found'], 404);
         }
