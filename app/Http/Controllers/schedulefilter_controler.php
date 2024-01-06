@@ -232,7 +232,13 @@ class schedulefilter_controler extends Controller
     {
         // Find the schedule by ID
         $schedule = schedules::findOrFail($id);
-
+        
+        if ($schedule->status === 'Processing') {
+            return response()->json([
+                'message' => 'Cannot delete schedule with status "Processing".',
+                'status' => 'error' 
+            ], 400);
+        }
         $eventTimeFrom = $schedule->event_datetime;
         $eventTimeTo = $schedule->event_datetime_off; 
 
@@ -244,10 +250,26 @@ class schedulefilter_controler extends Controller
             'created_at' => now(),
         ]);
 
-        // Delete the schedule
         $schedule->delete();
+        return response()->json(['message' => 'Schedule deleted successfully']);
+    }
 
-        // Return a response if needed
+    public function forcedestroy($id)
+    {
+        // Find the schedule by ID
+        $schedule = schedules::findOrFail($id);
+        $eventTimeFrom = $schedule->event_datetime;
+        $eventTimeTo = $schedule->event_datetime_off; 
+
+        // Log the activity before deletion
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activity' => 'Delete Schedule',
+            'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo, 
+            'created_at' => now(),
+        ]);
+
+        $schedule->delete();
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
 
