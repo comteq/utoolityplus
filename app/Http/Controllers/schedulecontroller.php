@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Events\UpdateSchedulesEvent;
 use App\Models\Activity;
+use App\Models\unit;
 use App\Models\Device;
 use Illuminate\Support\Facades\Validator;
 
@@ -785,7 +786,11 @@ class ScheduleController extends Controller
         if ($schedule) {
             $eventTimeFrom = $schedule->event_datetime; // Replace 'from' with your actual attribute name
             $eventTimeTo = $schedule->event_datetime_off;     // Replace 'to' with your actual attribute name
-    
+
+            // unit::update(['Status' => 0]);
+            unit::query()->update(['Status' => 0]);
+
+
             $schedule->delete();
             Activity::create([
                 'user_id' => auth()->id(),

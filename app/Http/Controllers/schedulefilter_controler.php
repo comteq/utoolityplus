@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
-
+use App\Models\unit;
 class schedulefilter_controler extends Controller
 {
     public function index(){
@@ -269,6 +269,7 @@ class schedulefilter_controler extends Controller
             'created_at' => now(),
         ]);
 
+        unit::query()->update(['Status' => 0]);
         $schedule->delete();
         return response()->json(['message' => 'Schedule deleted successfully']);
     }

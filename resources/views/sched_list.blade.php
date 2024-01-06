@@ -180,24 +180,21 @@
 
 <div class="card-body">
     <table class="table table-striped table-light" id="users-table">
-        <thead>
-            <tr>
-            <th>Day</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Activity</th>
-            <th>State</th>
-            <th>Status</th>
-            <th>Date Created</th>
-            </tr>
-        </thead>
+    <thead>
+    <tr>
+        <th>Day</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Activity</th>
+        <th>State</th>
+        <th>Status</th>
+        <th>Date Created</th>
+    </tr>
+</thead>
+
 
         <tbody>
-            @if($scheduless->isEmpty())
-                <tr>
-                    <td colspan="6" style=" text-align: center;">No records found</td>
-                </tr>
-            @else
+
                 @foreach($scheduless as $sched)
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($sched->event_datetime)->format('l') }}</td>
@@ -207,17 +204,9 @@
                     <td>{{ $sched->state }}</td>
                     <td class="status-column">{{ $sched->status }}</td>
                     <td class="status-column">{{ $sched->created_at }}</td>
-                    <!-- <td>
-                        @if($sched->activity)
-                            @foreach($sched->activity as $activity)
-                                {{ $activity->activity }}
-                                 <br>
-                                @endforeach
-                            @endif
-                        </td> -->
-                    </tr>
+                </tr>
                 @endforeach
-            @endif
+         
         </tbody>
     </table>
 </div> <!-- card-body -->
