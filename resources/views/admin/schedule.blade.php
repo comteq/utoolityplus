@@ -655,6 +655,11 @@
                             content += '<p></p>';
                             content += '</div>';
                             content += '<div class="col-3" style="text-align: center;">';
+                            content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                            content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                            content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                            content += '</svg>';
+                            content += '</button>';
                             content += '</div>';
                             content += '</div>';// row end
 
@@ -873,6 +878,11 @@
                                 content += '<p></p>';
                                 content += '</div>';
                                 content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                                content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                                content += '</svg>';
+                                content += '</button>';
                                 content += '</div>';
                                 content += '</div>';// row end
 
@@ -1102,7 +1112,12 @@
                     content += '<div class="col-3">';
                     content += '<p></p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                    content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                    content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                    content += '</svg>';
+                    content += '</button>';
                     content += '</div>';
                     content += '</div>';//row end
 
@@ -1444,6 +1459,63 @@
     }
 
 </script><!-- Delete --> 
+
+<script>
+    function forcedeleteSchedule(itemId) {
+        Swal.fire({
+            title: 'Force Delete: Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Store the datetime value before the reload
+                var dateTimeValue = $('#dateTimePicker').val();
+                // var status = $('#' + itemId + ' [name="schedule_status"]').val();
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/forcedelete-schedule/' + itemId,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        console.log('Database deleted successfully');
+                        $('#schedule-' + itemId).remove();
+
+                        // Store the datetime value in localStorage
+                        localStorage.setItem('dateTimeValue', dateTimeValue);
+                        checkExistingSchedules(dateTimeValue);
+                    },
+                    error: function (error) {
+                        console.error('Error deleting schedule:', error);
+
+                        // Check the error status and responseText
+                        if (error.status === 401) {
+                            console.error('Unauthorized access. Make sure you are authenticated.');
+                        } else {
+                            console.error('Unknown error. Check the server logs for more information.');
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Cannot Delete schedule with status "Processing"',
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+</script><!-- Force Delete --> 
 
 <script>
 
@@ -2252,9 +2324,32 @@
             }
         }
 
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkFordatetime();
+        // $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+        //     checkFordatetime();
+        // });
+
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
         });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#datespanerror').text('');
+            }
+        }
+
     });
 </script><!-- check for schedule that cover multiple days-->
 

@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/validate-time-user', [schedulecontroller::class, 'validateTime']);
     Route::post('/validate-event-time-user', [schedulecontroller::class, 'validateEventTime']);
     Route::post('/validate-datetime-user', [schedulecontroller::class, 'validateDateTime']);
+    Route::post('/validate-dates-user', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
 
 });
 
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-state/{itemId}', [schedulecontroller::class, 'getState']);
     
     Route::delete('/delete-schedule/{itemId}', [schedulecontroller::class, 'deleteSchedule']);
+    Route::delete('/forcedelete-schedule/{itemId}', [schedulecontroller::class, 'forcedeleteSchedule']);
+
     Route::post('/update-related-schedules-admin', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
 
     Route::get('/schedule-List-admin?year=&month=&day=', function () { return view('admin.sched_list'); });

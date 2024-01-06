@@ -228,7 +228,6 @@
                             <select name="description" id="description1" class="custom-select w-100" required>
                                 <option disabled value="">Select Action</option>
                                 <option value="ON">ON</option>
-                                <option value="OFF">OFF</option>
                             </select>
                             <!-- <span id="existingactionerror" class="text-danger"></span> -->
                         </div>    
@@ -255,6 +254,7 @@
                             <span id="existingSchedulesErrorTo" class="text-danger"></span>
                             <span id="pasterror" class="text-danger"></span>
                             <span id="separateError" class="text-danger"></span>
+                            <span id="datespanerror" class="text-danger"></span>
                         </div>
 
                         <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub">Set Schedule</button>
@@ -262,59 +262,58 @@
             
                     <div class="other-form-elements">
 
-                    <div class="form-group">
-                            <label for="description">Action:</label>
-                            <select name="description" id="description" class="custom-select w-100" required>
-                                <option disabled value="">Select Action</option>
-                                <option value="ON">ON</option>
-                                <option value="OFF">OFF</option>
-                            </select>
-                            <!-- <span id="existingactionerror" class="text-danger"></span> -->
-                    </div>
-
                         <div class="form-group">
-                            <label for="yearmonth">Month & Year:</label>
-                            <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
-                            <div id="yearmonthError" class="text-danger"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="day">Day:</label>
-                                <select name="day" id="day" class="custom-select w-100" required>
-                                    <option disabled selected value="">Select Day</option>
-                                    <option>Monday</option>
-                                    <option>Tuesday</option>
-                                    <option>Wednesday</option>
-                                    <option>Thursday</option>
-                                    <option>Friday</option>
-                                    <option>Saturday</option>
-                                    <option>Sunday</option>
+                                <label for="description">Action:</label>
+                                <select name="description" id="description" class="custom-select w-100" required>
+                                    <option disabled value="">Select Action</option>
+                                    <option value="ON">ON</option>
                                 </select>
+                                <!-- <span id="existingactionerror" class="text-danger"></span> -->
                         </div>
 
-                        <div class="form-group">
-                            <label for="fromtime">From:</label>
-                            <div class="inline-picker input-group">
-                                <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
-                                </div>
+                            <div class="form-group">
+                                <label for="yearmonth">Month & Year:</label>
+                                <input type="text" class="form-control" name="yearmonth" id="yearmonth" placeholder="Select Month & Year" required/>
+                                <div id="yearmonthError" class="text-danger"></div>
                             </div>
+
+                            <div class="form-group">
+                            <label for="day">Day:</label>
+                            <select name="day[]" id="day" class="custom-select w-100" multiple required>
+                                <option disabled selected value="">Select Day</option>
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
                         </div>
 
-                        <div class="form-group">
-                            <label for="totime">To:</label>
-                            <div class="inline-picker input-group">
-                                <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                            <div class="form-group">
+                                <label for="fromtime">From:</label>
+                                <div class="inline-picker input-group">
+                                    <input type="text" name="fromtime" id="dateTimePicker" class="form-control" required autocomplete="off" placeholder="From" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                                    </div>
                                 </div>
                             </div>
-                            <span id="toError" class="text-danger"></span>
-                        </div> 
 
-                        <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value=""/>
-                        <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
+                            <div class="form-group">
+                                <label for="totime">To:</label>
+                                <div class="inline-picker input-group">
+                                    <input type="text" name="totime" id="dateTimePicker2" class="form-control" required autocomplete="off" placeholder="To" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="calendar-icon">⏰</i></span>
+                                    </div>
+                                </div>
+                                <span id="toError" class="text-danger"></span>
+                            </div> 
+
+                            <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value=""/>
+                            <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
 
                     </div> <!-- other-form-elements -->
 
@@ -1401,15 +1400,103 @@
                 }
             });
         }
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkFordatetime();
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
         });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#pasterror').text('');
+            }
+        }
     });
 </script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time-->
 
 <script>
+    $(document).ready(function () {
+        function checkFordatetime() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Make an AJAX request to the server for validation
+            $.ajax({
+                url: '/validate-dates-user', // Change this to your Laravel route
+                type: 'POST',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                    _token: csrfToken,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    displayErrorMessages(response.dateError);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function displayErrorMessages(dateError) {
+            // Clear existing error messages
+            $('#datespanerror').text('');
+
+            // Display the specific error message
+            if (dateError) {
+                $('#datespanerror').text(dateError);
+                $('#sub').prop('disabled', true);
+            } else {
+                // Enable the submit button if no error
+                $('#datespanerror').text('');
+            }
+        }
+
+        // $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+        //     checkFordatetime();
+        // });
+
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
+        });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#datespanerror').text('');
+            }
+        }
+    });
+</script><!-- check for schedule that cover multiple days-->
+
+<script>
     $(document).ready(function() {
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function() {
+        $('#dateTimePicker4').on('change', function() {
             var dateTime = $(this).val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -1420,7 +1507,7 @@
                         _token: csrfToken },
                 success: function(response) {
                     if (!response.isValid) {
-                        $('#separateError').text('The scheduled start time has already passed');
+                        $('#separateError').text('The scheduled start time has already passed').append('<br>');;
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#separateError').text('');
@@ -1432,7 +1519,7 @@
             });
         });
     });
-</script>
+</script><!-- scheduled start time has already passed-->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1534,37 +1621,6 @@
     }
 </script><!-- formatted time -->
 
-<!-- <script>
-    // Function to check for overlapping schedules based on action
-    function checkForActionOverlap() {
-        var fromDateTime = $('#dateTimePicker3').val();
-        var toDateTime = $('#dateTimePicker4').val();
-        var description = $('#description').val();
 
-        $.ajax({
-            type: 'GET',
-            url: '/check-for-action-overlap', 
-            data: {
-                fromDateTime: fromDateTime,
-                toDateTime: toDateTime,
-                description: description,
-            },
-            success: function (response) {
-                if (response.overlap) {
-                    // There is an overlap, display the error message
-                    $('#existingactionerror').text('Schedule action overlaps with an active schedule!');
-                    $('#sub').prop('disabled', true);
-                } else {
-                    // No overlap, clear the error message
-                    $('#existingactionerror').text('');
-                    $('#sub').prop('disabled', false);
-                }
-            },
-            error: function (error) {
-                console.error('Error checking for overlap:', error);
-            }
-        });
-    }
-</script> -->
 
 @include('footer')

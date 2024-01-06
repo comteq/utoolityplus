@@ -29,7 +29,6 @@ class ScheduleController extends Controller
             'event_datetime_off.required' => 'To: Date & Time: field is required.',
             'description.required' => 'Action field is required.',
             'same_day' => 'Cannot make a schedule that covers multiple days.',
-            'event_datetime.after_or_equal' => 'You cannot make a schedule in the past.',
         ];
 
         if ($request->has('custom_schedule')) {
@@ -37,7 +36,16 @@ class ScheduleController extends Controller
                 'event_datetime' => [
                     'required',
                     'date',
-                    'after_or_equal:today', 
+                    'after_or_equal:today', // Check if the date is today or in the future
+                    // function ($attribute, $value, $fail) use ($request) {
+                    //     // Custom validation rule to check if time is after the current time
+                    //     $currentTime = now()->format('H:i');
+                    //     $selectedTime = (new \DateTime($value))->format('H:i');
+        
+                    //     if ($currentTime > $selectedTime && now()->format('Y-m-d') == (new \DateTime($value))->format('Y-m-d')) {
+                    //         $fail('You cannot make a schedule in the past');
+                    //     }
+                    // },
                 ],
                 'event_datetime_off' => [
                     'required',
@@ -120,57 +128,53 @@ class ScheduleController extends Controller
             $currentDateTime = Carbon::now();
             $failedSchedules = [];
 
-            // Loop through selected days
-            foreach ($request->input('day') as $selectedDay) {
-                // Create a new Schedule instance for each day in the selected month
-                for ($day = 1; $day <= $yearMonth->daysInMonth; $day++) {
-                    $currentDay = $yearMonth->setDay($day)->format('l'); // Get the day name (e.g., Sunday)
-        
-                    $currentDate = $yearMonth->setDay($day)->setTime(0, 0, 0);
-        
-                    if ($currentDate->lessThan($currentDateTime) && !$currentDate->isSameDay($currentDateTime)) {
-                        continue; // Skip past dates (excluding the current day)
+            // Create a new Schedule instance for each day in the selected month
+            for ($day = 1; $day <= $yearMonth->daysInMonth; $day++) {
+                $currentDay = $yearMonth->setDay($day)->format('l'); // Get the day name (e.g., Sunday)
+                $currentDate = $yearMonth->setDay($day)->setTime(0, 0, 0);
+
+                if ($currentDate->lessThan($currentDateTime) && !$currentDate->isSameDay($currentDateTime)) {
+                    continue; // Skip past dates (excluding the current day)
+                }
+            
+                if (strtolower($currentDay) == strtolower($request->day)) {
+                    $newEventStart = $yearMonth->setDay($day)
+                        ->setTime($formattedTime->hour, $formattedTime->minute, 0) // Set seconds to 0 for precision
+                        ->copy(); // Create a copy to avoid referencing the same instance
+                    $newEventEnd = $yearMonth->setDay($day)
+                        ->setTime($formattedTime2->hour, $formattedTime2->minute, 0) // Set seconds to 0 for precision
+                        ->copy();
+
+                    // Check for overlap with existing schedules
+                    $overlap = schedules::where(function ($query) use ($newEventStart, $newEventEnd) {
+                        $query->where(function ($q) use ($newEventStart, $newEventEnd) {
+                            $q->where('event_datetime', '<=', $newEventEnd)
+                                ->where('event_datetime_off', '>=', $newEventStart)
+                                ->where('state', '=', 'Active');
+
+                        })->orWhere(function ($q) use ($newEventStart, $newEventEnd) {
+                            $q->where('event_datetime', '>=', $newEventStart)
+                                ->where('event_datetime', '<=', $newEventEnd)
+                                ->where('state', '=', 'Active');
+
+                        });
+                    })->get()->count() > 0;
+            
+                    // If there's an overlap, add the schedule to the failedSchedules array
+                    if ($overlap) {
+                        $failedSchedules[] = [
+                            'start' => $newEventStart,
+                            'end' => $newEventEnd,
+                        ];
+                        continue;
                     }
-        
-                    if (strtolower($currentDay) == strtolower($selectedDay)) {
-                        $newEventStart = $yearMonth->setDay($day)
-                            ->setTime($formattedTime->hour, $formattedTime->minute, 0) // Set seconds to 0 for precision
-                            ->copy(); // Create a copy to avoid referencing the same instance
-                        $newEventEnd = $yearMonth->setDay($day)
-                            ->setTime($formattedTime2->hour, $formattedTime2->minute, 0) // Set seconds to 0 for precision
-                            ->copy();
-        
-                        // Check for overlap with existing schedules
-                        $overlap = schedules::where(function ($query) use ($newEventStart, $newEventEnd) {
-                            $query->where(function ($q) use ($newEventStart, $newEventEnd) {
-                                $q->where('event_datetime', '<=', $newEventEnd)
-                                    ->where('event_datetime_off', '>=', $newEventStart)
-                                    ->where('state', '=', 'Active');
-        
-                            })->orWhere(function ($q) use ($newEventStart, $newEventEnd) {
-                                $q->where('event_datetime', '>=', $newEventStart)
-                                    ->where('event_datetime', '<=', $newEventEnd)
-                                    ->where('state', '=', 'Active');
-        
-                            });
-                        })->get()->count() > 0;
-        
-                        // If there's an overlap, add the schedule to the failedSchedules array
-                        if ($overlap) {
-                            $failedSchedules[] = [
-                                'start' => $newEventStart,
-                                'end' => $newEventEnd,
-                            ];
-                            continue;
-                        }
-        
-                        // If no overlap, save the new schedule
-                        $schedule = new schedules();
-                        $schedule->event_datetime = $newEventStart;
-                        $schedule->event_datetime_off = $newEventEnd; // Use the formattedTime2 for the end time
-                        $schedule->description = $request->input('description');
-                        $schedule->save();
-                    }
+            
+                    // If no overlap, save the new schedule
+                    $schedule = new schedules();
+                    $schedule->event_datetime = $newEventStart;
+                    $schedule->event_datetime_off = $newEventEnd; // Use the formattedTime2 for the end time
+                    $schedule->description = $request->input('description');
+                    $schedule->save();
                 }
             }
             
@@ -765,28 +769,6 @@ class ScheduleController extends Controller
     
             $schedule->delete();
     
-            Activity::create([
-                'user_id' => auth()->id(),
-                'activity' => 'Delete Schedule',
-                'message' => 'User deleted a schedule from ' . $eventTimeFrom . ' to ' . $eventTimeTo . '.',
-                'created_at' => now(),
-            ]);
-
-            return response()->json(['message' => 'Schedule deleted successfully']);
-        } else {
-            return response()->json(['error' => 'Schedule not found'], 404);
-        }
-    }
-
-    public function forcedeleteSchedule($itemId)
-    {
-        $schedule = schedules::find($itemId);
-
-        if ($schedule) {
-            $eventTimeFrom = $schedule->event_datetime; // Replace 'from' with your actual attribute name
-            $eventTimeTo = $schedule->event_datetime_off;     // Replace 'to' with your actual attribute name
-    
-            $schedule->delete();
             Activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Delete Schedule',
