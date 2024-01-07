@@ -117,6 +117,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/device', [DeviceController::class, 'updateSettings'])->name('update-device-settings');
 
     Route::post('/validate-dates', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
+    Route::get('/get-pin-data', [DeviceController::class, 'getPinData']);
 });
 
 Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');

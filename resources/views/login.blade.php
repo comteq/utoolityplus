@@ -47,15 +47,6 @@
     </div>
 </div>
 
-<footer class="fixed-bottom bg-dark text-center p-3">
-    <p>&copy; <span id="currentYear"></span> Utoolity+. All rights reserved.</p>
-</footer>
-
-<script>
-    // Automatically update the copyright year
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-</script>
-
 <style>
 footer p {
     color: white;
@@ -116,13 +107,6 @@ footer p {
     flex-wrap: nowrap;
   }
 }
-
-    footer {
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        color: #737373;
-    }
 </style>
 
 </body>

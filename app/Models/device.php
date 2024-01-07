@@ -14,7 +14,7 @@ class Device extends Model
     protected $table = 'device'; // Specify the exact table name
     public $timestamps = false; // Disable timestamps
 
-    protected $fillable = ['acNumPins', 'lightsNumPins', 'Device_IP'];
+    protected $fillable = ['Pin_Number', 'Device_IP'];
 
     // Define the relationship with the User model if necessary
     public function user()

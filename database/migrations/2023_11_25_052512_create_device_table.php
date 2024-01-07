@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('Device_Name')->nullable();        
             $table->enum('State', ['Active', 'In-Active'])->default('Active');
             $table->string('Device_IP');
-            $table->unsignedInteger('acNumPins')->default(1);
-            $table->unsignedInteger('lightsNumPins')->default(1);
+            $table->unsignedInteger('Pin_Number')->default(1);
         });
     }
 
@@ -26,9 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('device', function (Blueprint $table) {
-            // Drop the added columns during rollback
-            $table->dropColumn(['acNumPins', 'lightsNumPins']);
-        });
+        Schema::dropIfExists('device');
     }
 };

@@ -11,71 +11,56 @@
 </head>
 <body>
 
-    <div class="container mt-5 wrapper">
-        <div class="card border-box-form">
-            <div class="card-body">
-                <h1 class="card-title">Device Settings</h1>
-    
-                <form id="deviceForm">
-                    @csrf
-                    <div class="form-group">
-                        <label for="Device_IP">Arduino IP Address</label>
-                        <input type="text" class="form-control" id="Device_IP" name="Device_IP" placeholder="Enter IP Address" value="{{ $deviceSettings->Device_IP ?? '' }}" required>
-                    </div>
-    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Air Conditioning Component Form -->
-                            <h2>Air Conditioning Component</h2>
-    
-                            <div class="form-group">
-                                <label for="acNumPins">Number of AC Pins</label>
-                                <select class="form-control" id="acNumPins" name="acNumPins">
-                                    @for ($i = 1; $i <= 8; $i++)
-                                        <option value="{{ $i }}" {{ ($deviceSettings->acNumPins ?? 1) == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                    @endfor
-                                </select>
-                            </div>
-    
-                            <!-- Container to hold AC pin boxes -->
-                            <div id="acPinContainer" class="d-flex flex-wrap">
-                                <!-- AC pin boxes will be dynamically added here -->
+        <div class="container mt-5 wrapper">
+            <div class="card border-box-form">
+                <div class="card-body">
+                    <h1 class="card-title">Device Settings</h1>
+        
+                    <form id="deviceForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="Device_IP">Arduino IP Address</label>
+                            <input type="text" class="form-control" id="Device_IP" name="Device_IP" placeholder="Enter IP Address" value="{{ $deviceSettings->Device_IP ?? '' }}" required>
+                        </div>
+        
+                        <div class="">
+                            <div class="">
+                                <!-- Air Conditioning Component Form -->
+                                <h2>{{$deviceName}}</h2>
+        
+                                <div class="form-group">
+                                    <label for="Pin_Number">Number of Pins</label>
+                                    <select class="form-control" id="Pin_Number" name="Pin_Number">
+                                        @for ($i = 1; $i <= 8; $i++)
+                                            <option value="{{ $i }}" {{ ($deviceSettings->Pin_Number ?? 1) == $i ? 'selected' : '' }}>
+                                                {{ $i }}
+                                            </option>
+                                        @endfor
+                                    </select>                                    
+                                </div>
+
+        
+                                <!-- Container to hold pin boxes -->
+                                <div id="PinContainer" class="d-flex flex-wrap">
+                                    <!--  pin boxes will be dynamically added here -->
+                                </div>
                             </div>
                         </div>
-    
-                        <div class="col-md-6">
-                            <!-- Light Component Form -->
-                            <h2>Light Component</h2>
-    
-                            <div class="form-group">
-                                <label for="lightsNumPins">Number of Light Pins</label>
-                                <select class="form-control" id="lightsNumPins" name="lightsNumPins">
-                                    @for ($i = 1; $i <= 8; $i++)
-                                        <option value="{{ $i }}" {{ ($deviceSettings->lightsNumPins ?? 1) == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                    @endfor
-                                </select>
-                            </div>
-    
-                            <!-- Container to hold light pin boxes -->
-                            <div id="lightPinContainer" class="d-flex flex-wrap">
-                                <!-- Light pin boxes will be dynamically added here -->
-                            </div>
+        
+                        <div class="d-flex justify-content-end align-items-center m-3">
+                            <!-- Move buttons to the right -->
+                            <button type="reset" id="resetSettings" class="btn btn-secondary mr-2">Reset</button>
+                            <button type="button" id="saveSettings" class="btn btn-primary">Save Settings</button>
                         </div>
-                    </div>
-    
-                    <div class="d-flex justify-content-end align-items-center m-3">
-                        <!-- Move buttons to the right -->
-                        <button type="reset" id="resetSettings" class="btn btn-secondary mr-2">Reset</button>
-                        <button type="button" id="saveSettings" class="btn btn-primary">Save Settings</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
     
 
 <!-- Bootstrap JS and Popper.js CDN (required for Bootstrap) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Custom JavaScript for dynamic pin boxes and AJAX -->
 <!-- Custom JavaScript for dynamic pin boxes and AJAX -->
 <script>
     $(document).ready(function () {
@@ -83,77 +68,67 @@
             // Compare the current values with the original values
             var originalDeviceIP = '{{ $deviceSettings->Device_IP ?? '' }}';
             var currentDeviceIP = $('#Device_IP').val();
-            var originalLightsNumPins = '{{ $deviceSettings->lightsNumPins ?? 1 }}';
-            var currentLightsNumPins = $('#lightsNumPins').val();
-            var originalACNumPins = '{{ $deviceSettings->acNumPins ?? 1 }}';
-            var currentACNumPins = $('#acNumPins').val();
+            var originalACNumPins = '{{ $deviceSettings->Pin_Number ?? 1 }}';
+            var currentACNumPins = $('#Pin_Number').val();
 
             return (
                 originalDeviceIP !== currentDeviceIP ||
-                originalLightsNumPins !== currentLightsNumPins ||
                 originalACNumPins !== currentACNumPins
             );
         }
-        // Function to update light pin boxes based on selected number of pins and status
-        function updateLightPins() {
-            // Clear the lightPinContainer
-            $('#lightPinContainer').empty();
 
-            // Get the selected number of light pins
-            var lightsNumPins = $('#lightsNumPins').val();
+        // Function to update pin boxes based on selected number of pins
+        function updatePins() {
+            // Clear the PinContainer
+            $('#PinContainer').empty();
 
-            // Simulated light pin status, replace this with your actual logic to fetch pin status
-            var lightPinStatus = ["on", "off", "on", "off", "on", "off", "on", "off"];
+            // Get the selected number of pins
+            var numPins = $('#Pin_Number').val();
 
-            // Add light pin boxes dynamically
-            for (var i = 1; i <= lightsNumPins; i++) {
-                var lightPinBox = $('<div>').addClass('pin-box m-2 p-3');
-                var lightStatus = lightPinStatus[i - 1] || "off"; // Default to "off" if status is undefined
-                lightPinBox.html('<label for="lightPin' + i + '" class="text-center">Light Pin ' + i + '</label>');
-                lightPinBox.css('background-color', (lightStatus === "on") ? 'green' : 'red');
-                $('#lightPinContainer').append(lightPinBox);
-            }
+            // Fetch pin data from the unit table
+            $.ajax({
+                type: 'GET',
+                url: '/get-pin-data',
+                data: { numPins: numPins },
+                success: function (pinData) {
+                    // Add pin boxes dynamically
+                    for (var i = 0; i < numPins; i++) {
+                        var pinBox = $('<div>').addClass('pin-box m-2 p-3');
+
+                        if (i < pinData.length) {
+                            // If there is data for the pin, display it
+                            var pin = pinData[i];
+                            var backgroundColor = (pin && pin.Status === "1") ? 'green' : 'red';
+                            var pinContent = pin ? 'Pin ' + pin.Pin_Num + ' ' + pin.Pin_Name : 'N/A';
+                            pinBox.html('<label for="pin' + (pin ? pin.id : i) + '" class="text-center">' + pinContent + '</label>');
+                            pinBox.css('background-color', backgroundColor);
+                        } else {
+                            // If there is no data for the pin, display a grey box with N/A
+                            pinBox.html('<label class="text-center">N/A</label>');
+                            pinBox.css('background-color', 'grey');
+                        }
+
+                        $('#PinContainer').append(pinBox);
+                    }
+                },
+                error: function (error) {
+                    console.error(error); // Log error response
+                    // Handle error if needed
+                }
+            });
         }
 
-        // Function to update AC pin boxes based on selected number of pins and status
-        function updateACPins() {
-            // Clear the acPinContainer
-            $('#acPinContainer').empty();
+        // Call the updatePins function when the Pin_Number dropdown changes
+        $('#Pin_Number').change(updatePins);
 
-            // Get the selected number of AC pins
-            var acNumPins = $('#acNumPins').val();
-
-            // Simulated AC pin status, replace this with your actual logic to fetch pin status
-            var acPinStatus = ["on", "off", "on", "off", "on", "off", "on", "off"];
-
-            // Add AC pin boxes dynamically
-            for (var i = 1; i <= acNumPins; i++) {
-                var acPinBox = $('<div>').addClass('pin-box m-2 p-3');
-                var acStatus = acPinStatus[i - 1] || "off"; // Default to "off" if status is undefined
-                acPinBox.html('<label for="acPin' + i + '" class="text-center">AC Pin ' + i + '</label>');
-                acPinBox.css('background-color', (acStatus === "on") ? 'green' : 'red');
-                $('#acPinContainer').append(acPinBox);
-            }
-        }
-
-        // Call the updateLightPins function when the lightsNumPins dropdown changes
-        $('#lightsNumPins').change(updateLightPins);
-
-        // Initial call to set up the light pins based on the default selected number of light pins
-        updateLightPins();
-
-        // Call the updateACPins function when the acNumPins dropdown changes
-        $('#acNumPins').change(updateACPins);
-
-        // Initial call to set up the AC pins based on the default selected number of AC pins
-        updateACPins();
+        // Initial call to set up the pins based on the default selected number of pins
+        updatePins();
 
         // Reset button event listener
         $('#resetSettings').click(function () {
             // Clear input fields and reset pin containers
             $('#deviceForm')[0].reset();
-            updateLightPins();
-            updateACPins();
+            updatePins();
         });
 
         // AJAX request on Save button click
