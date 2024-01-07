@@ -281,14 +281,33 @@ class schedulefilter_controler extends Controller
     
         if (!empty($scheduleIds)) {
             $schedulesToDelete = schedules::whereIn('id', $scheduleIds)->get();
+            $processingError = false; // Flag to check if there's a schedule with "Processing" status
     
             foreach ($schedulesToDelete as $schedule) {
                 if ($schedule->status === 'Processing') {
-                    return response()->json([
-                        'message' => 'Cannot delete schedule with status "Processing".',
-                        'status' => 'error'
-                    ], 400);
+                    $processingError = true;
+                    break; // Exit the loop if a schedule with "Processing" status is found
                 }
+            }
+    
+            if ($processingError) {
+                return response()->json([
+                    'message' => 'Cannot delete schedule with status "Processing".',
+                    'status' => 'error'
+                ], 400);
+            }
+    
+            // Log the activity and delete schedules outside the loop
+            foreach ($schedulesToDelete as $schedule) {
+                $eventTimeFrom = $schedule->event_datetime;
+                $eventTimeTo = $schedule->event_datetime_off;
+    
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'activity' => 'Delete Schedule',
+                    'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo,
+                    'created_at' => now(),
+                ]);
             }
     
             schedules::whereIn('id', $scheduleIds)->delete();
@@ -298,6 +317,8 @@ class schedulefilter_controler extends Controller
             return response()->json(['success' => false, 'message' => 'No schedules selected for deletion'], 400);
         }
     }
+    
+
     
 
     
