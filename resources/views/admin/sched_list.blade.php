@@ -426,52 +426,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<!-- <script>
-    $(document).ready(function () {
-        $('.asa').on('click', function () {
-            var scheduleIds = [];
-
-            $('.schedule-checkbox:checked').each(function () {
-                scheduleIds.push($(this).data('schedule-id'));
-            });
-
-            if (scheduleIds.length > 0) {
-                $.ajax({
-                    url: '{{ route("schedules.deleteSelected") }}',
-                    type: 'POST',
-                    data: {
-                        schedule_ids: scheduleIds,
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            alert(response.message);
-                            location.reload();
-                        } else {
-                            // Display the error message using SweetAlert2
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message,
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        // Display the AJAX request error using SweetAlert2
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Cannot delete schedule with status "Processing"',
-                        });
-                    }
-                });
-            } else {
-                alert('No schedules selected for deletion');
-            }
-        });
-    });
-</script> -->
-
 <script>
     $(document).ready(function () {
         $('.asa').on('click', function () {
@@ -518,6 +472,7 @@
                                         title: 'Success',
                                         text: response.message,
                                     }).then(function () {
+                                        $('.schedule-checkbox').prop('checked', false);
                                         location.reload();
                                     });
                                 } else {

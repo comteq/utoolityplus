@@ -1424,9 +1424,26 @@
                         console.log('Database deleted successfully');
                         $('#schedule-' + itemId).remove();
                         $('#entryCount').text(response.totalEntries - 1);
+                      
                         // Store the datetime value in localStorage
                         localStorage.setItem('dateTimeValue', dateTimeValue);
                         checkExistingSchedules(dateTimeValue);
+
+                        
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Schedule deleted successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the confirm button is pressed, reload the page
+                                location.reload();
+                            }
+                        });
+
+                       
                     },
                     error: function (error) {
                         console.error('Error deleting schedule:', error);
@@ -1480,10 +1497,21 @@
                     success: function (response) {
                         console.log('Database deleted successfully');
                         $('#schedule-' + itemId).remove();
-                        $('#entryCount').text(response.totalEntries - 1);
                         // Store the datetime value in localStorage
                         localStorage.setItem('dateTimeValue', dateTimeValue);
                         checkExistingSchedules(dateTimeValue);
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Schedule deleted successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the confirm button is pressed, reload the page
+                                location.reload();
+                            }
+                        });;
                     },
                     error: function (error) {
                         console.error('Error deleting schedule:', error);
@@ -1896,45 +1924,6 @@
             }
         });
     }
-
-    // function submitForm2(itemId) {
-    //     var formId = 'editForm-' + itemId;
-    //     var formData = $('#' + formId).serialize();
-    //     var selectedState = $('#state').val();
-
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/update-schedule/' + itemId,
-    //         data: formData,
-    //         success: function (response) {
-    //             // Display SweetAlert for successful form submission
-    //             Swal.fire({
-    //                 title: 'Success!',
-    //                 text: 'Schedule updated successfully.',
-    //                 icon: 'success',
-    //                 confirmButtonColor: '#3085d6',
-    //                 confirmButtonText: 'OK'
-    //             }).then((result) => {
-    //                 if (result.isConfirmed) {
-    //                     closeModal(itemId);
-    //                     var updatedDateTimeValue = $('#dateTimePicker3').val();
-    //                     localStorage.setItem('dateTimeValue', updatedDateTimeValue);
-    //                     $('#dateTimePicker3').trigger('change');
-    //                 }
-    //             });
-    //         },
-    //         error: function (error) {
-    //             Swal.fire({
-    //                 title: 'Error!',
-    //                 text: 'There was an error updating the schedule.',
-    //                 icon: 'error',
-    //                 confirmButtonColor: '#3085d6',
-    //                 confirmButtonText: 'OK'
-    //             });
-    //             console.error('Error:', error);
-    //         }
-    //     });
-    // }
 
     function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);

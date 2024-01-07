@@ -392,7 +392,7 @@
             </div><!-- cardbody end -->
 
             <div class="card-header" style="text-align: left" id="otherschedheader">
-                <h1>All Schedule</h1>
+                <h1 id="textchangetorela">All Schedule</h1>
             </div><!-- cardheader2 end -->
 
             <div class="card-body" id="othersched">
@@ -1112,6 +1112,12 @@
         $(this).text(buttonText === "Custom Schedule" ? "Default Schedule" : "Custom Schedule");
         // Set the value of the hidden field based on the button click
         $("#customScheduleClicked").val($(".date-time-group").is(":visible") ? "1" : "0");
+
+        if (buttonText === "Custom Schedule") {
+            $('#textchangetorela').text('Related Schedule');
+        } else {
+            $('#textchangetorela').text('All Schedule');
+        }
 
         // Disable/enable other form elements based on the button click
         if ($(".date-time-group").is(":visible")) {
