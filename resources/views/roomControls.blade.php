@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     
     <style>
-               body, html {
+        body, html {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -18,8 +18,10 @@
         .site-container {
             display: flex;
             flex-direction: column;
+            height: 100%; /* Set height to 100% to match the body height */
             min-height: 100vh; /* Full height of the viewport */
         }
+
 
         .custom-card {
             flex: 1; /* Make the card expand to fill the remaining space */
@@ -78,19 +80,8 @@
                         </form>
                     </div>
                     
-                    <div class="pin-container d-flex flex-wrap justify-content-center align-items-center" id="acPinContainer">
-                        @for ($i = 1; $i <= $deviceSettings->acNumPins; $i++)
-                            <div class="pin-box m-2 p-3 border">
-                                <label for="acPin{{ $i }}" class="text-center">{{ $i }}</label>
-                                <!-- Add more content or styling as needed for each pin box -->
-                            </div>
-                        @endfor
-                    </div>
                 </div>
 
-        
-
-        
                 {{-- Lights Card --}}
                 <div class="card border-0">
                     @php
@@ -111,18 +102,9 @@
                         </form>
                     </div>
 
-                    <div class="pin-container d-flex flex-wrap mt-4 justify-content-center align-items-center" id="lightPinContainer">
-                        @for ($i = 1; $i <= $deviceSettings->lightsNumPins; $i++)
-                            <div class="pin-box m-2 p-3 border">
-                                <label for="lightPin{{ $i }}" class="text-center">{{ $i }}</label>
-                                <!-- Add more content or styling as needed for each pin box -->
-                            </div>
-                        @endfor
-                    </div>
                 </div>
 
 
-                   
 
                 </div><!-- card deck -->
         
