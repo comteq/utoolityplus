@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
-
+use App\Models\unit;
 class schedulefilter_controler extends Controller
 {
     public function index(){
@@ -232,7 +232,14 @@ class schedulefilter_controler extends Controller
     {
         // Find the schedule by ID
         $schedule = schedules::findOrFail($id);
-
+        
+        if ($schedule->status === 'Processing') {
+            return response()->json([
+                'message' => 'Cannot delete schedule with status "Processing".',
+                'status' => 'error' 
+            ], 400);
+        }
+        
         $eventTimeFrom = $schedule->event_datetime;
         $eventTimeTo = $schedule->event_datetime_off; 
 
@@ -244,27 +251,76 @@ class schedulefilter_controler extends Controller
             'created_at' => now(),
         ]);
 
-        // Delete the schedule
         $schedule->delete();
-
-        // Return a response if needed
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
 
-    public function updateSchedulesManually()
+    public function forcedestroy($id)
     {
-        // Get all schedules where the status is not 'Finished' and the event end time has passed
-        $schedulesToUpdate = schedules::where('status', '!=', 'Finished')
-            ->where('event_datetime_off', '<', now())  
-            ->get();
+        // Find the schedule by ID
+        $schedule = schedules::findOrFail($id);
+        $eventTimeFrom = $schedule->event_datetime;
+        $eventTimeTo = $schedule->event_datetime_off; 
+
+        // Log the activity before deletion
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activity' => 'Delete Schedule',
+            'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo, 
+            'created_at' => now(),
+        ]);
+
+        unit::query()->update(['Status' => 0]);
+        $schedule->delete();
+        return response()->json(['message' => 'Schedule deleted successfully']);
+    }
+
+    public function deleteSelected(Request $request)
+    {
+        $scheduleIds = $request->input('schedule_ids');
     
-        // Update the status for each schedule
-        foreach ($schedulesToUpdate as $schedule) {
-            $schedule->update(['status' => 'Finished']);
+        if (!empty($scheduleIds)) {
+            $schedulesToDelete = schedules::whereIn('id', $scheduleIds)->get();
+            $processingError = false; // Flag to check if there's a schedule with "Processing" status
+    
+            foreach ($schedulesToDelete as $schedule) {
+                if ($schedule->status === 'Processing') {
+                    $processingError = true;
+                    break; // Exit the loop if a schedule with "Processing" status is found
+                }
+            }
+    
+            if ($processingError) {
+                return response()->json([
+                    'message' => 'Cannot delete schedule with status "Processing".',
+                    'status' => 'error'
+                ], 400);
+            }
+    
+            // Log the activity and delete schedules outside the loop
+            foreach ($schedulesToDelete as $schedule) {
+                $eventTimeFrom = $schedule->event_datetime;
+                $eventTimeTo = $schedule->event_datetime_off;
+    
+                Activity::create([
+                    'user_id' => auth()->id(),
+                    'activity' => 'Delete Schedule',
+                    'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo,
+                    'created_at' => now(),
+                ]);
+            }
+    
+            schedules::whereIn('id', $scheduleIds)->delete();
+    
+            return response()->json(['success' => true, 'message' => 'Schedules deleted successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'No schedules selected for deletion'], 400);
         }
-        return response()->json($schedulesToUpdate);
     }
     
+
+    
+
     
 
 }

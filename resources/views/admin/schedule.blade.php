@@ -206,7 +206,9 @@
         <div class="card-header" style="text-align: left">
             <h1>Schedule Action</h1>
             <p id="currentTime"></p>
+           
         </div><!-- cardheader end -->
+
 
         <div class="card-body">
             <form method="post" action="{{ route('storeadmin.schedule') }}" id="form">
@@ -219,15 +221,12 @@
                     </select>
                 </div>
 
-
                 <div class="date-time-group">
 
                     <div class="form-group">
                         <label for="description">Action:</label>
                         <select name="description" id="description1" class="custom-select w-100" required>
-                            <option disabled value="">Select Action</option>
-                            <option value="ON">ON</option>
-                            <option value="OFF">OFF</option>
+                            <option Selected value="ON">ON</option>
                         </select>
                         <!-- <span id="existingactionerror" class="text-danger"></span> -->
                     </div>    
@@ -256,6 +255,7 @@
                         <span id="existingSchedulesErrorTo" class="text-danger"></span>
                         <span id="pasterror" class="text-danger"></span>
                         <span id="separateError" class="text-danger"></span>
+                        <span id="datespanerror" class="text-danger"></span>
                     </div>
 
                     <button type="submit" name="custom_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subcustom">Set Schedule</button>
@@ -266,9 +266,7 @@
                     <div class="form-group">
                         <label for="description">Action:</label>
                         <select name="description" id="description" class="custom-select w-100" required>
-                            <option disabled  Selected value="">Select Action</option>
-                            <option value="ON">ON</option>
-                            <option value="OFF">OFF</option>
+                            <option Selected value="ON">ON</option>
                         </select>
                         <!-- <span id="existingactionerror" class="text-danger"></span> -->
                     </div>
@@ -281,16 +279,16 @@
 
                     <div class="form-group">
                         <label for="day">Day:</label>
-                            <select name="day" id="day" class="custom-select w-100" required>
-                                <option disabled selected value="">Select Day</option>
-                                <option>Monday</option>
-                                <option>Tuesday</option>
-                                <option>Wednesday</option>
-                                <option>Thursday</option>
-                                <option>Friday</option>
-                                <option>Saturday</option>
-                                <option>Sunday</option>
-                            </select>
+                        <select name="day[]" id="day" class="custom-select w-100" multiple required>
+                            <option disabled selected value="">Select Day</option>
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                            <option>Sunday</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -321,6 +319,7 @@
                 </div> <!-- other-form-elements -->
 
                 @if(session('success'))
+
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
@@ -397,7 +396,7 @@
 
 
         <div class="card-header" style="text-align: left" id="otherschedheader">
-            <h1>All Schedule</h1>
+            <h1 id="textchangetorela">All Schedule</h1>
         </div><!-- cardheader2 end -->
 
         <div class="card-body" id="othersched">
@@ -648,6 +647,11 @@
                             content += '<p></p>';
                             content += '</div>';
                             content += '<div class="col-3" style="text-align: center;">';
+                            content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                            content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                            content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                            content += '</svg>';
+                            content += '</button>';
                             content += '</div>';
                             content += '</div>';// row end
 
@@ -690,7 +694,6 @@
                             content += '<label for="description">Action:</label>';
                             content += '<select id="description" name="description" class="form-control">';
                             content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                            content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                             content += '</select>';
                             content += '</div>';
 
@@ -712,6 +715,7 @@
                         $('#entryCount').text(0);
                     }
                     $('#relatedSchedulesList').html(content);
+                    
                     } else {
                         console.error('Invalid response format. Missing "relatedData" property.');
                     }
@@ -732,7 +736,7 @@
 
 <script>
     $(document).ready(function () {
-
+        updateotherRelatedSchedulesadmin();
         $(document).on('change', '.toggleCheckbox1', function () {
             var clickedCheckbox = $(this);
             var clickedItemId = clickedCheckbox.data('id');
@@ -866,6 +870,11 @@
                                 content += '<p></p>';
                                 content += '</div>';
                                 content += '<div class="col-3" style="text-align: center;">';
+                                content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                                content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                                content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                                content += '</svg>';
+                                content += '</button>';
                                 content += '</div>';
                                 content += '</div>';// row end
 
@@ -909,7 +918,6 @@
                                 content += '<label for="description">Action:</label>';
                                 content += '<select id="description" name="description" class="form-control">';
                                 content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                                 content += '</select>';
                                 content += '</div>';
 
@@ -925,6 +933,7 @@
                             
                     });
                     $('#entryCount2').text(data.totalEntries2);
+                    
                     } else {
                         content = 'No Related Schedule';
                         $('#entryCount2').text(0);
@@ -1095,7 +1104,12 @@
                     content += '<div class="col-3">';
                     content += '<p></p>';
                     content += '</div>';
-                    content += '<div class="col-3">';
+                    content += '<div class="col-3" style="text-align: center;">';
+                    content += '<button class="btn btn-warning delete-btn" data-id="' + item.id + '" onclick="forcedeleteSchedule(' + item.id + ')">';
+                    content += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">';
+                    content += '<path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>';
+                    content += '</svg>';
+                    content += '</button>';
                     content += '</div>';
                     content += '</div>';//row end
 
@@ -1136,7 +1150,6 @@
                     content += '<label for="description">Action:</label>';
                     content += '<select id="description" name="description" class="form-control">';
                     content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                    content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                     content += '</select>';
                     content += '</div>';
 
@@ -1152,6 +1165,7 @@
                 });
                     $('#relatedSchedulesList').data('current-page', data.relatedData1.current_page);
                     $('#relatedSchedulesList').data('last-page', data.relatedData1.last_page);
+                    
                     $('#entryCount4').text(data.totalEntries4);
             } else {
                 content = 'No Related Schedule';
@@ -1409,10 +1423,27 @@
                     success: function (response) {
                         console.log('Database deleted successfully');
                         $('#schedule-' + itemId).remove();
-
+                        $('#entryCount').text(response.totalEntries - 1);
+                      
                         // Store the datetime value in localStorage
                         localStorage.setItem('dateTimeValue', dateTimeValue);
                         checkExistingSchedules(dateTimeValue);
+
+                        
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Schedule deleted successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the confirm button is pressed, reload the page
+                                location.reload();
+                            }
+                        });
+
+                       
                     },
                     error: function (error) {
                         console.error('Error deleting schedule:', error);
@@ -1437,6 +1468,74 @@
     }
 
 </script><!-- Delete --> 
+
+<script>
+    function forcedeleteSchedule(itemId) {
+        Swal.fire({
+            title: 'Force Delete: Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Store the datetime value before the reload
+                var dateTimeValue = $('#dateTimePicker').val();
+                // var status = $('#' + itemId + ' [name="schedule_status"]').val();
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/forcedelete-schedule/' + itemId,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        console.log('Database deleted successfully');
+                        $('#schedule-' + itemId).remove();
+                        // Store the datetime value in localStorage
+                        localStorage.setItem('dateTimeValue', dateTimeValue);
+                        checkExistingSchedules(dateTimeValue);
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Schedule deleted successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the confirm button is pressed, reload the page
+                                location.reload();
+                            }
+                        });;
+                    },
+                    error: function (error) {
+                        console.error('Error deleting schedule:', error);
+
+                        // Check the error status and responseText
+                        if (error.status === 401) {
+                            console.error('Unauthorized access. Make sure you are authenticated.');
+                        } else {
+                            console.error('Unknown error. Check the server logs for more information.');
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Cannot Delete schedule with status "Processing"',
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+</script><!-- Force Delete --> 
 
 <script>
 
@@ -1826,45 +1925,6 @@
         });
     }
 
-    // function submitForm2(itemId) {
-    //     var formId = 'editForm-' + itemId;
-    //     var formData = $('#' + formId).serialize();
-    //     var selectedState = $('#state').val();
-
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/update-schedule/' + itemId,
-    //         data: formData,
-    //         success: function (response) {
-    //             // Display SweetAlert for successful form submission
-    //             Swal.fire({
-    //                 title: 'Success!',
-    //                 text: 'Schedule updated successfully.',
-    //                 icon: 'success',
-    //                 confirmButtonColor: '#3085d6',
-    //                 confirmButtonText: 'OK'
-    //             }).then((result) => {
-    //                 if (result.isConfirmed) {
-    //                     closeModal(itemId);
-    //                     var updatedDateTimeValue = $('#dateTimePicker3').val();
-    //                     localStorage.setItem('dateTimeValue', updatedDateTimeValue);
-    //                     $('#dateTimePicker3').trigger('change');
-    //                 }
-    //             });
-    //         },
-    //         error: function (error) {
-    //             Swal.fire({
-    //                 title: 'Error!',
-    //                 text: 'There was an error updating the schedule.',
-    //                 icon: 'error',
-    //                 confirmButtonColor: '#3085d6',
-    //                 confirmButtonText: 'OK'
-    //             });
-    //             console.error('Error:', error);
-    //         }
-    //     });
-    // }
-
     function formatDatetimeForInput(datetime) {
         var parsedDatetime = new Date(datetime);
         var year = parsedDatetime.getFullYear();
@@ -1899,6 +1959,12 @@
         // Set the value of the hidden field based on the button click
         $("#customScheduleClicked").val($(".date-time-group").is(":visible") ? "1" : "0");
 
+        if (buttonText === "Custom Schedule") {
+            $('#textchangetorela').text('Related Schedule');
+        } else {
+            $('#textchangetorela').text('All Schedule');
+        }
+
         // Disable/enable other form elements based on the button click
         if ($(".date-time-group").is(":visible")) {
             $(".date-time-group input, .date-time-group select").prop("disabled", false);
@@ -1913,7 +1979,6 @@
             $('#prevBtn1, #nextBtn1').prop('disabled', false).show();
             $('#totalEntries5, #entryCount5').show();
           
-            
         } else {
             $(".date-time-group input, .date-time-group select").prop("disabled", true);
             $(".other-form-elements input, .other-form-elements select").prop("disabled", false);
@@ -2075,8 +2140,7 @@
                     $('#existingSchedulesError').text(response.error);
                     $('#sub').prop('disabled', true);
                 } else {
-                    $('#existingSchedulesError').text('');
-                    
+                    $('#existingSchedulesError').text('');   
                 }
             },
             error: function () {
@@ -2102,7 +2166,6 @@
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#existingSchedulesError').text('');
-                        
                     }
                 },
                 error: function () {
@@ -2132,11 +2195,8 @@
                     if (response.overlap || response.error) {
                         $('#existingSchedulesErrorTo').text('Schedule Error: Schedule overlaps with an active schedule!').append(lineBreak);;
                         $('#sub').prop('disabled', true);
-                        
                     } else {
                         $('#existingSchedulesErrorTo').text('');
-                        // $('#sub').prop('disabled', false);
-                        
                     }
                 },
                 error: function (error) {
@@ -2172,12 +2232,10 @@
                 },
                 success: function (response) {
                     if (response.error) {
-                        $('#pasterror').text('Schedule Error: To date & time must be after From date & time.');
+                        $('#pasterror').text('Schedule Error: To Date & Time must be after From Date & Time.').append('<br>');
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#pasterror').text('');
-                        // $('#sub').prop('disabled', false);
-                        
                     }
                 },
                 error: function (error) {
@@ -2185,15 +2243,105 @@
                 }
             });
         }
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
-            checkFordatetime();
+        
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
         });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#pasterror').text('');
+            }
+        }
     });
 </script><!-- automatic detect for from and to: date & time custom Schedule Error: To date & time must be after From date & time-->
 
 <script>
+    $(document).ready(function () {
+        function checkFordatetime() {
+            var fromDateTime = $('#dateTimePicker3').val();
+            var toDateTime = $('#dateTimePicker4').val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            // Make an AJAX request to the server for validation
+            $.ajax({
+                url: '/validate-dates', // Change this to your Laravel route
+                type: 'POST',
+                data: {
+                    fromDateTime: fromDateTime,
+                    toDateTime: toDateTime,
+                    _token: csrfToken,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    displayErrorMessages(response.dateError);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function displayErrorMessages(dateError) {
+            // Clear existing error messages
+            $('#datespanerror').text('');
+
+            // Display the specific error message
+            if (dateError) {
+                $('#datespanerror').text(dateError);
+                $('#sub').prop('disabled', true);
+            } else {
+                // Enable the submit button if no error
+                $('#datespanerror').text('');
+            }
+        }
+
+        // $('#dateTimePicker3, #dateTimePicker4').on('change', function () {
+        //     checkFordatetime();
+        // });
+
+        var dateTimePicker3Changed = false;
+        var dateTimePicker4Changed = false;
+
+        $('#dateTimePicker3').on('change', function () {
+            dateTimePicker3Changed = true;
+            checkIfBothChanged();
+        });
+
+        $('#dateTimePicker4').on('change', function () {
+            dateTimePicker4Changed = true;
+            checkIfBothChanged();
+        });
+
+        function checkIfBothChanged() {
+            if (dateTimePicker3Changed && dateTimePicker4Changed) {
+                checkFordatetime();
+            }
+            else{
+                $('#datespanerror').text('');
+            }
+        }
+
+    });
+</script><!-- check for schedule that cover multiple days-->
+
+<script>
     $(document).ready(function() {
-        $('#dateTimePicker3, #dateTimePicker4').on('change', function() {
+        $('#dateTimePicker4').on('change', function() {
             var dateTime = $(this).val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -2204,7 +2352,7 @@
                         _token: csrfToken },
                 success: function(response) {
                     if (!response.isValid) {
-                        $('#separateError').text('The scheduled start time has already passed');
+                        $('#separateError').text('The scheduled start time has already passed').append('<br>');;
                         $('#sub').prop('disabled', true);
                     } else {
                         $('#separateError').text('');
@@ -2216,8 +2364,7 @@
             });
         });
     });
-</script>
-
+</script><!-- scheduled start time has already passed-->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -2302,35 +2449,10 @@
     });
 </script><!-- reset -->
 
-<!-- <script>
-    // Function to check for overlapping schedules based on action
-    function checkForActionOverlap() {
-        var fromDateTime = $('#dateTimePicker3').val();
-        var toDateTime = $('#dateTimePicker4').val();
-        var description = $('#description').val();
-
-        $.ajax({
-            type: 'GET',
-            url: '/check-for-action-overlap', 
-            data: {
-                fromDateTime: fromDateTime,
-                toDateTime: toDateTime,
-                description: description,
-            },
-            success: function (response) {
-                if (response.overlap) {
-                    // There is an overlap, display the error message
-                    $('#existingactionerror').text('Schedule action overlaps with an active schedule!');
-                    $('#sub').prop('disabled', true);
-                } else {
-                    // No overlap, clear the error message
-                    $('#existingactionerror').text('');
-                    $('#sub').prop('disabled', false);
-                }
-            },
-            error: function (error) {
-                console.error('Error checking for overlap:', error);
-            }
+<script>
+    $(document).ready(function() {       
+        $('#countries').multiselect({		
+            nonSelectedText: 'Select Teams'				
         });
-    }
-</script> -->
+    });
+</script><!-- multiple -->

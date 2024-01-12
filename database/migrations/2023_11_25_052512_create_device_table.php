@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('device', function (Blueprint $table) {
             $table->id();
-            $table->string('Device_Name');
+            $table->string('Device_Name')->nullable();        
             $table->enum('State', ['Active', 'In-Active'])->default('Active');
+            $table->string('Device_IP');
+            $table->unsignedInteger('Pin_Number')->default(1);
         });
     }
 

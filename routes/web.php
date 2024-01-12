@@ -10,6 +10,7 @@ use App\Http\Controllers\schedulefilter_controler;
 use App\Http\Controllers\dashboardcontroller;
 use App\Http\Controllers\NotificationController; 
 use App\Http\Controllers\LightsController;
+use App\Http\Controllers\DeviceController;
 
 
 
@@ -57,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/validate-time-user', [schedulecontroller::class, 'validateTime']);
     Route::post('/validate-event-time-user', [schedulecontroller::class, 'validateEventTime']);
     Route::post('/validate-datetime-user', [schedulecontroller::class, 'validateDateTime']);
+    Route::post('/validate-dates-user', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
 
 });
 
@@ -80,12 +82,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-state/{itemId}', [schedulecontroller::class, 'getState']);
     
     Route::delete('/delete-schedule/{itemId}', [schedulecontroller::class, 'deleteSchedule']);
+    Route::delete('/forcedelete-schedule/{itemId}', [schedulecontroller::class, 'forcedeleteSchedule']);
+
     Route::post('/update-related-schedules-admin', [schedulecontroller::class, 'updateRelatedSchedulesadmin']);
 
     Route::get('/schedule-List-admin?year=&month=&day=', function () { return view('admin.sched_list'); });
     Route::get('/schedule-List-admin', [schedulefilter_controler::class, 'filteradmin'])->name('schedule-admin.filter');
     Route::get('/schedule-list-admin', [schedulefilter_controler::class, 'indexadmin']);
+
     Route::delete('/schedule/{id}', [schedulefilter_controler::class, 'destroy'])->name('schedule.destroy');
+    Route::delete('/scheduleforce/{id}', [schedulefilter_controler::class, 'forcedestroy'])->name('schedule.forcedestroy');
+  
+    Route::post('/delete-selected-schedules', [schedulefilter_controler::class, 'deleteSelected'])->name('schedules.deleteSelected');
+    
+
+
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
 
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
@@ -100,10 +111,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/get-schedules-count', [schedulecontroller::class, 'getScheduleCount']);
     Route::post('/check-overlapping-schedule', [schedulecontroller::class, 'checkOverlappingSchedule']);
     Route::post('/validate-event-time', [schedulecontroller::class, 'validateEventTime']);
-
     Route::post('/validate-datetime', [schedulecontroller::class, 'validateDateTime']);
 
+    Route::get('/device', [DeviceController::class, 'index'])->name('device');
+    Route::post('/device', [DeviceController::class, 'updateSettings'])->name('update-device-settings');
+
+    Route::post('/validate-dates', [schedulecontroller::class, 'validateDates']);//check for schedule that cover multiple days
+    Route::get('/get-pin-data', [DeviceController::class, 'getPinData']);
 });
 
 Route::get('/check-updates', [DashboardController::class, 'checkUpdates'])->name('check-updates');
-

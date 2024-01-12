@@ -210,12 +210,13 @@
                         <td class="status-column">{{ $sched->created_at }}</td>
                         <td>
                             <button class="btn btn-danger delete-btn" data-schedule-id="{{ $sched->id }}">🗑️</button>
+                            <button class="btn btn-warning delete-btn2" data-schedule-id="{{ $sched->id }}">🗑️</button>
                         </td>
                     </tr>
                     @endforeach
             </tbody>
             <div class="card-footer text-right">
-                <button class="btn btn-danger delete-selected-btn">Delete Selected</button>
+                <button class="btn btn-danger asa" id="deleteSelected">Delete Selected</button>
             </div>
         </table>
     </div> <!-- card-body -->
@@ -363,7 +364,7 @@
                                 button.closest('tr').remove();
                                 Swal.fire('Deleted!', 'Your schedule has been deleted.', 'success');
                             } else {
-                                Swal.fire('Error!', 'Failed to delete the schedule.', 'error');
+                                Swal.fire('Error!', 'Cannot delete schedule with status "Processing"', 'error');
                             }
                         })
                         .catch(error => {
@@ -374,144 +375,140 @@
             });
         });
     });
-</script>
+</script><!-- normal delete -->
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Get the "Check All" checkbox and the individual checkboxes
-        var checkAllCheckbox = document.getElementById('checkAll');
-        var scheduleCheckboxes = document.querySelectorAll('.schedule-checkbox');
+        // Add event listener to all delete buttons
+        document.querySelectorAll('.delete-btn2').forEach(function (button) {
+            button.addEventListener('click', function () {
+                // Get the schedule ID from the data attribute
+                var scheduleId = button.dataset.scheduleId;
 
-        // Add event listener to the "Check All" checkbox
-        checkAllCheckbox.addEventListener('change', function () {
-            // Set the checked state of all individual checkboxes based on the "Check All" checkbox
-            scheduleCheckboxes.forEach(function (checkbox) {
-                checkbox.checked = checkAllCheckbox.checked;
-            });
-        });
-
-        // Get the "Delete Selected" button
-        var deleteSelectedButton = document.querySelector('.delete-selected-btn');
-
-        // Add event listener to the "Delete Selected" button
-        deleteSelectedButton.addEventListener('click', function () {
-            // Get the IDs of the checked schedules
-            var selectedIds = Array.from(scheduleCheckboxes)
-                .filter(function (checkbox) {
-                    return checkbox.checked;
-                })
-                .map(function (checkbox) {
-                    return checkbox.dataset.scheduleId;
-                });
-
-            // Use SweetAlert for confirmation
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You won\'t be able to revert this!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Use AJAX to send a delete request to the server for each selected schedule
-                    selectedIds.forEach(function (id) {
-                        fetch('/schedule/' + id, {
+                // Use SweetAlert for confirmation
+                Swal.fire({
+                    title: 'Force Delete: Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Use AJAX to send a delete request to the server
+                        fetch('/scheduleforce/' + scheduleId, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Content-Type': 'application/json',
                             },
                         })
-                            .then(response => {
-                                if (!response.ok) {
-                                    console.error('Failed to delete schedule with ID ' + id);
-                                } else {
-                                    // Activity: Create log for deleted schedule
-                                    logDeletedSchedule(id);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    });
-
-                    // Optionally, you can update the UI to remove the deleted rows
-                    scheduleCheckboxes.forEach(function (checkbox) {
-                        if (checkbox.checked) {
-                            checkbox.closest('tr').remove();
-                        }
-                    });
-
-                    Swal.fire('Deleted!', 'Your selected schedules have been deleted.', 'success');
-                }
+                        .then(response => {
+                            if (response.ok) {
+                                // Optionally, you can remove the deleted row from the table
+                                button.closest('tr').remove();
+                                Swal.fire('Deleted!', 'Your schedule has been deleted.', 'success');
+                            } else {
+                                Swal.fire('Error!', 'Cannot delete schedule with status "Processing"', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
             });
         });
-
-
-        // Function to create activity log for deleted schedule
-        function logDeletedSchedule(scheduleId) {
-            fetch('/log-deleted-schedule/' + scheduleId, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json',
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Failed to create activity log for deleted schedule with ID ' + scheduleId);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
     });
-</script><!-- checkall and delete -->
+</script><!-- force delete -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
+    $(document).ready(function () {
+        $('.asa').on('click', function () {
+            var scheduleIds = [];
 
-    document.addEventListener('DOMContentLoaded', function () {
-        function updateSchedulesStatus() {
-            $.ajax({
-                url: "{{ route('update-schedules-status') }}",
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (updatedSchedules) {
-                    // Iterate through each updated schedule and update the status
-                    updatedSchedules.forEach(function (schedule) {
-                        var scheduleId = schedule.id;
-                        var newStatus = schedule.status;
-
-                        // Find the corresponding row in the table
-                        var row = $('tr[data-schedule-id="' + scheduleId + '"]');
-
-                        if (row.find('.status-column').text() !== newStatus) {
-                            // Update the status column in the row
-                            row.find('.status-column').text(newStatus);
-                            console.log('Updated status for schedule ID ' + scheduleId + ' to ' + newStatus);
-                        }
-                    });
-
-                    console.log('Schedules status updated successfully');
-                },
-                error: function (error) {
-                    console.error('Error updating schedules status:', error);
-                }
+            $('.schedule-checkbox:checked').each(function () {
+                scheduleIds.push($(this).data('schedule-id'));
             });
-        }
 
-        updateSchedulesStatus();
+            if (scheduleIds.length === 1) {
+                // Display success notification if only one schedule is selected
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Schedule Deleted',
+                    text: 'The selected schedule has been deleted successfully',
+                });
+            }
 
-        setInterval(updateSchedulesStatus, 5000);
+            if (scheduleIds.length > 0) {
+                // Display confirmation dialog before proceeding with deletion
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // User confirmed, proceed with deletion
+                        $.ajax({
+                            url: '{{ route("schedules.deleteSelected") }}',
+                            type: 'POST',
+                            data: {
+                                schedule_ids: scheduleIds,
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    // Display success notification after successful deletion
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: response.message,
+                                    }).then(function () {
+                                        $('.schedule-checkbox').prop('checked', false);
+                                        location.reload();
+                                    });
+                                } else {
+                                    // Display error message using SweetAlert2
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                // Display AJAX request error using SweetAlert2
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Cannot delete schedule with status "Processing"',
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                // Replace alert with SweetAlert2 notification
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Info',
+                    text: 'No schedules selected for deletion',
+                });
+            }
+        });
     });
+</script>
 
-</script><!-- dynamicly udoate if a schedule is updated -->
+
+
 
 
 <link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
@@ -519,31 +516,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.js"></script>
+
 <script>
-$(document).ready(function () {
-    $('#schedule-table').DataTable({
-        responsive: true, // Enable responsiveness
-        dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
-        buttons: [
-             'copyHtml5',
-             'excelHtml5',
-             'csvHtml5',
-             'pdfHtml5',
-            {
-                extend: 'print',
-                title: "Schedule List",
-                exportOptions: 
+    $(document).ready(function () {
+        $('#schedule-table').DataTable({
+            responsive: true, // Enable responsiveness
+            dom: 'Bfrtip', // Add buttons for export (print, CSV, etc.)
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
                 {
-                    columns: ":not(.not-export-column)"
+                    extend: 'print',
+                    title: "Schedule List",
+                    exportOptions: 
+                    {
+                        columns: ":not(.not-export-column)"
+                    }
                 }
-            }
-          ],
-        columnDefs: [
-            { orderable: false, targets: 0 }, // Disable ordering for the first checkbox column
-        ],
-        order: [],
+            ],
+            columnDefs: [
+                { orderable: false, targets: 0 }, // Disable ordering for the first checkbox column
+            ],
+            order: [],
 
+        });
     });
-});
 
- </script>
+</script>

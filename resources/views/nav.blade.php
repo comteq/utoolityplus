@@ -87,12 +87,31 @@
       margin-right: auto; /* Push the left-aligned items to the left */
     }
 
+    .notification-container2 {
+        display: none;
+    }
     /* Media query for screens 992px and below */
 @media (max-width: 992px) {
     /* Remove or override active state styles for elements */
     .navbar-toggler-icon  {
        background-color: transparent;
     }
+
+    .notification-container {
+        display: none;
+    }
+    .notification-container2 {
+        display: block;
+    }
+    .navbar-header {
+    display: flex;
+    align-items: center;
+}
+
+/* Adjust margin or padding as needed */
+.customcontainer {
+    margin-right: 10px;
+}
 
 }
   </style>
@@ -102,9 +121,27 @@
 <nav class="navbar navbar-expand-lg navbar-dark px-4">
   <img src="{{ asset('images/logo-inline.png') }}" height="60px" class="navbar-brand">
 
+  <div class="navbar-header">
+  @if(auth()->user() && auth()->user()->role !== 'user')
+    <!-- Notification bell -->
+    <div class="customcontainer notification-container2">
+    <!-- Notification bell -->
+ 
+    <div id="openNotificationBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-bell" viewBox="0 0 16 16">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+        </svg>
+        <span id="notification-count">0</span>
+    </div>
+    <div class="notification-window" id="notificationWindow"></div>
+  </div>
+  @endif
+
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+  </div>
+
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav left-nav">
       <li class="nav-item @if(request()->url() == route('room-controls')) active @endif">
@@ -129,21 +166,25 @@
         <a class="nav-link" href="{{ route('schedule-admin.filter') }}">Schedule List</a>
       </li>
       @endif
-
     </ul>
+
     @if(auth()->user() && auth()->user()->role !== 'user')
     <!-- Notification bell -->
-    <div class="customcontainer">
-      <div id="openNotificationBtn">
+    <div class="customcontainer notification-container">
+    <!-- Notification bell -->
+    <div id="openNotificationBtn">
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-bell" viewBox="0 0 16 16">
-          <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
         </svg>
         <span id="notification-count">0</span>
-      </div>
-      <div class="notification-window" id="notificationWindow"></div>
     </div>
+    <div class="notification-window" id="notificationWindow"></div>
+</div>
+<!-- End notification bell -->
+
     <!-- End notification bell -->
-@endif
+    @endif
+
     <!-- User dropdown -->
     <ul class="navbar-nav">
       <li class="nav-item dropdown @if(request()->routeIs(['profile.show', 'users.index'])) active @endif">
@@ -157,6 +198,7 @@
           {{-- Check if the user's role is not 'user' before displaying the 'Accounts' link --}}
           @if(auth()->user()->role != 'user')
           <a class="dropdown-item" href="{{ route('users.index') }}">Accounts</a>
+          <a class="dropdown-item" href="{{ route('device') }}">Device</a>
           @endif
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

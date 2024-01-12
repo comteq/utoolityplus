@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     
     <style>
-               body, html {
+        body, html {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -18,8 +18,10 @@
         .site-container {
             display: flex;
             flex-direction: column;
+            height: 100%; /* Set height to 100% to match the body height */
             min-height: 100vh; /* Full height of the viewport */
         }
+
 
         .custom-card {
             flex: 1; /* Make the card expand to fill the remaining space */
@@ -37,6 +39,10 @@
 
         .custom {
             margin-top: 74px;
+        }
+
+        .border {
+            background: rgba(107, 214, 119, 0.3);
         }
         </style>
 </head> 
@@ -73,11 +79,9 @@
                             </button>
                         </form>
                     </div>
+                    
                 </div>
 
-        
-
-        
                 {{-- Lights Card --}}
                 <div class="card border-0">
                     @php
@@ -97,23 +101,17 @@
                             </button>
                         </form>
                     </div>
+
                 </div>
 
 
-                   
 
-                    
-
-        
                 </div><!-- card deck -->
         
             </div>
         
         </div>
     </div>
-
-
-    
 
 
 <script>
