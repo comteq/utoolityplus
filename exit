@@ -1,0 +1,303 @@
+[33mcommit 2262e799754c0dcab508de09b16a729b0f38d762[m[33m ([m[1;36mHEAD -> [m[1;32mscheduling[m[33m, [m[1;31morigin/scheduling[m[33m)[m
+Author: merwin07 <erwin.masula07@gmail.com>
+Date:   Fri Dec 22 20:16:32 2023 +0800
+
+    Sending to Arduino Fixed. No Delay . Error Notif when not connected
+
+[33mcommit 7587743b6e94ef0e5e7ecb15c1dda57582902182[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 15:56:47 2023 +0800
+
+    fix login routing
+
+[33mcommit d33dc01a3efd69c58d72f73345036f9ceb0a1a1f[m
+Merge: 4c0a6a5 0d96c06
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 15:05:55 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit 4c0a6a50ecfc6f29e371847448d9437ddeb1187d[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 15:05:46 2023 +0800
+
+    seeder, schedule
+
+[33mcommit 0d96c06591c084bff3df0a4826cec77699325884[m
+Author: migsbernaldo <87742839+migsbernaldo@users.noreply.github.com>
+Date:   Fri Dec 15 15:04:30 2023 +0800
+
+    add footer all pages and change dashboard to room controls
+
+[33mcommit 659de2af07617c9ce4bdb420044813e93e5a3d8e[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 12:49:34 2023 +0800
+
+    automatic refresh and seeder ng unit
+
+[33mcommit 16d84674b1ab0863141dfb848ba6c3f1f9aaac2d[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 07:56:45 2023 +0800
+
+    schedule_list delete fix and sweet alert
+
+[33mcommit c6d6416dd339cd7e236f15bd13d08fa26dac0b2b[m
+Merge: fb74668 e3dcd29
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 07:10:57 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit fb746685024b59791ef83b10b57d8af4f60661e5[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 07:10:06 2023 +0800
+
+    shcedule add filter to admin and user
+
+[33mcommit e3dcd2919c601e6a299e7574f97cc6d771acd830[m
+Merge: aa78f26 733ede6
+Author: migsbernaldo <87742839+migsbernaldo@users.noreply.github.com>
+Date:   Fri Dec 15 07:04:01 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit aa78f26a482f68db8afe6b6780b977664b01431c[m
+Author: migsbernaldo <87742839+migsbernaldo@users.noreply.github.com>
+Date:   Fri Dec 15 06:49:41 2023 +0800
+
+    add footer, navbar for user, log activity of user, fix create with same email, print logs
+
+[33mcommit 733ede658dc8492fc976d9c6a8520873809af4ac[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Fri Dec 15 05:57:04 2023 +0800
+
+    user-admin schedule-fix, ui and validations
+
+[33mcommit 5cba4478aaeec9ab7f6df3206cdd083cd562b159[m
+Merge: 183584a 250a3c3
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Thu Dec 14 23:35:00 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit 183584adab2fb756bee6f29985736544b60ce85a[m
+Author: Robert Pogi G Bisnar Jr <127765784+robertpogi@users.noreply.github.com>
+Date:   Thu Dec 14 23:21:33 2023 +0800
+
+    user schedule fix and admin add validation
+
+[33mcommit 250a3c3568103f382b51766217f7c2a215ff2682[m
+Author: migsbernaldo <87742839+migsbernaldo@users.noreply.github.com>
+Date:   Thu Dec 14 16:06:39 2023 +0800
+
+    change dashboard controls pictures, add bg in login
+
+[33mcommit 0e248942db96eaef384c74d0435cdf3c28613756[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Wed Dec 13 15:00:55 2023 +0800
+
+    fix ui nav, dashboard and profile page, add images in asset
+
+[33mcommit 972d0e0c42a009ee154f60a483a12615233c4167[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Tue Dec 12 01:19:45 2023 +0800
+
+    add deafult and custom schedule activtiy log, add status in users, password validations
+
+[33mcommit 92b079a9ddd51669e837a488ee813f336d5ab890[m
+Merge: bb7c2ba c594c84
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Mon Dec 11 18:18:29 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit c594c849f479e2e0fd2c562f367d64eb16d464ce[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Mon Dec 11 04:15:07 2023 +0800
+
+    ui fix, month and year admin validation
+
+[33mcommit bb7c2ba70bce886ab6dd96963ade2859fbb6fabc[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Mon Dec 11 01:06:54 2023 +0800
+
+    add activity log for custom, default and update schedule admin
+
+[33mcommit 00994607884d6ddf512af0b3e56d7868ffce1067[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 9 03:02:30 2023 +0800
+
+    route,sched_list ui, notif-ui pogi ko super robert chupapi
+
+[33mcommit 06601097cfb8ec57d38d862d17ea9a884161284b[m
+Merge: f7776c3 3f2ad9a
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Sat Dec 9 01:35:24 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit f7776c3cef5f7f2a93328fa2f9741de27b655830[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Sat Dec 9 01:35:14 2023 +0800
+
+    create login and navbar ui
+
+[33mcommit 3f2ad9a4597b78a0ec5045ec8b8f874b06a685a3[m
+Merge: bcdceb7 c2dbb40
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 9 01:27:20 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit bcdceb7b7de09db3c5e5d462e03ebfe97e135899[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 9 01:17:42 2023 +0800
+
+    schedule admin-user bug fix,default value and pg
+
+[33mcommit c2dbb40a5264c4481ecda2c63cda8684e01e1b08[m
+Merge: 2160ce9 9fd4efe
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Thu Dec 7 02:13:35 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit 2160ce9fe6a5d2d76495aac7c5b4da37c4f79870[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Thu Dec 7 02:10:53 2023 +0800
+
+    add activity log in schedule filter and schedule controller and schedule blade
+
+[33mcommit 9fd4efe98a8479299df7737efd3905a24b8dbe4e[m
+Merge: 13b2afb 1ae2deb
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Thu Dec 7 00:49:32 2023 +0800
+
+    Merge branch 'scheduling' of https://github.com/migsbernaldo/utoolityplus into scheduling
+
+[33mcommit 13b2afb2ed5cf27351dfd4e870e91d8377376f2e[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Thu Dec 7 00:47:44 2023 +0800
+
+    bug fix schedule admin from
+
+[33mcommit 1ae2debd79b2ab172ffdaa6611c1d8a59d677078[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Wed Dec 6 22:57:52 2023 +0800
+
+    lowercase unit in dashboard
+
+[33mcommit 7caa396d9fab2616bc7fd57de83970ae99e83fe3[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Wed Dec 6 22:55:10 2023 +0800
+
+    lowercase activity in activitylogger
+
+[33mcommit 819763340700f092d7fe3c161fa06b335700c078[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Wed Dec 6 22:53:13 2023 +0800
+
+    change Activity to activity in activitycontroller
+
+[33mcommit 827d81518fc98d8521311547d28780aeacc637e2[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Wed Dec 6 18:21:50 2023 +0800
+
+    fix activity log sorting and add filter by activity, add nav in dashboard and routing
+
+[33mcommit 209173c732cc8f201a74f66184013e25685fc690[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Wed Dec 6 18:04:37 2023 +0800
+
+    change active to 1 and 0
+
+[33mcommit e80b87d20a2a19a71e4b23ec128a839ff93a0f13[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Wed Dec 6 03:51:48 2023 +0800
+
+    new dashboardui, and controller
+    and update in the db
+
+[33mcommit 77efa8813fd444612972b0b9689653f444c2caf0[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Tue Dec 5 23:47:24 2023 +0800
+
+    bug fix schedule
+
+[33mcommit bcb2e5b24de1cf92b85c9b28a555d8f872867527[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Tue Dec 5 00:37:04 2023 +0800
+
+    update using terminal ,bugfix on filter,
+
+[33mcommit 4abfd12186e2a39241b518416bee9ae9e7466a37[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Mon Dec 4 01:17:52 2023 +0800
+
+    reset button
+
+[33mcommit 7bad6a93baac9fb7debacabb9159a8ee368e2a78[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Mon Dec 4 01:00:37 2023 +0800
+
+    paganation for custom,script and style as link inprog
+
+[33mcommit e2b4145abd6c81b8aa4d869d806458b86ec05158[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sun Dec 3 18:04:16 2023 +0800
+
+    dynamic update of schedule status
+
+[33mcommit 556776f06388bb2bef416af2586147808a40a7fc[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 2 23:16:13 2023 +0800
+
+    ui change schedlist label remove
+
+[33mcommit 4096365aebc6766f1cb5be472780205aeb87b653[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 2 22:48:25 2023 +0800
+
+    sched_list, route,delete,check all
+
+[33mcommit ccdaa864375ca58a8785ba6a8e40fb89925d1578[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 2 20:49:44 2023 +0800
+
+    test
+
+[33mcommit 576b1e4f647a8f0be71199e3ffde5ca08aa8493b[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 2 20:39:36 2023 +0800
+
+    initial
+
+[33mcommit c2b5c505a371c5383f5ffeaf90d4e6a30984c9ec[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Sat Dec 2 20:06:12 2023 +0800
+
+    fix schedule-admin state
+
+[33mcommit 68b89b9a233bc4e44d07521230587d7978abe5a7[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Fri Dec 1 23:01:37 2023 +0800
+
+    testcommit
+
+[33mcommit 9ba20a0fee2cd6a48a0bc91a11e460044c6c62d3[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Fri Dec 1 22:42:26 2023 +0800
+
+    schedule
+
+[33mcommit 8fe4ca0b3c9dcff8d194a5d3b3849c2b96663619[m
+Author: robert <robertgbisnarjr@gmail.com>
+Date:   Fri Dec 1 22:31:04 2023 +0800
+
+    schedule-admin inprog
+
+[33mcommit 947ab83785a4c94e46d5d513af902d568988940e[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: migsbernaldo <migsbernaldo@gmail.com>
+Date:   Fri Dec 1 21:46:17 2023 +0800
+
+    Initial commit
