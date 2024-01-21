@@ -4,7 +4,7 @@
     @include('nav')
     
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     
     <style>
