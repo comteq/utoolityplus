@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Events\UpdateSchedulesEvent;
 use App\Models\Activity;
 use App\Models\unit;
-use App\Models\Device;
+use App\Models\device;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +19,7 @@ class ScheduleController extends Controller
 //---------------------------------------------------------User---------------------------------------------------------------------//
     public function index()
     {
-        $deviceSettings = Device::first();
+        $deviceSettings = device::first();
         return view('schedule', compact('deviceSettings'));
     }
 
@@ -553,7 +553,7 @@ class ScheduleController extends Controller
 
     public function indexadmin()
     {
-        $deviceSettings = Device::first();
+        $deviceSettings = device::first();
         return view('admin.schedule', compact('deviceSettings'));
     }
 
