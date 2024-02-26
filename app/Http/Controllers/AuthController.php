@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-use App\Models\Activity;
+use App\Models\activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +25,7 @@ class AuthController extends Controller
         $user->save();
 
         // Log the user registration activity
-        Activity::create([
+        activity::create([
             'user_id' => $user->id,
             'activity' => 'register',
             'message' => 'User registered successfully.',
@@ -51,7 +51,7 @@ class AuthController extends Controller
             // Log the user login activity
             $user = Auth::user();
 
-            Activity::create([
+            activity::create([
                 'user_id' => $user->id,
                 'activity' => 'Login',
                 'message' => 'User logged in successfully.',
@@ -67,7 +67,7 @@ class AuthController extends Controller
     {
         // Log the user logout activity
         $user = Auth::user();
-        Activity::create([
+        activity::create([
             'user_id' => $user->id,
             'activity' => 'logout',
             'message' => 'User logged out.',
