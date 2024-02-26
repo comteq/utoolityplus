@@ -244,7 +244,7 @@ class schedulefilter_controler extends Controller
         $eventTimeTo = $schedule->event_datetime_off; 
 
         // Log the activity before deletion
-        Activity::create([
+        activity::create([
             'user_id' => auth()->id(),
             'activity' => 'Delete Schedule',
             'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo, 
@@ -263,7 +263,7 @@ class schedulefilter_controler extends Controller
         $eventTimeTo = $schedule->event_datetime_off; 
 
         // Log the activity before deletion
-        Activity::create([
+        activity::create([
             'user_id' => auth()->id(),
             'activity' => 'Delete Schedule',
             'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo, 
@@ -302,7 +302,7 @@ class schedulefilter_controler extends Controller
                 $eventTimeFrom = $schedule->event_datetime;
                 $eventTimeTo = $schedule->event_datetime_off;
     
-                Activity::create([
+                activity::create([
                     'user_id' => auth()->id(),
                     'activity' => 'Delete Schedule',
                     'message' => 'User deleted a schedule with event time ' . $eventTimeFrom . ' to ' . $eventTimeTo,

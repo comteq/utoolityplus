@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-use App\Models\Activity;
+use App\Models\activity;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -60,7 +60,7 @@ class UserController extends Controller
                 $existingUser->update($dataToUpdate);
     
                 // Log user reactivation
-                Activity::create([
+                activity::create([
                     'user_id' => Auth::id(),
                     'activity' => 'Reactivate User',
                     'message' => 'Admin reactivated user with email "' . $existingUser->email . '".',
@@ -83,7 +83,7 @@ class UserController extends Controller
         ]);
     
         // Log user creation
-        Activity::create([
+        activity::create([
             'user_id' => Auth::id(),
             'activity' => 'Create User',
             'message' => 'Admin created user with email "' . $user->email . '".',
@@ -147,7 +147,7 @@ class UserController extends Controller
         $message = 'Admin updated user. ' . implode('. ', $details);
         
         // Log user update
-        Activity::create([
+        activity::create([
             'user_id' => Auth::id(),
             'activity' => 'Update User',
             'message' => $message,
@@ -182,7 +182,7 @@ class UserController extends Controller
         $user->update(['status' => User::STATUS_ACTIVE]);
 
         // Log user reactivation
-        Activity::create([
+        activity::create([
             'user_id' => Auth::id(),
             'activity' => 'Reactivate User',
             'message' => 'Admin reactivated user with email "' . $user->email . '".',
@@ -197,7 +197,7 @@ class UserController extends Controller
     $user->update(['status' => User::STATUS_DELETED]);
 
     // Log soft delete
-    Activity::create([
+    activity::create([
         'user_id' => Auth::id(),
         'activity' => 'Delete User',
         'message' => 'Admin deleted user: ' . $user->email,
@@ -246,7 +246,7 @@ class UserController extends Controller
         $message = 'User updated profile. ' . implode('. ', $details);
 
         // Log user profile update
-        Activity::create([
+        activity::create([
             'user_id' => Auth::id(),
             'activity' => 'Update Profile',
             'message' => $message,
@@ -290,7 +290,7 @@ public function updatePassword(Request $request)
     ]);
 
     // Log password change activity
-    Activity::create([
+    activity::create([
         'user_id' => Auth::id(),
         'activity' => 'Change Password',
         'message' => 'User changed password.',

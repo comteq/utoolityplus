@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\activityLogController;
 use App\Http\Controllers\schedulecontroller; 
 use App\Http\Controllers\schedulefilter_controler; 
 use App\Http\Controllers\dashboardcontroller;
@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile-password', [UserController::class, 'updatePassword'])->name('password.update');
 
-    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('/activity-logs', [activityLogController::class, 'index'])->name('activity-logs.index');
     
     Route::get('/schedule', [schedulecontroller::class, 'index'])->name('schedule.index');
     Route::post('/schedule', [schedulecontroller::class, 'store'])->name('store.schedule');
@@ -100,7 +100,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
 
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);
-    Route::post('/log-activity', [ActivityLogController::class, 'logActivity']);
+    Route::post('/log-activity', [activityLogController::class, 'logactivity']);
 
     Route::post('/get-other-related-data', [schedulecontroller::class, 'getotherRelatedSchedules']);//default related sched
 

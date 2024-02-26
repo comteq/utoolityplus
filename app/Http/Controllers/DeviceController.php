@@ -43,7 +43,7 @@ class DeviceController extends Controller
             ]);
     
             // Log the activity
-            Activity::create([
+            activity::create([
                 'user_id' => Auth::id(),
                 'activity' => 'Update Device Settings',
                 'message' => 'Update Device Setting Successful',

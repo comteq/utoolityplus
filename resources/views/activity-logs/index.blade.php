@@ -1,8 +1,8 @@
 @include('nav')
 
 <div class="container mt-2">
-    <h2>Activity Logs</h2>
-    <label for="activity-filter">Filter by Activity:</label>
+    <h2>activity Logs</h2>
+    <label for="activity-filter">Filter by activity:</label>
         <select id="activity-filter" class="form-control mb-2">
             <option value="">All Activities</option>
             <option value="Register">Register</option>
@@ -30,7 +30,7 @@
                 <tr class="text-light">
                     <th>Date & Time</th>
                     <th>Name</th>
-                    <th>Activity</th>
+                    <th>activity</th>
                     <th class="not-export-column">Message</th>
                 </tr>
             </thead>
@@ -95,14 +95,14 @@
     
         // Add event listener for the activity filter dropdown
         $('#activity-filter').on('change', function () {
-            var selectedActivity = $(this).val();
+            var selectedactivity = $(this).val();
     
             // Clear previous search and column-specific searches
             table.search('').columns().search('').draw();
     
             // Apply new search based on the selected activity
-            if (selectedActivity !== '') {
-                table.column(2).search(selectedActivity).draw();
+            if (selectedactivity !== '') {
+                table.column(2).search(selectedactivity).draw();
             }
         });
     });

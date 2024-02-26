@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 
-class ActivityLogController extends Controller
+class activityLogController extends Controller
 {
     public function index()
     {
@@ -24,18 +24,18 @@ class ActivityLogController extends Controller
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function logActivity(Request $request)
+    public function logactivity(Request $request)
     {
         $action = $request->input('action');
 
         // Log the activity
-        Activity::create([
+        activity::create([
             'user_id' => auth()->id(),
             'activity' => $action,
             'message' => 'User performed the ' . $action . ' action.',
             'created_at' => now(),
         ]);
 
-        return response()->json(['message' => 'Activity logged successfully']);
+        return response()->json(['message' => 'activity logged successfully']);
     }
 }

@@ -76,7 +76,7 @@ class dashboardcontroller extends Controller
                 // Log the activity with updated message based on AC state
                 $logMessage = 'User turned ' . ($newState === '1' ? 'ON' : 'OFF') . ' the Air Condition Unit';
         
-                Activity::create([
+                activity::create([
                     'user_id' => auth()->id(),
                     'activity' => 'Power ' . ($newState === '1' ? 'ON' : 'OFF') . ' ACU',
                     'message' => $logMessage,
@@ -140,7 +140,7 @@ class dashboardcontroller extends Controller
                 // Log the activity with updated message based on Lights state
                 $logMessage = 'User turned ' . ($newState === '1' ? 'ON' : 'OFF') . ' the Lights';
 
-                Activity::create([
+                activity::create([
                     'user_id' => auth()->id(),
                     'activity' => 'Power ' . ($newState === '1' ? 'ON' : 'OFF') . ' Lights',
                     'message' => $logMessage,
