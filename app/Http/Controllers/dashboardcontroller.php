@@ -44,7 +44,7 @@ class dashboardcontroller extends Controller
         $acValue = $request->input('acValue');
 
         // Code to send $acValue to the Arduino
-        $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+        $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
         $arduinoPort = 80; // Replace with your Arduino's port
         $dataType = ''; // Variable to identify the type of data being sent
 
@@ -109,7 +109,7 @@ class dashboardcontroller extends Controller
         $lightsValue = $request->input('lightsValue');
 
         // Code to send $lightsValue to the Arduino
-        $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+        $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
         $arduinoPort = 80; // Replace with your Arduino's port
 
         if ($request->has('lightsValue')) {

@@ -50,7 +50,7 @@ class UpdateSchedules extends Command
                 $this->info('Unit Status for Lights columns updated to 1 successfully.');
                 
                 // Sending Data to Arduino for Lights
-                $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+                $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 80; // Replace with your Arduino's port
                 $dataType = 'AC: ';
                 $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
@@ -78,7 +78,7 @@ class UpdateSchedules extends Command
                 $this->info('Unit Status for Lights columns updated to 1 successfully.');
                 
                 // Sending Data to Arduino for Lights
-                $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+                $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 80; // Replace with your Arduino's port
                 $dataType = 'Lights: ';
                 $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
@@ -139,7 +139,7 @@ class UpdateSchedules extends Command
                     $this->info('Unit Status for Lights columns updated to 1 successfully.');
                     
                     // Sending Data to Arduino for Lights
-                    $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+                    $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 80; // Replace with your Arduino's port
                     $dataType = 'AC: ';
                     $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
@@ -168,7 +168,7 @@ class UpdateSchedules extends Command
                     $this->info('Unit Status for Lights columns updated to 1 successfully.');
                     
                     // Sending Data to Arduino for Lights
-                    $arduinoIp = '192.168.0.106'; // Replace with your Arduino's IP address
+                    $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 80; // Replace with your Arduino's port
                     $dataType = 'Lights: ';
                     $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
