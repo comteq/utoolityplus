@@ -62,7 +62,7 @@
                 {{-- AC Card --}}
                 <div class="card border-0">
                     @php
-                        $acState = App\Models\Unit::find(1)->Status;
+                        $acState = App\Models\unit::find(1)->Status;
                         $acImage = $acState === '1' ? 'ac-on.png' : 'ac-off.png';
                     @endphp
 
@@ -85,7 +85,7 @@
                 {{-- Lights Card --}}
                 <div class="card border-0">
                     @php
-                        $lightsState = App\Models\Unit::find(2)->Status; // Retrieve 'Status' for Unit with ID 2
+                        $lightsState = App\Models\unit::find(2)->Status; // Retrieve 'Status' for Unit with ID 2
                         $lightsImage = $lightsState === '1' ? 'light-on.png' : 'light-off.png';
                     @endphp
 
