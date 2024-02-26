@@ -8,7 +8,7 @@ use App\Models\schedules;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Events\UpdateSchedulesEvent;
-use App\Models\Activity;
+use App\Models\activity;
 use App\Models\unit;
 use App\Models\device;
 use Illuminate\Support\Facades\Validator;
@@ -98,7 +98,7 @@ class ScheduleController extends Controller
             }
             $schedule->save(); // Save the schedule to the database
 
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Create Custom Schedule',
                 'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
@@ -182,7 +182,7 @@ class ScheduleController extends Controller
                 return view('schedule', compact('errorMessage', 'failedSchedules'));
             }
 
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Create Default Schedule',
                 'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
@@ -627,7 +627,7 @@ class ScheduleController extends Controller
             $schedule->save(); // Save the schedule to the database
         
             // Log the activity for custom schedule creation
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Create Custom Schedule',
                 'message' => 'User created custom schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
@@ -711,7 +711,7 @@ class ScheduleController extends Controller
                 return view('admin.schedule', compact('errorMessage', 'failedSchedules'));
             }
         
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Create Default Schedule',
                 'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
@@ -736,7 +736,7 @@ class ScheduleController extends Controller
         $newState = $item->state === 'Active' ? 'In-Active' : 'Active'; // Toggle the state
 
         // Log the activity
-        Activity::create([
+        activity::create([
             'user_id' => auth()->id(),
             'activity' => 'Update Schedule State',
             'message' => 'User updated the state of schedule at ' . $item->event_datetime . ' from ' . $item->state . ' to ' . $newState,
@@ -772,7 +772,7 @@ class ScheduleController extends Controller
     
             $schedule->delete();
 
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Delete Schedule',
                 'message' => 'User deleted a schedule from ' . $eventTimeFrom . ' to ' . $eventTimeTo . '.',
@@ -803,7 +803,7 @@ class ScheduleController extends Controller
             unit::query()->update(['Status' => 0]);
 
             $schedule->delete();
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Delete Schedule',
                 'message' => 'User deleted a schedule from ' . $eventTimeFrom . ' to ' . $eventTimeTo . '.',
@@ -880,7 +880,7 @@ class ScheduleController extends Controller
 
         if (!empty($changes)) {
             // Log the activity if there are changes
-            Activity::create([
+            activity::create([
                 'user_id' => auth()->id(),
                 'activity' => 'Update Schedule',
                 'message' => 'User updated schedule (' . implode(', ', $changes) . ')',
