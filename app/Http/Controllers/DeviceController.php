@@ -12,7 +12,7 @@ class DeviceController extends Controller
      public function index()
     {
         // Retrieve the device settings from the database (assuming only one record exists)
-        $deviceSettings = Device::first();
+        $deviceSettings = device::first();
         // Get the Device_Name from the retrieved settings
         $deviceName = $deviceSettings->Device_Name;
         $units = unit::all();
@@ -29,7 +29,7 @@ class DeviceController extends Controller
         ]);
     
         // Retrieve the existing device settings from the database (assuming only one record exists)
-        $existingSettings = Device::first();
+        $existingSettings = device::first();
     
         // Check if the new values are different from the existing settings
         if (
