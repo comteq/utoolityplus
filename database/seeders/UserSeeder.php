@@ -26,12 +26,24 @@ class UserSeeder extends Seeder
             'role' => User::ROLE_ADMIN,
         ]);
 
-        device::create([
-            'Device_name' => 'utoolityplus',
-            'State' => 'Active',
-            'Device_IP' => '192.168.1.110',
-            'Pin_Number' => '8',
-        ]);
+
+
+        $datadevice= [
+            [
+                'Device_name' => 'utoolityplus',
+                'State' => 'Active',
+                'Device_IP' => '192.168.1.110',
+                'Pin_Number' => '8'
+            ],
+            [
+                'id' => 2,
+                'Pin_Num' => 2,
+                'Pin_Name' => 'Lights',
+                'Status' => '0'
+            ]
+        ];
+
+        device::insert($datadevice);
 
         $data = [
             [
