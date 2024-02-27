@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\unit;
+use App\Models\device;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -25,6 +26,13 @@ class UserSeeder extends Seeder
             'role' => User::ROLE_ADMIN,
         ]);
 
+        device::create([
+            'Device_name' => 'utoolityplus',
+            'State' => 'Active',
+            'Device_IP' => '192.168.1.110',
+            'Pin_Number' => '8',
+        ]);
+
         $data = [
             [
                 'id' => 1,
@@ -40,7 +48,7 @@ class UserSeeder extends Seeder
             ]
         ];
 
-        Unit::insert($data);
+        unit::insert($data);
         
     }
 }

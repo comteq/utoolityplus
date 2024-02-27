@@ -22,7 +22,7 @@ class dashboardcontroller extends Controller
     {
         $lastUpdatedAt = cache()->get('last_updated_at', null); // Get the last recorded updated_at timestamp
     
-        $latestUpdatedAt = Unit::max('updated_at'); // Get the latest updated_at timestamp from the database
+        $latestUpdatedAt = unit::max('updated_at'); // Get the latest updated_at timestamp from the database
     
         if ($latestUpdatedAt != $lastUpdatedAt) {
             cache()->put('last_updated_at', $latestUpdatedAt); // Update the recorded timestamp
@@ -124,7 +124,7 @@ class dashboardcontroller extends Controller
                 fwrite($socket, $dataToSend);
                 fclose($socket);
 
-                $unit = Unit::find($id);
+                $unit = unit::find($id);
 
                 if (!$unit) {
                     return response()->json(['error' => 'Unit not found'], 404);

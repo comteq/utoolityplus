@@ -64,7 +64,7 @@ class DeviceController extends Controller
         $numPins = $request->input('numPins');
 
         // Fetch pin data from the unit table based on the selected number of pins
-        $pinData = Unit::take($numPins)->select('id', 'Pin_Num', 'Pin_Name', 'Status')->get();
+        $pinData = unit::take($numPins)->select('id', 'Pin_Num', 'Pin_Name', 'Status')->get();
 
         // Return the pin data as JSON response
         return response()->json($pinData);
