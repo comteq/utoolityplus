@@ -711,14 +711,7 @@ class ScheduleController extends Controller
                 return view('admin.schedule', compact('errorMessage', 'failedSchedules'));
             }
         
-            activity::create([
-    
-                'schedule' => new schedules(),
-                'user_id' => auth()->id(),
-                'activity' => 'Create Default Schedule',
-                'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
-                'created_at' => now(),
-            ]);
+
         }        
         return redirect()->route('scheduleadmin.index')->with('success', 'Schedule created successfully!');
     }
