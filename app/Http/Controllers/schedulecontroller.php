@@ -712,6 +712,8 @@ class ScheduleController extends Controller
             }
         
             activity::create([
+    
+                'schedule' => new schedules(),
                 'user_id' => auth()->id(),
                 'activity' => 'Create Default Schedule',
                 'message' => 'User created default schedule: ' . $schedule->event_datetime . ' to ' . $schedule->event_datetime_off . ' Action: ' . $schedule->description,
