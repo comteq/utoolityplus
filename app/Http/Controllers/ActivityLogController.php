@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 
-class activityLogController extends Controller
+class ActivityLogController extends Controller
 {
     public function index()
     {
