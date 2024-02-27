@@ -12,7 +12,7 @@ class dashboardcontroller extends Controller
 {
     public function index()
     {
-        $deviceSettings = Device::first();
+        $deviceSettings = device::first();
 
         return view('roomControls', compact('deviceSettings'));
 
