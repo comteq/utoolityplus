@@ -290,6 +290,7 @@
                             <option>Sunday</option>
                         </select>
                         <div id="dayError" class="text-danger"></div>
+                        <div id="result" class="text-danger"></div>
                     </div>
 
                     <div class="form-group">
@@ -313,7 +314,7 @@
                         <span id="toError" class="text-danger"></span>
                     </div> 
 
-                    <h1 id="result"></h1>
+                  
 
                     <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
 
