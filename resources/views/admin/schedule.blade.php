@@ -277,6 +277,8 @@
                         <div id="yearmonthError" class="text-danger"></div>
                     </div>
 
+                    <div id="result" class="table-responsive"></div>
+
                     <div class="form-group">
                         <label for="day">Day:</label>
                         <select name="day[]" id="day" class="custom-select w-100" multiple required>
@@ -292,7 +294,7 @@
                         <div id="dayError" class="text-danger"></div>
                     </div>
 
-                    <div id="result" class="table-responsive"></div>
+
 
                     <div class="form-group">
                         <label for="fromtime">From:</label>
