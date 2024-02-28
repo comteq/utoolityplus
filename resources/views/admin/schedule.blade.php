@@ -2563,7 +2563,7 @@
     }
 </script> --}}
 
-{{-- <script>
+<script>
     document.addEventListener("DOMContentLoaded", function() {
         // Attach event listener using pure JavaScript
         document.getElementById("yearmonth").addEventListener("change", calculateDays);
@@ -2616,9 +2616,9 @@
             }
         }
     });
-</script> --}}
+</script>
 
-<script>
+{{-- <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Attach event listener using pure JavaScript
         document.getElementById("yearmonth").addEventListener("change", calculateDays);
@@ -2675,9 +2675,7 @@
             }
         }
     });
-</script>
-
-
+</script> --}}
 
 {{-- <script>
     document.addEventListener("DOMContentLoaded", function() {
