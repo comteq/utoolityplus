@@ -2517,7 +2517,7 @@
 </script>
 
 <script>
-    document.getElementById("yearmonth").addEventListener("input", calculateDays);
+    document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
     function calculateDays() {
         var yearMonthInput = document.getElementById("yearmonth").value;
