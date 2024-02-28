@@ -2677,6 +2677,8 @@
     });
 </script> --}}
 
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Attach event listener using pure JavaScript
@@ -2719,7 +2721,7 @@
             var dayCounts = [0, 0, 0, 0, 0, 0, 0];
 
             // Loop through each day starting from the selected day until the end of the month
-            for (var day = selectedDay; day <= lastDayOfMonth; day += 7) {
+            for (var day = selectedDay; day <= lastDayOfMonth; day++) {
                 // Increment the count for the corresponding day of the week
                 dayCounts[day % 7]++;
             }
@@ -2734,5 +2736,3 @@
         }
     });
 </script>
-
-
