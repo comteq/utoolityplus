@@ -2709,14 +2709,14 @@
             var resultDiv = document.getElementById("result");
             resultDiv.innerHTML = ""; // Clear previous result
 
-            // Initialize an array to store counts for each day of the week
-            var dayCounts = [0, 0, 0, 0, 0, 0, 0];
-
             // Get the selected day of the week
             var selectedDay = new Date(dateText).getDay();
 
             // Get the last day of the selected month
             var lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+            // Initialize an array to store counts for each day of the week
+            var dayCounts = [0, 0, 0, 0, 0, 0, 0];
 
             // Loop through each day starting from the selected day until the end of the month
             for (var day = selectedDay; day <= lastDayOfMonth; day += 7) {
@@ -2734,4 +2734,5 @@
         }
     });
 </script>
+
 
