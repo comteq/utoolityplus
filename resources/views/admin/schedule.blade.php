@@ -2538,16 +2538,24 @@
         var resultDiv = document.getElementById("result");
         resultDiv.innerHTML = ""; // Clear previous result
 
-        // Create an array of day names
-        var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        // Initialize an array to store counts for each day of the week
+        var dayCounts = [0, 0, 0, 0, 0, 0, 0];
 
         // Loop through each day of the month
         for (var day = 1; day <= daysInMonth; day++) {
             // Calculate the day of the week for the given date
             var dayOfWeek = new Date(year, month, day).getDay();
 
-            // Display the day name and the number of the day in the result div
-            resultDiv.innerHTML += daysOfWeek[dayOfWeek] + ': ' + day + '<br>';
+            // Increment the count for the corresponding day of the week
+            dayCounts[dayOfWeek]++;
+        }
+
+        // Create an array of day names
+        var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Display the count of each day of the week in the result div
+        for (var i = 0; i < daysOfWeek.length; i++) {
+            resultDiv.innerHTML += daysOfWeek[i] + ': ' + dayCounts[i] + '<br>';
         }
     }
 </script>
