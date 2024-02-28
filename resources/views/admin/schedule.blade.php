@@ -2516,6 +2516,8 @@
 </script>
 
 <script>
+    document.getElementById("yearmonth").addEventListener("input", calculateDays);
+
     function calculateDays() {
         var yearMonthInput = document.getElementById("yearmonth").value;
         var parts = yearMonthInput.split('-');
@@ -2532,9 +2534,14 @@
         var month = parseInt(parts[0]);
         var year = parseInt(parts[1]);
 
-        // Use January 1st to avoid issues with different month lengths
         var numberOfDays = new Date(year, month, 0).getDate();
 
-        document.getElementById("result").innerText = "Number of days in " + yearMonthInput + ": " + numberOfDays;
+        var dayList = '';
+        for (var i = 1; i <= numberOfDays; i++) {
+            dayList += i + ", ";
+        }
+
+        document.getElementById("result").innerText = "Days in " + yearMonthInput + ": " + dayList.slice(0, -2); // Remove the last comma and space
     }
 </script>
+
