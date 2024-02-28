@@ -292,8 +292,8 @@
                         <div id="dayError" class="text-danger"></div>
                     </div>
 
-                    <div id="result" class="text-danger"></div>
-                    
+                    <div id="result" class="table-responsive"></div>
+
                     <div class="form-group">
                         <label for="fromtime">From:</label>
                         <div class="inline-picker input-group">
@@ -2525,7 +2525,7 @@
         // Check if the input format is correct (MM-YYYY)
         if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1]) || parts[0].length !== 2 || parts[1].length !== 4) {
             document.getElementById("yearmonthError").innerText = "Please enter a valid month and year (MM-YYYY).";
-            document.getElementById("result").innerText = ""; // Clear the result if error occurs
+            document.getElementById("result").innerHTML = ""; // Clear the result if error occurs
             return;
         } else {
             document.getElementById("yearmonthError").innerText = "";
@@ -2536,12 +2536,16 @@
 
         var numberOfDays = new Date(year, month, 0).getDate();
 
-        var dayList = '';
+        var tableHTML = "<table class='table'><thead><tr><th>Day of the Week</th><th>Day Number</th></tr></thead><tbody>";
+
+        // Loop through each day of the month
         for (var i = 1; i <= numberOfDays; i++) {
-            dayList += i + ", ";
+            var dayOfWeek = new Date(year, month - 1, i).toLocaleDateString('en-US', { weekday: 'long' });
+            tableHTML += "<tr><td>" + dayOfWeek + "</td><td>" + i + "</td></tr>";
         }
 
-        document.getElementById("result").innerText = "Days in " + yearMonthInput + ": " + dayList.slice(0, -2); // Remove the last comma and space
+        tableHTML += "</tbody></table>";
+
+        document.getElementById("result").innerHTML = tableHTML;
     }
 </script>
-
