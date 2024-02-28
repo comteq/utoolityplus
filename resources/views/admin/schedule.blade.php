@@ -2517,29 +2517,29 @@
 </script> --}}
 
 <script>
-    $(document).ready(function(){
-        // Attach event listener using jQuery
-        $("#yearmonth").change(calculateDays);
+    document.addEventListener("DOMContentLoaded", function() {
+        // Attach event listener using pure JavaScript
+        document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
         function calculateDays() {
-            var dateText = $("#yearmonth").val(); // Get the value of the input
+            var dateText = document.getElementById("yearmonth").value; // Get the value of the input
             var inputParts = dateText.split('-');
             if (inputParts.length !== 2) {
                 // Invalid input format, clear result and return
-                $("#result").html("Invalid input format. Please enter in MM-YYYY format.");
+                document.getElementById("result").innerHTML = "Invalid input format. Please enter in MM-YYYY format.";
                 return;
             }
             var month = parseInt(inputParts[0]) - 1; // Adjusting month to be zero-based
             var year = parseInt(inputParts[1]);
             if (isNaN(month) || isNaN(year) || month < 0 || month > 11) {
                 // Invalid month or year, clear result and return
-                $("#result").html("Invalid month or year.");
+                document.getElementById("result").innerHTML = "Invalid month or year.";
                 return;
             }
 
             var daysInMonth = new Date(year, month + 1, 0).getDate(); // Get the last day of the month
-            var resultDiv = $("#result");
-            resultDiv.html(""); // Clear previous result
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; // Clear previous result
 
             // Initialize an array to store counts for each day of the week
             var dayCounts = [0, 0, 0, 0, 0, 0, 0];
@@ -2558,7 +2558,7 @@
 
             // Display the count of each day of the week in the result div
             for (var i = 0; i < daysOfWeek.length; i++) {
-                resultDiv.append(daysOfWeek[i] + ': ' + dayCounts[i] + '<br>');
+                resultDiv.innerHTML += daysOfWeek[i] + ': ' + dayCounts[i] + '<br>';
             }
         }
     });
