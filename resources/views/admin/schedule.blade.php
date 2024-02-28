@@ -289,6 +289,7 @@
                             <option>Saturday</option>
                             <option>Sunday</option>
                         </select>
+                        <div id="dayError" class="text-danger"></div>
                     </div>
 
                     <div class="form-group">
