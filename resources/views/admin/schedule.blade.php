@@ -2519,9 +2519,21 @@
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
     function calculateDays() {
-        var selectedDate = new Date(document.getElementById("yearmonth").value);
-        var year = selectedDate.getFullYear();
-        var month = selectedDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
+        var inputValue = document.getElementById("yearmonth").value;
+        var inputParts = inputValue.split('-');
+        if (inputParts.length !== 2) {
+            // Invalid input format, clear result and return
+            document.getElementById("result").innerHTML = "Invalid input format. Please enter in MM-YYYY format.";
+            return;
+        }
+        var month = parseInt(inputParts[0]);
+        var year = parseInt(inputParts[1]);
+        if (isNaN(month) || isNaN(year) || month < 1 || month > 12) {
+            // Invalid month or year, clear result and return
+            document.getElementById("result").innerHTML = "Invalid month or year.";
+            return;
+        }
+
         var daysInMonth = new Date(year, month, 0).getDate(); // Get the last day of the month
         var resultDiv = document.getElementById("result");
         resultDiv.innerHTML = ""; // Clear previous result
