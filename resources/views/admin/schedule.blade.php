@@ -2456,3 +2456,55 @@
         });
     });
 </script><!-- multiple -->
+
+<script>
+    document.getElementById('yearmonth').addEventListener('change', checkDateValidity);
+    document.getElementById('day').addEventListener('change', checkDateValidity);
+    
+    function checkDateValidity() {
+        var yearmonth = document.getElementById('yearmonth').value;
+        var days = document.getElementById('day').selectedOptions;
+    
+        var selectedDays = [];
+        for (var i = 0; i < days.length; i++) {
+            selectedDays.push(days[i].text);
+        }
+        var isValid = true;
+    
+        var month = parseInt(yearmonth.split('-')[0]);
+        var year = parseInt(yearmonth.split('-')[1]);
+        var currentDay = new Date().getDate();
+        var currentDate = new Date(year, month - 1, currentDay);
+        for (var i = 0; i < selectedDays.length; i++) {
+            var dayOfWeek = getDayOfWeek(selectedDays[i]);
+            var dayDiff = dayOfWeek - currentDate.getDay();
+            if (dayDiff < 0) {
+                dayDiff += 7;
+            }
+            var targetDate = new Date(year, month - 1, currentDay + dayDiff);
+            if (targetDate.getMonth() !== month - 1) {
+                isValid = false;
+                break;
+            }
+        }
+        if (!isValid) {
+            document.getElementById('dayError').innerText = 'There is no more selected day in the selected month.';
+            $('[data-custom-id="subd"]').prop('disabled', true);
+        } else {
+            document.getElementById('dayError').innerText = '';
+            $('[data-custom-id="subd"]').prop('disabled', false);
+        }
+    }
+    
+    function getDayOfWeek(day) {
+        switch (day) {
+            case 'Sunday': return 0;
+            case 'Monday': return 1;
+            case 'Tuesday': return 2;
+            case 'Wednesday': return 3;
+            case 'Thursday': return 4;
+            case 'Friday': return 5;
+            case 'Saturday': return 6;
+        }
+    }
+    </script>
