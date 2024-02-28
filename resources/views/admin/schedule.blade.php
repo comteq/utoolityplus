@@ -316,7 +316,7 @@
                     <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
 
                     <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
-
+                    <h1 id="result"></h1>
                 </div> <!-- other-form-elements -->
 
                 @if(session('success'))
@@ -2465,7 +2465,10 @@
     function checkDateValidity() {
         var yearmonth = document.getElementById('yearmonth').value;
         var days = document.getElementById('day').selectedOptions;
-    
+
+        var all_Days = ["Monday","Tuesday", "Wednesday", "Thursday", "Friday","Saturday", "Sunday"];
+        var num_md=["1","2","3","4","5"];
+
         var selectedDays = [];
         for (var i = 0; i < days.length; i++) {
             selectedDays.push(days[i].text);
@@ -2509,3 +2512,17 @@
         }
     }
     </script>
+
+<script>
+    function calculateDays() {
+        var yearMonthInput = document.getElementById("yearmonth").value;
+        var parts = yearMonthInput.split('-');
+        var year = parseInt(parts[0]);
+        var month = parseInt(parts[1]);
+
+        // Use January 1st to avoid issues with different month lengths
+        var numberOfDays = new Date(year, month, 0).getDate();
+
+        document.getElementById("result").innerText = "Number of days in " + yearMonthInput + ": " + numberOfDays;
+    }
+</script>
