@@ -2517,11 +2517,14 @@
 </script> --}}
 
 <script>
-    
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
-    function calculateDays(dateText) {
-        var inputParts = dateText.split('-');
+    function calculateDays() {
+
+        var ui = document.getElementById("yearmonth").value;
+
+        var inputValue = document.getElementById("yearmonth").value;
+        var inputParts = inputValue.split('-');
         if (inputParts.length !== 2) {
             // Invalid input format, clear result and return
             document.getElementById("result").innerHTML = "Invalid input format. Please enter in MM-YYYY format.";
@@ -2542,11 +2545,9 @@
         // Initialize an array to store counts for each day of the week
         var dayCounts = [0, 0, 0, 0, 0, 0, 0];
 
-        // Loop through each day of the month
         for (var day = 1; day <= daysInMonth; day++) {
             // Calculate the day of the week for the given date
             var dayOfWeek = new Date(year, month, day).getDay();
-
             // Increment the count for the corresponding day of the week
             dayCounts[dayOfWeek]++;
         }
