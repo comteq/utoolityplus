@@ -2516,7 +2516,7 @@
     }
 </script> --}}
 
-<script>
+{{-- <script>
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
     function calculateDays() {
@@ -2559,6 +2559,63 @@
         for (var i = 0; i < daysOfWeek.length; i++) {
             resultDiv.innerHTML += daysOfWeek[i] + ': ' + dayCounts[i] + '<br>';
         }
+
     }
+</script> --}}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Attach event listener using pure JavaScript
+        document.getElementById("yearmonth").addEventListener("change", calculateDays);
+
+        function calculateDays() {
+            var dateText = document.getElementById("yearmonth").value; // Get the value of the input
+            var inputParts = dateText.split('-');
+            if (inputParts.length !== 2) {
+                // Invalid input format, clear result and return
+                document.getElementById("result").innerHTML = "Invalid input format. Please enter in MM-YYYY format.";
+                return;
+            }
+            var month = parseInt(inputParts[0]) - 1; // Adjusting month to be zero-based
+            var year = parseInt(inputParts[1]);
+            if (isNaN(month) || isNaN(year) || month < 0 || month > 11) {
+                // Invalid month or year, clear result and return
+                document.getElementById("result").innerHTML = "Invalid month or year.";
+                return;
+            }
+
+            var selectedDate = new Date(year, month, 1); // Create a date object for the first day of the selected month
+            var currentDate = new Date(); // Get the current date
+            if (selectedDate > currentDate) {
+                // Selected month is in the future, clear result and return
+                document.getElementById("result").innerHTML = "Selected month is in the future.";
+                return;
+            }
+
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; // Clear previous result
+
+            // Initialize an array to store counts for each day of the week
+            var dayCounts = [0, 0, 0, 0, 0, 0, 0];
+
+            // Get the day of the week for the selected date
+            var startDayOfWeek = selectedDate.getDay();
+
+            // Loop through each day starting from the selected date until the end of the month
+            for (var day = 1; day <= selectedDate.daysInMonth(); day++) {
+                // Increment the count for the corresponding day of the week
+                dayCounts[(startDayOfWeek + day - 1) % 7]++;
+            }
+
+            // Create an array of day names
+            var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+            // Display the count of each day of the week in the result div
+            for (var i = 0; i < daysOfWeek.length; i++) {
+                resultDiv.innerHTML += daysOfWeek[i] + ': ' + dayCounts[i] + '<br>';
+            }
+        }
+    });
 </script>
+
 
