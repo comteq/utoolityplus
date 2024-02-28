@@ -2461,7 +2461,7 @@
     });
 </script><!-- multiple -->
 
-<script>
+{{-- <script>
     document.getElementById('yearmonth').addEventListener('change', checkDateValidity);
     document.getElementById('day').addEventListener('change', checkDateValidity);
     
@@ -2514,7 +2514,7 @@
             case 'Saturday': return 6;
         }
     }
-</script>
+</script> --}}
 
 <script>
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
