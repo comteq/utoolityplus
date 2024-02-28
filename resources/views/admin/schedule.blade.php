@@ -313,10 +313,12 @@
                         <span id="toError" class="text-danger"></span>
                     </div> 
 
+                    <h1 id="result"></h1>
+
                     <input type="hidden" name="fromtime_hidden" id="fromtime_hidden" value="" />
 
                     <button type="submit" name="default_schedule" class="btn btn-primary w-100" id="sub" data-custom-id="subd">Set Schedule</button>
-                    <h1 id="result"></h1>
+                    
                 </div> <!-- other-form-elements -->
 
                 @if(session('success'))
@@ -2511,14 +2513,24 @@
             case 'Saturday': return 6;
         }
     }
-    </script>
+</script>
 
 <script>
     function calculateDays() {
         var yearMonthInput = document.getElementById("yearmonth").value;
         var parts = yearMonthInput.split('-');
-        var year = parseInt(parts[0]);
-        var month = parseInt(parts[1]);
+        
+        // Check if the input format is correct (MM-YYYY)
+        if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1]) || parts[0].length !== 2 || parts[1].length !== 4) {
+            document.getElementById("yearmonthError").innerText = "Please enter a valid month and year (MM-YYYY).";
+            document.getElementById("result").innerText = ""; // Clear the result if error occurs
+            return;
+        } else {
+            document.getElementById("yearmonthError").innerText = "";
+        }
+        
+        var month = parseInt(parts[0]);
+        var year = parseInt(parts[1]);
 
         // Use January 1st to avoid issues with different month lengths
         var numberOfDays = new Date(year, month, 0).getDate();
