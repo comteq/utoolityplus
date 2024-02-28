@@ -277,7 +277,7 @@
                         <div id="yearmonthError" class="text-danger"></div>
                     </div>
 
-                    <div id="result" class="table-responsive"></div>
+                    <div id="result"></div>
 
                     <div class="form-group">
                         <label for="day">Day:</label>
@@ -293,8 +293,6 @@
                         </select>
                         <div id="dayError" class="text-danger"></div>
                     </div>
-
-
 
                     <div class="form-group">
                         <label for="fromtime">From:</label>
@@ -2521,33 +2519,24 @@
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
 
     function calculateDays() {
-        var yearMonthInput = document.getElementById("yearmonth").value;
-        var parts = yearMonthInput.split('-');
-        
-        // Check if the input format is correct (MM-YYYY)
-        if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1]) || parts[0].length !== 2 || parts[1].length !== 4) {
-            document.getElementById("yearmonthError").innerText = "Please enter a valid month and year (MM-YYYY).";
-            document.getElementById("result").innerHTML = ""; // Clear the result if error occurs
-            return;
-        } else {
-            document.getElementById("yearmonthError").innerText = "";
+        var selectedDate = new Date(document.getElementById("yearmonth").value);
+        var year = selectedDate.getFullYear();
+        var month = selectedDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
+        var daysInMonth = new Date(year, month, 0).getDate(); // Get the last day of the month
+        var resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = ""; // Clear previous result
+
+        // Create an array of day names
+        var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Loop through each day of the week
+        for (var i = 0; i < daysOfWeek.length; i++) {
+            // Calculate the day of the week for the given date
+            var day = new Date(year, month - 1, i + 1).getDay(); // Subtracting 1 from month because month is zero-based
+
+            // Display the day name and the number of the day in the result div
+            resultDiv.innerHTML += daysOfWeek[i] + ': ' + (day === 0 ? daysInMonth - 6 : day - 1) + '<br>';
         }
-        
-        var month = parseInt(parts[0]);
-        var year = parseInt(parts[1]);
-
-        var numberOfDays = new Date(year, month, 0).getDate();
-
-        var tableHTML = "<table class='table'><thead><tr><th>Day of the Week</th><th>Day Number</th></tr></thead><tbody>";
-
-        // Loop through each day of the month
-        for (var i = 1; i <= numberOfDays; i++) {
-            var dayOfWeek = new Date(year, month - 1, i).toLocaleDateString('en-US', { weekday: 'long' });
-            tableHTML += "<tr><td>" + dayOfWeek + "</td><td>" + i + "</td></tr>";
-        }
-
-        tableHTML += "</tbody></table>";
-
-        document.getElementById("result").innerHTML = tableHTML;
     }
 </script>
+
