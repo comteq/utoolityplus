@@ -2516,7 +2516,7 @@
     }
 </script> --}}
 
-<script>
+{{-- <script>
     document.getElementById("yearmonth").addEventListener("change", calculateDays);
     function calculateDays() {
         var ui = DateTime now = new DateTime.now();
@@ -2559,6 +2559,6 @@
         }
 
     }
-</script>
+</script> --}}
 
 
