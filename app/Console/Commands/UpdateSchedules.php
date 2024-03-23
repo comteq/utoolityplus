@@ -53,7 +53,7 @@ class UpdateSchedules extends Command
                 $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 50003; // Replace with your Arduino's port
                 $dataType = 'AC: ';
-                $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
+                $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
 
                 try {
                     $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
@@ -81,7 +81,7 @@ class UpdateSchedules extends Command
                 $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 50003; // Replace with your Arduino's port
                 $dataType = 'Lights: ';
-                $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
+                $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
 
                 try {
                     $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
@@ -142,7 +142,7 @@ class UpdateSchedules extends Command
                     $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 50003; // Replace with your Arduino's port
                     $dataType = 'AC: ';
-                    $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
+                    $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
     
                     try {
                         $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
@@ -171,7 +171,7 @@ class UpdateSchedules extends Command
                     $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 50003; // Replace with your Arduino's port
                     $dataType = 'Lights: ';
-                    $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
+                    $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
     
                     try {
                         $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
