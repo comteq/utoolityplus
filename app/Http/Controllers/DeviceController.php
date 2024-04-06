@@ -41,7 +41,7 @@ class DeviceController extends Controller
 
         // Code to send "IP Changed" to the Arduino
         $arduinoPort = 50003; // Replace with your Arduino's port
-        $dataType = 'IP Changed';
+        $dataType = 'IP';
 
         // Attempt to send data to Arduino
         try {
@@ -61,7 +61,7 @@ class DeviceController extends Controller
         }
 
 
-        
+
     
         // Retrieve the existing device settings from the database (assuming only one record exists)
         $existingSettings = device::first();
