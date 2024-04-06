@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 use App\Models\schedules;
 use App\Models\unit;
 use Illuminate\Console\Command;
+use App\Models\device;
+
 
 class UpdateSchedules extends Command
 {
@@ -26,7 +28,17 @@ class UpdateSchedules extends Command
      * Execute the console command.
      */
     public function handle()
-    {
+    {       
+        // Fetch Device IP from the database
+        $device = device::where('Device_Name', 'Utoolityplus')->first();
+        if (!$device) {
+            $this->error('Device not found in the database.');
+            return;
+        }
+
+        $arduinoIp = $device->Device_IP; // Retrieve Arduino IP from the database
+
+
         // Fetch schedules that are active within the given time frame
             $activeSchedules = schedules::where('status', '!=', 'Processing')
             ->where('event_datetime', '<=', now())
@@ -50,7 +62,7 @@ class UpdateSchedules extends Command
                 $this->info('Unit Status for Lights columns updated to 1 successfully.');
                 
                 // Sending Data to Arduino for Lights
-                $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
+                //$arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 50003; // Replace with your Arduino's port
                 $dataType = 'AC: ';
                 $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
@@ -78,7 +90,7 @@ class UpdateSchedules extends Command
                 $this->info('Unit Status for Lights columns updated to 1 successfully.');
                 
                 // Sending Data to Arduino for Lights
-                $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
+                //$arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                 $arduinoPort = 50003; // Replace with your Arduino's port
                 $dataType = 'Lights: ';
                 $dataToSend = $dataType . '1'; // Sending 'Lights: 1'
@@ -139,7 +151,7 @@ class UpdateSchedules extends Command
                     $this->info('Unit Status for Lights columns updated to 1 successfully.');
                     
                     // Sending Data to Arduino for Lights
-                    $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
+                    //$arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 50003; // Replace with your Arduino's port
                     $dataType = 'AC: ';
                     $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
@@ -168,7 +180,7 @@ class UpdateSchedules extends Command
                     $this->info('Unit Status for Lights columns updated to 1 successfully.');
                     
                     // Sending Data to Arduino for Lights
-                    $arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
+                    //$arduinoIp = '192.168.1.110'; // Replace with your Arduino's IP address
                     $arduinoPort = 50003; // Replace with your Arduino's port
                     $dataType = 'Lights: ';
                     $dataToSend = $dataType . '0'; // Sending 'Lights: 1'
