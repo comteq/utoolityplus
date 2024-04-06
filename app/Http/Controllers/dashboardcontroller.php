@@ -41,54 +41,54 @@ class dashboardcontroller extends Controller
         $acValue = $request->input('acValue');
     
         // Fetch Arduino's IP address from the database
-        $arduinoIp = device::where('Device_Name', 'Utoolityplus')->value('Device_IP');
-    
-        // Check if Arduino's IP address is fetched successfully
-        if (!$arduinoIp) {
-            return redirect()->back()->with('error', 'Arduino IP address not found in the database')->with('showAlert', true);
-        }
-    
-        // Code to send $acValue to the Arduino
-        $arduinoPort = 50003; // Replace with your Arduino's port
-        $dataType = '';
-    
-        if ($request->has('acValue')) {
-            $dataType = 'AC: ';
-            $dataToSend = $dataType . ' ' . $acValue;
-        } 
-    
-        // Attempt to send data to Arduino
-        try {
-            $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
-            if ($socket) {
-                fwrite($socket, $dataToSend);
-                fclose($socket);
-    
-                // Update unit status in the database
-                $unit = Unit::find($id);
-                if (!$unit) {
-                    return response()->json(['error' => 'Unit not found'], 404);
-                }
+            $arduinoIp = device::where('Device_Name', 'Utoolityplus')->value('Device_IP');
         
-                $newState = $unit->Status === '1' ? '0' : '1';
-                $unit->update(['Status' => $newState]);
-    
-                // Log the activity
-                $logMessage = 'User turned ' . ($newState === '1' ? 'ON' : 'OFF') . ' the Air Condition Unit';
-                activity::create([
-                    'user_id' => auth()->id(),
-                    'activity' => 'Power ' . ($newState === '1' ? 'ON' : 'OFF') . ' ACU',
-                    'message' => $logMessage,
-                    'created_at' => now(),
-                ]);
-            } else {
-                // Handle connection error
+            // Check if Arduino's IP address is fetched successfully
+            if (!$arduinoIp) {
+                return redirect()->back()->with('error', 'Arduino IP address not found in the database')->with('showAlert', true);
+            }
+        
+            // Code to send $acValue to the Arduino
+            $arduinoPort = 50003; // Replace with your Arduino's port
+            $dataType = '';
+        
+            if ($request->has('acValue')) {
+                $dataType = 'AC: ';
+                $dataToSend = $dataType . ' ' . $acValue;
+            } 
+        
+            // Attempt to send data to Arduino
+            try {
+                $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
+                if ($socket) {
+                    fwrite($socket, $dataToSend);
+                    fclose($socket);
+        
+                    // Update unit status in the database
+                    $unit = Unit::find($id);
+                    if (!$unit) {
+                        return response()->json(['error' => 'Unit not found'], 404);
+                    }
+            
+                    $newState = $unit->Status === '1' ? '0' : '1';
+                    $unit->update(['Status' => $newState]);
+        
+                    // Log the activity
+                    $logMessage = 'User turned ' . ($newState === '1' ? 'ON' : 'OFF') . ' the Air Condition Unit';
+                    activity::create([
+                        'user_id' => auth()->id(),
+                        'activity' => 'Power ' . ($newState === '1' ? 'ON' : 'OFF') . ' ACU',
+                        'message' => $logMessage,
+                        'created_at' => now(),
+                    ]);
+                } else {
+                    // Handle connection error
+                    return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+                }
+            } catch (\Exception $e) {
+                // Handle any exceptions that occur during connection
                 return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
             }
-        } catch (\Exception $e) {
-            // Handle any exceptions that occur during connection
-            return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
-        }
     
         return redirect()->route('room-controls')->with('success', 'ACU updated successfully');
     }

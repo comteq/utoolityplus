@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\unit;
 
+
 class DeviceController extends Controller
 {
      public function index()
@@ -21,7 +22,37 @@ class DeviceController extends Controller
     }
 
     public function updateSettings(Request $request)
-    {
+    {   
+
+        // Fetch Arduino IP from the database
+        $arduinoIp = device::where('Device_Name', 'Utoolityplus')->value('Device_IP');
+
+        // Check if Arduino's IP address is fetched successfully
+        if (!$arduinoIp) {
+            return redirect()->back()->with('error', 'Arduino IP address not found in the database')->with('showAlert', true);
+        }
+
+        // Code to send "IP Changed" to the Arduino
+        $arduinoPort = 50003; // Replace with your Arduino's port
+        $dataType = 'IP Changed';
+
+        // Attempt to send data to Arduino
+        try {
+            $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
+            if ($socket) {
+                fwrite($socket, $dataType);
+                fclose($socket);
+
+                // Log the activity or perform any other action
+            } else {
+                // Handle connection error
+                return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during connection
+            return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+        }
+
         // Validate the form data
         $validatedData = $request->validate([
             'Pin_Number' => 'required|integer', // Add Pin_Number to the validation rules
