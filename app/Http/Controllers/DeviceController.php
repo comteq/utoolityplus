@@ -33,14 +33,14 @@ class DeviceController extends Controller
                 // Log the activity or perform any other action
             } else {
                 // Handle connection error
-                return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+                //return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
             }
         } catch (\Exception $e) {
             // Handle any exceptions that occur during connection
-            return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+            //return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
         }
 
-        
+
         // Retrieve the device settings from the database (assuming only one record exists)
         $deviceSettings = device::first();
         // Get the Device_Name from the retrieved settings
