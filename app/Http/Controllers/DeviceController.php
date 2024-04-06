@@ -12,6 +12,26 @@ class DeviceController extends Controller
 {
      public function index()
     {   // Fetch Arduino IP from the database
+       
+        // Retrieve the device settings from the database (assuming only one record exists)
+        $deviceSettings = device::first();
+        // Get the Device_Name from the retrieved settings
+        $deviceName = $deviceSettings->Device_Name;
+        $units = unit::all();
+
+        return view('device', compact('deviceSettings', 'deviceName', 'units'));
+    }
+
+    public function updateSettings(Request $request)
+    {   
+
+
+        // Validate the form data
+        $validatedData = $request->validate([
+            'Pin_Number' => 'required|integer', // Add Pin_Number to the validation rules
+            'Device_IP' => 'required|string',
+        ]);
+
         $arduinoIp = device::where('Device_Name', 'Utoolityplus')->value('Device_IP');
 
         // Check if Arduino's IP address is fetched successfully
@@ -41,24 +61,7 @@ class DeviceController extends Controller
         }
 
 
-        // Retrieve the device settings from the database (assuming only one record exists)
-        $deviceSettings = device::first();
-        // Get the Device_Name from the retrieved settings
-        $deviceName = $deviceSettings->Device_Name;
-        $units = unit::all();
-
-        return view('device', compact('deviceSettings', 'deviceName', 'units'));
-    }
-
-    public function updateSettings(Request $request)
-    {   
-
-
-        // Validate the form data
-        $validatedData = $request->validate([
-            'Pin_Number' => 'required|integer', // Add Pin_Number to the validation rules
-            'Device_IP' => 'required|string',
-        ]);
+        
     
         // Retrieve the existing device settings from the database (assuming only one record exists)
         $existingSettings = device::first();
