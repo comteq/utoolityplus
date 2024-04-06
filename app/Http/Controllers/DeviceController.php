@@ -6,6 +6,9 @@ use App\Models\activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\unit;
+use Illuminate\Support\Facades\Http;
+
+
 
 class DeviceController extends Controller
 {
@@ -21,61 +24,65 @@ class DeviceController extends Controller
     }
 
     public function updateSettings(Request $request)
-{
-    // Validate the form data
-    $validatedData = $request->validate([
-        'Pin_Number' => 'required|integer', // Add Pin_Number to the validation rules
-        'Device_IP' => 'required|string',
-    ]);
+    {
+        // Validate the form data
+        $validatedData = $request->validate([
+            'Pin_Number' => 'required|integer', // Add Pin_Number to the validation rules
+            'Device_IP' => 'required|string',
+        ]);
 
-    // Retrieve the existing device settings from the database (assuming only one record exists)
-    $existingSettings = device::first();
+        // Retrieve the existing device settings from the database (assuming only one record exists)
+        $existingSettings = device::first();
 
-    // Check if the new values are different from the existing settings
-    if (
-        $existingSettings->Pin_Number != (int)$validatedData['Pin_Number'] ||
-        $existingSettings->Device_IP != $validatedData['Device_IP']
-    ) {
-        // Send data to Arduino before updating the database
-        // Fetch Arduino's IP address from the request
-        $arduinoIp = $request->input('Device_IP');
-        $arduinoPort = 50003; // Replace with your Arduino's port
-        $dataType = 'IP Changed';
-        $dataToSend = $dataType;
+        // Check if the new values are different from the existing settings
+        if (
+            $existingSettings->Pin_Number != (int)$validatedData['Pin_Number'] ||
+            $existingSettings->Device_IP != $validatedData['Device_IP']
+        ) {
+            // Send data to Arduino before updating the database
+            $this->sendDataToArduino($validatedData['Device_IP']);
 
-        // Attempt to send data to Arduino
-        try {
-            $socket = fsockopen($arduinoIp, $arduinoPort, $errno, $errstr, 10);
-            if ($socket) {
-                fwrite($socket, $dataToSend);
-                fclose($socket);
-            }
-        } catch (\Exception $e) {
-            // Handle any exceptions that occur during connection
-            return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
+            // Update the device settings only if there are changes
+            $existingSettings->update([
+                'Pin_Number' => $validatedData['Pin_Number'],
+                'Device_IP' => $validatedData['Device_IP'],
+            ]);
+
+            // Log the activity
+            activity::create([
+                'user_id' => Auth::id(),
+                'activity' => 'Update Device Settings',
+                'message' => 'Update Device Setting Successful',
+                'created_at' => now(),
+            ]);
+
+            // Redirect back to the device page
+            return redirect()->route('device')->with('success', 'Settings updated successfully.');
         }
 
-        // Update the device settings only if there are changes
-        $existingSettings->update([
-            'Pin_Number' => $validatedData['Pin_Number'],
-            'Device_IP' => $validatedData['Device_IP'],
-        ]);
-
-        // Log the activity
-        activity::create([
-            'user_id' => Auth::id(),
-            'activity' => 'Update Device Settings',
-            'message' => 'Update Device Setting Successful',
-            'created_at' => now(),
-        ]);
-
-        // Redirect back to the device page
-        return redirect()->route('device')->with('success', 'Settings updated successfully.');
+        // If there are no changes, redirect back to the device page without updating
+        return redirect()->route('device')->with('info', 'No changes detected.');
     }
 
-    // If there are no changes, redirect back to the device page without updating
-    return redirect()->route('device')->with('info', 'No changes detected.');
-}
+    private function sendDataToArduino($deviceIp)
+    {
+        // Define the data to be sent to Arduino
+        $dataToSend = 'IP Changed';
+
+        // Define the Arduino's port
+        $arduinoPort = 50003; // Replace with your Arduino's port
+
+        // Send data to Arduino using HTTP request
+        $response = Http::timeout(10)->post("http://$deviceIp:$arduinoPort", ['data' => $dataToSend]);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // Log success message or handle accordingly
+        } else {
+            // Log error message or handle accordingly
+        }
+    }
+    
 
     public function getPinData(Request $request)
     {

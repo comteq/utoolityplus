@@ -22,12 +22,12 @@
                             <label for="Device_IP">Arduino IP Address</label>
                             <input type="text" class="form-control" id="Device_IP" name="Device_IP" placeholder="Enter IP Address" value="{{ $deviceSettings->Device_IP ?? '' }}" required>
                         </div>
-                    
+        
                         <div class="">
                             <div class="">
                                 <!-- Air Conditioning Component Form -->
                                 <h2>{{$deviceName}}</h2>
-                    
+        
                                 <div class="form-group">
                                     <label for="Pin_Number">Number of Pins</label>
                                     <select class="form-control" id="Pin_Number" name="Pin_Number">
@@ -38,41 +38,21 @@
                                         @endfor
                                     </select>                                    
                                 </div>
-                    
+
+        
                                 <!-- Container to hold pin boxes -->
                                 <div id="PinContainer" class="d-flex flex-wrap">
                                     <!--  pin boxes will be dynamically added here -->
                                 </div>
                             </div>
                         </div>
-                    
+        
                         <div class="d-flex justify-content-end align-items-center m-3">
                             <!-- Move buttons to the right -->
                             <button type="reset" id="resetSettings" class="btn btn-secondary mr-2">Reset</button>
                             <button type="button" id="saveSettings" class="btn btn-primary">Save Settings</button>
                         </div>
                     </form>
-                    
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            document.getElementById('saveSettings').addEventListener('click', function() {
-                                // Send AJAX request to Arduino endpoint
-                                var arduinoIp = document.getElementById('Device_IP').value;
-                                var arduinoPort = 50003; // Replace with your Arduino's port
-                                var dataType = 'IP Changed';
-                                var dataToSend = dataType;
-                    
-                                // AJAX request
-                                var xhr = new XMLHttpRequest();
-                                xhr.open('GET', 'http://' + arduinoIp + ':' + arduinoPort + '?data=' + dataToSend);
-                                xhr.send();
-                    
-                                // Submit the form to update device settings
-                                document.getElementById('deviceForm').submit();
-                            });
-                        });
-                    </script>
-                    
                 </div>
             </div>
         </div>
