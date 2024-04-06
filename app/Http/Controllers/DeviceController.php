@@ -11,20 +11,7 @@ use App\Models\unit;
 class DeviceController extends Controller
 {
      public function index()
-    {
-        // Retrieve the device settings from the database (assuming only one record exists)
-        $deviceSettings = device::first();
-        // Get the Device_Name from the retrieved settings
-        $deviceName = $deviceSettings->Device_Name;
-        $units = unit::all();
-
-        return view('device', compact('deviceSettings', 'deviceName', 'units'));
-    }
-
-    public function updateSettings(Request $request)
-    {   
-
-        // Fetch Arduino IP from the database
+    {   // Fetch Arduino IP from the database
         $arduinoIp = device::where('Device_Name', 'Utoolityplus')->value('Device_IP');
 
         // Check if Arduino's IP address is fetched successfully
@@ -52,6 +39,20 @@ class DeviceController extends Controller
             // Handle any exceptions that occur during connection
             return redirect()->back()->with('error', 'Failed to connect to Arduino')->with('showAlert', true);
         }
+
+        
+        // Retrieve the device settings from the database (assuming only one record exists)
+        $deviceSettings = device::first();
+        // Get the Device_Name from the retrieved settings
+        $deviceName = $deviceSettings->Device_Name;
+        $units = unit::all();
+
+        return view('device', compact('deviceSettings', 'deviceName', 'units'));
+    }
+
+    public function updateSettings(Request $request)
+    {   
+
 
         // Validate the form data
         $validatedData = $request->validate([
