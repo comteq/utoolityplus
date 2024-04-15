@@ -148,7 +148,7 @@
         <a class="nav-link" href="{{ route('room-controls') }}">Room Controls</a>
       </li>
       <li class="nav-item @if(request()->url() == route('activity-logs.index')) active @endif">
-        <a class="nav-link" href="{{ route('activity-logs.index') }}">activity Logs</a>
+        <a class="nav-link" href="{{ route('activity-logs.index') }}">Activity Logs</a>
       </li>
       
       @if(auth()->user()->role == 'user')
