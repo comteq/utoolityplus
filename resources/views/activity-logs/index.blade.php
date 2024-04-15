@@ -1,8 +1,8 @@
 @include('nav')
 
 <div class="container mt-2">
-    <h2>activity Logs</h2>
-    <label for="activity-filter">Filter by activity:</label>
+    <h2>Activity Logs</h2>
+    <label for="activity-filter">Filter by Activity:</label>
         <select id="activity-filter" class="form-control mb-2">
             <option value="">All Activities</option>
             <option value="Register">Register</option>
@@ -30,7 +30,7 @@
                 <tr class="text-light">
                     <th>Date & Time</th>
                     <th>Name</th>
-                    <th>activity</th>
+                    <th>Activity</th>
                     <th class="not-export-column">Message</th>
                 </tr>
             </thead>

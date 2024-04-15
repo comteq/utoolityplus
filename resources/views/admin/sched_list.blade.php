@@ -189,7 +189,7 @@
                 <th>Day</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>activity</th>
+                <th>Activity</th>
                 <th>State</th>
                 <th>Status</th>
                 <th>Date Created</th>
