@@ -203,7 +203,7 @@
 <div class="card" style="overflow-x: hidden;">
     <div class="card-deck">
 
-        <div class="card" style="margin-left: 30px; margin-top: 20px; margin-bottom: 30px;">
+        <div class="card">
             <div class="card-header" style="text-align: left">
                 <h1>Schedule Action</h1>
                 <p id="currentTime"></p>
@@ -370,7 +370,7 @@
 
         <!-- ---------------------------------------------------------------------------------------------------------------------------->
 
-        <div class="card" style="margin-right: 30px; margin-top: 20px; margin-bottom: 30px;">
+        <div class="card">
             <div class="card-header" style="text-align: left">
                     <h1>Existing Schedule</h1>        
             </div><!-- cardheader end -->
