@@ -78,7 +78,7 @@
         </div>
     
         <div class="col custom-border text-center" style="margin-top: 10px;">
-          <a href="" class="btn btn-light"><p>Current:</p></a>
+          <a href="" class="btn btn-light"></a>
           <a href="{{ route('schedule-admin.filter', ['year' => $currentYear]) }}" class="btn btn-dark">Year</a>
           <a href="{{ route('schedule-admin.filter', ['year' => $currentYear, 'month' => $currentMonth]) }}" class="btn btn-dark">Month</a>
           <a href="{{ route('schedule-admin.filter', ['year' => $currentYear, 'month' => $currentMonth, 'week' => $currentWeek]) }}" class="btn btn-dark">Week</a>
