@@ -44,11 +44,12 @@
         .border {
             background: rgba(107, 214, 119, 0.3);
         }
-        </style>
+    </style>
+
 </head> 
 <body>
 
-    <div class="site-container">
+    <div class="site-container" style="padding:1%">
         <div class="custom-card">
 
             <div class="card-header" style="text-align:center">
