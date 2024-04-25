@@ -328,6 +328,8 @@
     }
 </script>
 
+<script src="{{ asset('js/sweetalert2@10.js') }}"></script>
+
 <!-- Include SweetAlert library -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -509,7 +511,8 @@
 
 
 
-
+<script src="{{ asset('css/datatables.min.css') }}"></script>
+<script src="{{ asset('js/datatables.min.js') }}"></script>
 
 <link href="https://cdn.datatables.net/v/bs4/jszip-3.10.1/dt-1.13.8/af-2.6.0/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/date-1.5.1/fh-3.4.0/kt-2.11.0/r-2.5.0/rg-1.4.1/sc-2.3.0/sb-1.6.0/sp-2.2.0/sr-1.3.0/datatables.min.css" rel="stylesheet">
  

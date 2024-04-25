@@ -60,6 +60,8 @@
 
 <!-- Bootstrap JS and Popper.js CDN (required for Bootstrap) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('js/sweetalert2@10.js') }}"></script>
+
 <!-- Custom JavaScript for dynamic pin boxes and AJAX -->
 <!-- Custom JavaScript for dynamic pin boxes and AJAX -->
 <script>

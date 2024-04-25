@@ -5,7 +5,7 @@
     
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="{{ asset('js/sweetalert2@10.js') }}"></script>
     
     <style>
         body, html {
