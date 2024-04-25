@@ -438,6 +438,13 @@
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="{{ asset('js/dynamicUpdate.js') }}"></script>
+
+<script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+
+<script src="{{ asset('js/flatpickr.min.js') }}"></script>
+
+<script src="{{ asset('css/datepicker.min.css') }}"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
