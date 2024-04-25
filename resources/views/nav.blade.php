@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}">
+  <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
+<script src="{{ asset('css/datatables.min.css') }}"></script>
+
+<script src="{{ asset('js/pdfmake.min.js') }}"></script>
+
+<script src="{{ asset('js/vfs_fonts.js') }}"></script>
+
+<script src="{{ asset('js/datatables.min.js') }}"></script>
+
+<script src="{{ asset('js/bootstrap452.min.js') }}"></script>
+
+
   {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-GLhlTQ8i04FZ5LE3r5M46P7u6UdJOmea1BAsjFuCZuUO5/lM6ZIezn3uPOEm1Y6L" crossorigin="anonymous"> --}}
   <title>uTOOLity+</title>
   <style>
@@ -217,16 +229,8 @@
 
 <!-- Your website content goes here -->
 
-<script src="{{ asset('js/bootstrap452.min.js') }}"></script>
-
-<script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
 
 
-<script src="{{ asset('js/popper.min.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
   // Function to update the notification counter

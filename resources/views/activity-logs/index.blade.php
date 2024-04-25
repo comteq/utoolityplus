@@ -67,20 +67,8 @@
     
     </style>
     
-    <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
-    <script src="{{ asset('css/datatables.min.css') }}"></script>
-
-    <script src="{{ asset('js/pdfmake.min.js') }}"></script>
-
-    <script src="{{ asset('js/vfs_fonts.js') }}"></script>
-
-    <script src="{{ asset('js/datatables.min.js') }}"></script>
-
-    <script src="{{ asset('js/bootstrap452.min.js') }}"></script>
 
 
-
-    <script src="{{ asset('js/popper.min.js') }}"></script>
 
 
 
