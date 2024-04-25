@@ -207,6 +207,6 @@ body {
             padding: 10px;
         }
 </style>
-
+@include('footer')
 </body>
 </html>
