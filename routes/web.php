@@ -95,8 +95,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
   
     Route::post('/delete-selected-schedules', [schedulefilter_controler::class, 'deleteSelected'])->name('schedules.deleteSelected');
     
-
-
     Route::post('/update-schedules-status', [schedulefilter_controler::class, 'updateSchedulesManually'])->name('update-schedules-status');
 
     Route::get('/get-pending-schedule-count', [NotificationController::class, 'getPendingSchedules']);

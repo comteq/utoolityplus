@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/external-styles.css') }}">
 <link rel="stylesheet" href="{{ asset('js/btdatepicker.min.css') }}">
 <link rel="stylesheet" href="{{ asset('js/flatpickr.min.css') }}">
+
 <style>
     .card-container {
         display: flex;
@@ -463,7 +464,7 @@
             format: "mm-yyyy",
             startView: "months", 
             minViewMode: "months",
-          
+            autoclose:true
             // onSelect: calculateDays
         });   
     })
