@@ -355,7 +355,7 @@
   setInterval(updateNotificationContents, 60000);
 
   // Add a click event listener to the button to toggle the notification window
-  $('#openNotificationBtns').on('click', function() {
+  $('#openNotificationBtn').on('click', function() {
     $('#notificationWindow').slideToggle();
   });
 
