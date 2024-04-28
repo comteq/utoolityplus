@@ -233,8 +233,7 @@
   </div>
 </nav>
 
-
-<script>
+<!-- <script>
   function toggleNotificationWindow() {
     var notificationWindow = $('#notificationWindow');
     notificationWindow.slideToggle();
@@ -283,23 +282,33 @@
 
   // Add a click event listener to the button
   $('#openNotificationBtn').on('click', toggleNotificationWindow);
-</script><!-- notification pending -->
+</script> -->
+<!-- notification pending -->
+
 
 <script>
-  function toggleNotificationWindows() {
-    var notificationWindow = $('#notificationWindows');
-    notificationWindow.slideToggle();
+  $(document).ready(function () {
+  // Update the notification contents initially and then at regular intervals
+  updateNotificationContents();
+  setInterval(updateNotificationContents, 60000);
 
+  // Add a click event listener to the button to toggle the notification window
+  $('#openNotificationBtns').on('click', function() {
+    $('#notificationWindows').slideToggle();
+  });
+
+  // Function to update the content of the notification window
+  function updateNotificationContents() {
     // Fetch pending schedules count and details and update the content
     $.ajax({
       url: '/get-pending-schedule-count',
       method: 'GET',
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
+      },
       success: function (data) {
         console.log("Received data:", data); 
-        updateNotificationContents(data);
+        updateNotificationUI(data);
       },
       error: function (error) {
         console.log(error);
@@ -307,8 +316,8 @@
     });
   }
 
-  // Function to update the content of the notification window
-  function updateNotificationContents(data) {
+  // Function to update the UI with the new data
+  function updateNotificationUI(data) {
     console.log("Updating contents with data:", data);
     var content = '';
 
@@ -335,9 +344,71 @@
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
     return new Date(dateTime).toLocaleTimeString('en-US', options);
   }
+});
+</script>
+<!-- desktop -->
 
-  // Add a click event listener to the button
-  $('#openNotificationBtns').on('click', toggleNotificationWindows);
-</script><!-- notification pending desktop -->
+<script>
+  $(document).ready(function () {
+  // Update the notification contents initially and then at regular intervals
+  updateNotificationContents();
+  setInterval(updateNotificationContents, 60000);
+
+  // Add a click event listener to the button to toggle the notification window
+  $('#openNotificationBtns').on('click', function() {
+    $('#notificationWindow').slideToggle();
+  });
+
+  // Function to update the content of the notification window
+  function updateNotificationContents() {
+    // Fetch pending schedules count and details and update the content
+    $.ajax({
+      url: '/get-pending-schedule-count',
+      method: 'GET',
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function (data) {
+        console.log("Received data:", data); 
+        updateNotificationUI(data);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  // Function to update the UI with the new data
+  function updateNotificationUI(data) {
+    console.log("Updating contents with data:", data);
+    var content = '';
+
+    // Display the count
+    $('#notification-count').text(data.count);
+
+    if (data.schedules.length > 0) {
+      content += '<ul>';
+      data.schedules.forEach(function (schedule) {
+        content += '<li><strong>ID:</strong> ' + schedule.id + '<br>';
+        content += '<strong>From:</strong> ' + formatDateTimenotifs(schedule.event_datetime) + '<br>';
+        content += '<strong>To:</strong> ' + formatDateTimenotifs(schedule.event_datetime_off) + '<br>';
+        content += '<strong>Action:</strong> ' + schedule.description + '</li>';
+        content += '<hr>';
+      });
+      content += '</ul>';
+    } else {
+      content += '<p>No pending schedules</p>';
+    }
+    $('#notificationWindow').html(content);
+  }
+
+  function formatDateTimenotifs(dateTime) {
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
+    return new Date(dateTime).toLocaleTimeString('en-US', options);
+  }
+});
+</script>
+<!-- phone -->
+
 </body>
 </html>
