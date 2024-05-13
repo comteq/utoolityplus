@@ -18,11 +18,11 @@
 <style>
     
  .footer {
-    background-color: #f8f9fa; /* Choose your desired background color */
+    background-color: #f8f9fa; 
     padding: 20px 0;
-    position: relative; /* Change this to 'relative' */
+    position: relative; 
     width: 100%;
-    /* left: 0; */
+
 }
 
 .footer p {

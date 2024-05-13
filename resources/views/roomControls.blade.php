@@ -50,7 +50,7 @@
             color: #333;
             text-align: center;
             border-radius: 10px;
-            width: 500px;
+         
             height: 60px;
             line-height: 60px;
             margin: 0 auto; 
@@ -98,6 +98,20 @@
         margin: 0 5px; /* Add some spacing around the separator */
     }
         
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #f8f9fa; /* Adjust the color as needed */
+        text-align: center;
+        padding: 10px 0; /* Add padding for better visual appearance */
+    }
+    .footer p {
+        margin: 0;
+        color: white;
+    };
+
     </style>
 
 </head> 
@@ -119,7 +133,7 @@
                 </div>
             </div>
         
-            <div class="card-body">
+            <div class="card-body" style="margin-bottom: 50px;">
         
                 <div class="card-deck">
         
@@ -315,7 +329,28 @@ function toggleLights() {
     </script>
 @endif
 
+<footer class="footer" >
+<div class="footer mt-1 bg-dark text-center p-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p>&copy; <span id="currentYear"></span> Utoolity+. All rights reserved.</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</footer>
+<script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+
+
 </body>
 </html>
 
-@include('footer')
+
+    <!-- @include('footer') -->
+
+
