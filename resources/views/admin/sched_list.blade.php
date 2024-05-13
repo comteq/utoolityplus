@@ -157,7 +157,6 @@
                     <option value=""{{ request('description') == '' ? ' selected' : '' }} disabled>Action</option>
                     <option value="">All</option>
                     <option value="ON"{{ request('description') == 'ON' ? ' selected' : '' }}>ON</option>
-                    <option value="OFF"{{ request('description') == 'OFF' ? ' selected' : '' }}>OFF</option>
                 </select>
     
                 <select name="state" id="state" class="btn btn-secondary dropdown-toggle">

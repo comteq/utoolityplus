@@ -1344,7 +1344,6 @@
                                 content += '<label for="description">Action:</label>';
                                 content += '<select id="description" name="description" class="form-control">';
                                 content += '<option value="ON" ' + (item.description === 'ON' ? 'selected' : '') + '>ON</option>';
-                                content += '<option value="OFF" ' + (item.description === 'OFF' ? 'selected' : '') + '>OFF</option>';
                                 content += '</select>';
                                 content += '</div>';
 
@@ -1615,17 +1614,7 @@
             return; // Stop the submission
         }
 
-        if (status === 'Processing') {
-                // Display SweetAlert for status check
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Cannot edit schedule with status "Processing"',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                });
-                return; // Stop the submission
-        }
+
 
         // Make an AJAX call to check for overlapping schedules
         $.ajax({
@@ -1777,17 +1766,7 @@
             return; // Stop the submission
         }
 
-        if (status === 'Processing') {
-                // Display SweetAlert for status check
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Cannot edit schedule with status "Processing"',
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                });
-                return; // Stop the submission
-        }
+
 
         // Make an AJAX call to check for overlapping schedules
         $.ajax({

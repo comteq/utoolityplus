@@ -840,12 +840,7 @@ class ScheduleController extends Controller
         $schedule = schedules::findOrFail($id);
 
         // Check if the schedule status is "Processing"
-        if ($schedule->status === 'Processing') {
-            return response()->json([
-                'message' => 'Cannot edit schedule with status "Processing".',
-                'status' => 'error' 
-            ], 400);
-        }
+
 
         // Get the original event times before the update
         $oldEventDatetime = $schedule->event_datetime;
