@@ -44,6 +44,60 @@
         .border {
             background: rgba(107, 214, 119, 0.3);
         }
+
+        #label{
+            font-size: 4rem;
+            color: #333;
+            text-align: center;
+            border-radius: 10px;
+            width: 500px;
+            height: 60px;
+            line-height: 60px;
+            margin: 0 auto; 
+            text-shadow: 2px 3px 3px rgba(250, 250, 250);
+            font-weight: bold;
+        }
+
+        .clock {
+        display: inline-block;
+        font-size: 3em;
+        font-weight: bold;
+        text-shadow: 2px 2px 2px rgba(0, 0, 0);
+        color: #FAFAFA;
+    }
+    .flip-clock {
+        display: inline-block;
+        perspective: 1000px;
+    }
+    .flip-clock .flip-unit-container {
+        display: inline-block; /* Display inline */
+        margin-right: 10px; /* Add some spacing between units */
+        overflow: hidden;
+        position: relative;
+    }
+    .flip-clock .flip-unit-container .upper-card,
+    .flip-clock .flip-unit-container .lower-card {
+        backface-visibility: hidden;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: transform 0.5s;
+    }
+    .flip-clock .flip-unit-container .lower-card {
+        transform: rotateX(180deg);
+    }
+    .ampm {
+        display: inline-block;
+        vertical-align: top; /* Align to the top of the line */
+        margin-left: 5px; /* Add some spacing between seconds and AM/PM */
+    }
+    .separator {
+        display: inline-block;
+        vertical-align: top; /* Align to the top of the line */
+        font-size: 0.8em; /* Adjust the size of the separator */
+        margin: 0 5px; /* Add some spacing around the separator */
+    }
+        
     </style>
 
 </head> 
@@ -53,7 +107,16 @@
         <div class="custom-card">
 
             <div class="card-header" style="text-align:center">
-                <h1>Controls</h1>
+                
+                <h1 id="label"> Controls</h1>
+                <div class="clock">
+                    <div id="hours" class="flip-clock"></div>
+                    <div class="separator">:</div>
+                    <div id="minutes" class="flip-clock"></div>
+                    <div class="separator">:</div>
+                    <div id="seconds" class="flip-clock"></div>
+                    <div id="ampm" class="ampm"></div>
+                </div>
             </div>
         
             <div class="card-body">
@@ -105,15 +168,12 @@
 
                 </div>
 
-
-
                 </div><!-- card deck -->
         
             </div>
         
         </div>
     </div>
-
 
 <script>
     function confirmPowerAction() {
@@ -221,12 +281,40 @@ function toggleLights() {
     setInterval(checkForUpdates, 5000); // 5000 milliseconds = 5 seconds
 </script>
 
+<!-- timer -->
+<script>
+    function updateClock() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+        document.getElementById('hours').innerText = pad(hours);
+        document.getElementById('minutes').innerText = pad(minutes);
+        document.getElementById('seconds').innerText = pad(seconds);
+        document.getElementById('ampm').innerText = ampm;
+    }
+
+    function pad(number) {
+        return number < 10 ? '0' + number : number;
+    }
+
+    setInterval(updateClock, 1000);
+</script>
+
+
 @if(Session::has('showAlert') && Session::get('showAlert'))
     <script>
         // Check for the showAlert flag and trigger SweetAlert
         showNoDevicesAlert();
     </script>
 @endif
+
 </body>
 </html>
 
