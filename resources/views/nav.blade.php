@@ -135,6 +135,11 @@
       }
     }
 
+    .navbar-nav .dropdown-menu {
+      right: 0 !important; /* Align dropdown to the right */
+      left: auto; /* Override left positioning */
+      position: absolute; /* Position dropdown absolutely */
+    }
 
   </style>
 
