@@ -134,6 +134,8 @@
           margin-right: 10px;
       }
     }
+
+
   </style>
 
 </head>
@@ -172,9 +174,9 @@
     
       
       @if(auth()->user()->role == 'user')
-      <li class="nav-item @if(request()->url() == route('schedule.index')) active @endif">
+      <!-- <li class="nav-item @if(request()->url() == route('schedule.index')) active @endif">
         <a class="nav-link" href="{{ route('schedule.index') }}">Set Schedule</a>
-      </li>
+      </li> -->
       <li class="nav-item @if(request()->url() == route('schedule.filter')) active @endif">
         <a class="nav-link" href="{{ route('schedule.filter') }}">Schedule List</a>
       </li>
